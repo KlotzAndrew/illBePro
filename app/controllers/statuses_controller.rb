@@ -31,12 +31,17 @@ class StatusesController < ApplicationController
     @status.summoner_id = @ignindex.summoner_id
     @status.summoner_name = @ignindex.summoner_name
     respond_to do |format|
-      if @status.save
-        format.html { redirect_to @status, notice: 'Status was successfully created.' }
-        format.json { render :show, status: :created, location: @status }
-      else
+      if Status.where("value > ?", 0).count == 0
         format.html { render :new }
         format.json { render json: @status.errors, status: :unprocessable_entity }
+      else
+        if @status.save
+          format.html { redirect_to @status, notice: 'Status was successfully created.' }
+          format.json { render :show, status: :created, location: @status }
+        else
+          format.html { render :new }
+          format.json { render json: @status.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
