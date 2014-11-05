@@ -1,0 +1,53 @@
+  <% if Ignindex.find_by_user_id(current_user.id).summoner_validated? %>
+    <% if Status.where("value > ?", 0).find_by_user_id(current_user.id).nil? %>
+      <div class="page-header">
+        <h1>No challenge running</h1>
+      </div>
+
+      <div class="btn-group">
+        <%= link_to 'New Challenge', new_status_path, class: "btn btn-success" %>
+      </div>
+    <% else %>
+      <div class="page-header">
+        <h1>Current challenge</h1>
+      </div>
+        <% current_challenge = Status.where("value > ?", 0).find_by_user_id(current_user.id) %>
+          <div class="status">
+            <strong><string><%= current_challenge.summoner_name %></strong>
+            <p><%= current_challenge.content %></p>
+            <p>Points for completing: <%= current_challenge.points %></p>
+            <p>Minutes left in challenge: <%= current_challenge.value/60 %></p>
+            <div class="meta">
+             <%= link_to time_ago_in_words(current_challenge.created_at) + " ago", current_challenge %>
+            <span class="admin">
+              <%= link_to "Cancel", current_challenge, method: :delete, data: { confirm: "You feelin' lucky punk?" } %>
+          </span>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+      <div class="page-header">
+        <h1>You need to validate a summoner name to start!</h1>
+      </div>
+  <% end %>
+
+<div class="page-header">
+ </div>
+<div class="page-header">
+  <h1>Your history</h1>
+</div>
+
+<% @statuses.where("user_id = ?", current_user.id).order(created_at: :desc).each do |status| %>
+<div class="status">
+  <strong><string><%= status.summoner_name %></strong>
+  <p><%= status.content %></p>
+  <p>Minutes left in challenge: <%= status.value/60 %></p>
+  <div class="meta">
+    <%= link_to time_ago_in_words(status.created_at) + " ago", status %>
+    <span class="admin">
+        <%= link_to "Cancel", status, method: :delete, data: { confirm: "You feelin' lucky punk?" } %>
+    </span>
+  </div>
+</div>
+<% end %>
+

@@ -1,0 +1,53 @@
+<div class="row">
+  <div class="col-md-6">
+    <div class="page-header">
+      <h1>Summoner Name: <%= @ignindex.summoner_name %></h1>
+    </div>
+  </div>
+
+  <div class="col-md-4 col-md-offset-2">
+    <div class="page-header">
+      <% if @ignindex.summoner_validated %>
+        <h1>Validated!</h1>
+      <% else %>
+        <h1>Not validated!</h1>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <div class="btn-group">
+      <%= form_for @ignindex do |t| %>
+        <%= t.text_field :summoner_name %>
+        <%= t.submit "Update Summoner Name", data: { confirm: "Pressing 'ok' removes validation from any of your past summoner names!" } %>
+        <%= t.hidden_field :summoner_validated, :value=>false %>
+        <%= t.hidden_field :summoner_id, :value=>nil %>
+        <%= t.hidden_field :validation_string, :value=>nil %>
+        <%= t.hidden_field :validation_timer, :value=>nil %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="col-md-4 col-md-offset-4">
+    <div>
+
+    <% if !@ignindex.summoner_validated %>
+      <%= form_for @ignindex do |t| %>
+        <%= t.hidden_field :validation_timer, :value=>Time.now.to_i %>
+        <%= t.hidden_field :validation_string, :value=>('0'..'z').to_a.shuffle.first(8).join %>
+        <%= t.submit "Generate validation code" %>
+      <% end %>
+    <% end %>
+    
+    <% if !@ignindex.validation_timer.nil? %>
+      <h5>Validation code: <%= @ignindex.validation_string %></h5>
+      <h3>Code valid for: <%= (300 - (Time.now.to_i - @ignindex.validation_timer)) %> more seconds!<h3>
+    <% end %>
+
+    </div>
+    
+  </div>
+</div>
+

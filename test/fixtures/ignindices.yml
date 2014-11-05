@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  owner_id: 1
+  summoner_name: MyString
+  summoner_id: 1
+  summoner_validated: false
+  validation_string: MyString
+  validation_timer: 1
+
+two:
+  owner_id: 1
+  summoner_name: MyString
+  summoner_id: 1
+  summoner_validated: false
+  validation_string: MyString
+  validation_timer: 1

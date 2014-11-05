@@ -1,0 +1,17 @@
+<%= simple_form_for(@ignindex) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :user_id %>
+    <%= f.input :summoner_name %>
+    <%= f.input :summoner_id %>
+    <%= f.input :summoner_validated %>
+    <%= f.input :validation_string %>
+    <%= f.input :validation_timer %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>
+  

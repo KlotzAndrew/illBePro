@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  summoner_name: MyString
+  week_1: 1
+
+two:
+  summoner_name: MyString
+  week_1: 1

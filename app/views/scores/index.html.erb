@@ -1,0 +1,20 @@
+<h1>High scores</h1>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>This week</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @scores.order(week_1: :desc).each do |score| %>
+      <tr>
+        <td><%= User.find(score.user_id).profile_name %></td>
+        <td><%= score.week_1 %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

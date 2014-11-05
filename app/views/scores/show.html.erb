@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Summoner name:</strong>
+  <%= @score.summoner_name %>
+</p>
+
+<p>
+  <strong>Week 1:</strong>
+  <%= @score.week_1 %>
+</p>
+
+<%= link_to 'Edit', edit_score_path(@score) %> |
+<%= link_to 'Back', scores_path %>

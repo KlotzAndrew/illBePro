@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Summoner:</strong>
+  <%= @status.user.full_name %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @status.content %>
+</p>
+
+<p>
+  <strong>Score:</strong>
+  <%= @status.value %>
+</p>
+
+<%= link_to 'Edit', edit_status_path(@status) %> |
+<%= link_to 'Back', statuses_path %>
