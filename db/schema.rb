@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141103201913) do
+ActiveRecord::Schema.define(version: 20141105220725) do
 
   create_table "champions", force: true do |t|
     t.string   "champion"
@@ -31,7 +31,9 @@ ActiveRecord::Schema.define(version: 20141103201913) do
   end
 
   create_table "scores", force: true do |t|
-    t.string   "user_id"
+    t.integer  "user_id"
+    t.string   "summoner_name"
+    t.integer  "summoner_id"
     t.integer  "week_1"
     t.integer  "week_2"
     t.integer  "week_3"
@@ -50,6 +52,9 @@ ActiveRecord::Schema.define(version: 20141103201913) do
     t.string   "summoner_name"
     t.integer  "kind"
     t.integer  "points"
+    t.integer  "win_value"
+    t.integer  "queue_number"
+    t.string   "challenge_description"
   end
 
   add_index "statuses", ["user_id"], name: "index_statuses_on_user_id"

@@ -13,7 +13,7 @@
       </thead>
 
       <tbody>
-        <% @scores.order(week_1: :desc).each do |score| %>
+        <% @scores.where.not(user_id: nil).order(week_1: :desc).each do |score| %>
           <tr>
             <td><%= User.find(score.user_id).profile_name %></td>
             <td><%= score.week_1 %></td>
@@ -34,7 +34,7 @@
       </thead>
 
       <tbody>
-        <% @scores.order(week_1: :desc).each do |score| %>
+        <% @scores.where.not(summoner_id: nil).order(week_1: :desc).each do |score| %>
           <tr>
             <td><%= User.find(score.user_id).profile_name %></td>
             <td><%= score.week_1 %></td>

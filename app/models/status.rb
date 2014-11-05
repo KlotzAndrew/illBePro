@@ -52,6 +52,12 @@ class Status < ActiveRecord::Base
             x.update(validation_timer: nil)
             x.update(validation_string: nil)
             Rails.logger.info "#{x.summoner_name} validated"
+            if !Score.where("summoner_id = ?", x.summoner_id).nil?
+              Score.create!(:summoner_id => x.summoner_id, :summoner_name => x.summoner_name)
+              Rails.logger.info "scorecard created for #{x.summoner_name}"
+            else
+              Rails.logger.info "scorecard already exists for #{x.summoner_name}"
+            end
           else
             Rails.logger.info "#{x.summoner_name} not validated"
           end
@@ -98,6 +104,7 @@ class Status < ActiveRecord::Base
               x.update(content: "You won a 1/1 challenge! \n First Game: \n Champion: #{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}; #{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["kills"]} - #{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]} - #{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}")
               x.update(value: 0)
               Score.find_by_user_id(x.user_id).update(week_1: Score.find_by_user_id(x.user_id).week_1 + x.points)
+              Score.find_by_summoner_id(x.summoner_id).update(week_1: Score.find_by_summoner_id(x.summoner_id).week_1 + x.points)
               Rails.logger.info "won 1/1 for #{x.summoner_id}"            
             else
               x.update(content: "Challenge still running!")
@@ -123,6 +130,7 @@ class Status < ActiveRecord::Base
               x.update(content: "You won a 2/2 challenge! \n First Game: \n Champion: #{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}; #{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["kills"]} - #{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]} - #{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]} \n Second Game: \n Champion: #{Champion.find(games_hash["matches"][valid_games[1]]["participants"][0]["championId"]).champion}; #{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["kills"]} - #{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["deaths"]} - #{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["assists"]}")
               x.update(value: 0)
               Score.find_by_user_id(x.user_id).update(week_1: Score.find_by_user_id(x.user_id).week_1 + x.points)
+              Score.find_by_summoner_id(x.summoner_id).update(week_1: Score.find_by_summoner_id(x.summoner_id).week_1 + x.points)
               Rails.logger.info "updated won 2/2 for #{x.summoner_id}"
             else
               x.update(content: "Challenge still running!")

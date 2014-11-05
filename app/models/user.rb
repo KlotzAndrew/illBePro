@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
     @ignindex = Ignindex.create!(:user_id => self.id)
     @ignindex.save
     @score = Score.create!(:user_id => self.id)
-    @ignindex.save
+    @score.save
   end
 
 

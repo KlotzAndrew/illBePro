@@ -1,7 +1,9 @@
 class CreateScores < ActiveRecord::Migration
   def change
     create_table :scores do |t|
-      t.string :user_id
+      t.integer :user_id
+      t.string :summoner_name
+      t.integer :summoner_id
       t.integer :week_1
       t.integer :week_2
       t.integer :week_3
