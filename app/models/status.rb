@@ -3,7 +3,14 @@ class Status < ActiveRecord::Base
 	belongs_to :user
 	
 	validates :user_id, presence: true
-	#no validation on length/presence
+
+  validate :api_throttle
+
+  def api_throttle
+    if Status.where("value > ?", 0).count > 45
+     errors.add(:Internet, "hampster is overloaded with challenges!")
+    end
+  end
 
   def self.update_value
     Rails.logger.info "*****Started cron at #{Time.now}*****"

@@ -16,16 +16,6 @@ class User < ActiveRecord::Base
     @score.save
   end
 
-
-  #migrate to summoner_name
-  #requires authenticaton code
-  #!validated? uniqueness: false
-  #validates :profile_name, uniqueness: true,
-	#			  	format: {with: /\A[a-zA-Z\-\_]+\Z/,
-	#			    message: "must be formatted correctly."
-	#			  }
-
-
   def full_name
   	first_name + " " + last_name
   end

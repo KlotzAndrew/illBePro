@@ -1,20 +1,22 @@
-<h2>Win your next game: 1 point<h2>
+
 
 <%= simple_form_for(@status, html: {class: 'form-hoizontal'}) do |f| %>
   <% if @status.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@status.errors.count, "error") %> prohibited this status from being saved:</h2>
+      <h2>Sorry, we can't start your challenge right now! Try back in a few minutes</h2>
 
       <ul>
       <% @status.errors.full_messages.each do |message| %>
         <li><%= message %></li>
+        <li>Total hampsters tired: <%= pluralize(@status.errors.count, "hampster") %></li>
+        
       <% end %>
       </ul>
     </div>
   <% end %>
 
-
   <div class="form-actions">
+    <h2>Win your next game: 1 point<h2>
     <%= f.hidden_field :content, :value=>"Started a 1/1 challenge" %>
     <%= f.hidden_field :value, :value=>6000 %>
     <%= f.hidden_field :kind, :value=>1 %>
@@ -23,22 +25,9 @@
   </div>
 <% end %>
 
-<h2>Win two games in a row: 3 points<h2>
-
 <%= simple_form_for(@status, html: {class: 'form-hoizontal'}) do |f| %>
-  <% if @status.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@status.errors.count, "error") %> prohibited this status from being saved:</h2>
-
-      <ul>
-      <% @status.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
   <div class="form-actions">
+    <h2>Win two games in a row: 3 points<h2>
     <%= f.hidden_field :content, :value=>"Started a 2/2 challenge" %>
     <%= f.hidden_field :value, :value=>6000 %>
     <%= f.hidden_field :kind, :value=>2 %>
