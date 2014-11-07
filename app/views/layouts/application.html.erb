@@ -13,7 +13,7 @@
 				<%= link_to current_user.profile_name, edit_user_registration_path %>
 				<button type="button"><%= link_to "Sign Out", logout_path %></button>
 			<% else %>
-				<li><%= link_to "Register", register_path %></li>
+				<%= link_to "Register", register_path %>
 				<button type="button"><%= link_to "Sign in", login_path %></button>
 			<% end %>
 

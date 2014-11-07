@@ -21,3 +21,21 @@ body {
 .alert {
 	margin-top: 10px;
 }
+
+
+.devise-border-form {
+	padding-top: 35px;
+	max-width: 830px;
+}
+
+.devise-border-form input[type="email"],
+.devise-border-form input[type="password"] {
+  font-size: 16px;
+  height: auto;
+  margin-bottom: 15px;
+  padding: 7px 9px;
+}
+
+.devise-border-form  .form-signin-heading,
+.devise-border-form  .checkbox {
+  margin-bottom: 10px;
