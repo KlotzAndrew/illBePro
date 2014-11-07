@@ -4,8 +4,10 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :confirmable
 
-  validates :first_name, presence: true
-  validates :last_name, presence: true
+  validates :profile_name, presence: true,
+                    uniqueness: true,
+                    length: { in: 4..14 },
+                    format: { with: /\A[a-zA-Z]+\z/, message: "only allows letters" }
 
   after_create :index_me
 
@@ -15,7 +17,6 @@ class User < ActiveRecord::Base
     @score = Score.create!(:user_id => self.id)
     @score.save
   end
-
 
   def full_name
   	first_name + " " + last_name

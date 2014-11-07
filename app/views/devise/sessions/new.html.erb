@@ -1,26 +1,23 @@
 
 
 <div class="row">
-	<div class="col-md-4">
+	<div class="col-md-4 col-md-offset-4">
 		<%= simple_form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: "well"}) do |f| %>
 		 
 			<fieldset>
-				<legend>Login</legend>
+				<legend>Log in</legend>
 		 	<%= f.input :email %>
 		 	<%= f.input :password %>
 
-		  <% if devise_mapping.rememberable? -%>
-		    <div><%= f.input :remember_me, as: :boolean %></div>
-		  <% end -%>
+		  <% if devise_mapping.rememberable? %>
+		    <div style="display:inline"><%= f.input :remember_me, as: :boolean, inline_label: 'Remember me', label: false %></div>
+		  <% end %>
 
-		  <div><%= f.button :submit, "Log in (f.submit)" %></div>
+		  <div><%= f.submit "Log in", :class=>"btn btn-primary" %></div>
 		 </fieldset>
 		<% end %>
 
 		<%= render "devise/shared/links" %>
 	</div>
 
-	<div class="span8">
-		<h2>Hella-awesome</h2>
-	</div>
 </div>
