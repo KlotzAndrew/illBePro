@@ -28,6 +28,7 @@ body {
 	max-width: 830px;
 }
 
+.devise-border-form input[type="text"],
 .devise-border-form input[type="email"],
 .devise-border-form input[type="password"] {
   font-size: 16px;
@@ -39,3 +40,8 @@ body {
 .devise-border-form  .form-signin-heading,
 .devise-border-form  .checkbox {
   margin-bottom: 10px;
+ }
+
+ .loader-image {
+ 	padding-left: 150px;
+ }
