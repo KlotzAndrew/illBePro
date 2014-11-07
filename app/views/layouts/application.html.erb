@@ -46,12 +46,13 @@
 
 <nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
   <div class="container">
-  	<div class="col-md-8" >
-  		<p class="text-left">[The title of Your Application] isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing League of Legends. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc. </p>
-  	</div>
+  		<div class="col-md-4" >
+			 <%= link_to 'About', page_path('about') %>
+			 <%= link_to 'FAQ', page_path('faq') %>
+			 <%= link_to 'Contact', page_path('contact') %>
+		</div>
   	<div class="col-md-4" >
-  		<%= link_to 'About' %>
-	    <p class="text-right">a Andrew Klotz production</p>
+  	    <p class="text-right">a Andrew Klotz production</p>
 	    <p class="text-right">Copyright (c) 2014</p>
 	</div>
   </div>
