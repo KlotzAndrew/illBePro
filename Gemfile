@@ -3,6 +3,8 @@ source 'https://rubygems.org'
 require 'open-uri'
 gem 'devise', '~> 3.4.0'
 
+gem 'high_voltage', '~> 2.2.1'
+
 gem 'simple_form'
 
 gem 'clockwork', :git => "https://github.com/tomykaira/clockwork.git"
