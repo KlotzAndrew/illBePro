@@ -21,11 +21,15 @@
     <div class="btn-group">
       <%= form_for @ignindex do |t| %>
         <%= t.text_field :summoner_name %>
-        <%= t.submit "Update Summoner Name", data: { confirm: "Pressing 'ok' removes validation from any of your past summoner names!" } %>
         <%= t.hidden_field :summoner_validated, :value=>false %>
         <%= t.hidden_field :summoner_id, :value=>nil %>
         <%= t.hidden_field :validation_string, :value=>nil %>
         <%= t.hidden_field :validation_timer, :value=>nil %>
+        <% if @ignindex.summoner_name.nil? %>
+            <%= t.submit "Add Summoner Name" %>
+        <% else %>
+          <%= t.submit "Update Summoner Name", data: { confirm: "Pressing 'ok' removes validation from any of your past summoner names!" } %>
+        <% end %>
       <% end %>
     </div>
   </div>
@@ -51,3 +55,15 @@
   </div>
 </div>
 
+<div class="body-object">
+<div class="row">
+  <div class="col-md-6">
+    <div class="well">
+      <h2>How the hell does this actually work?<h2>
+      <h2>So glad you asked<h2>
+      <h2>Let me run though a quick explination<h2>
+      <h2>Or a flashy picture<h2>
+     </div>
+  </div>
+</div>
+</div>
