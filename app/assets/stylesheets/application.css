@@ -15,16 +15,16 @@
  */
 
 body {
-	padding-top: 70px;
+	padding-top: 50px;
 }
 
 .alert {
 	margin-top: 10px;
 }
 
-
 .devise-border-form {
 	padding-top: 35px;
+	padding-bottom: 50px;
 	max-width: 830px;
 }
 
@@ -44,4 +44,13 @@ body {
 
  .loader-image {
  	padding-left: 150px;
+ }
+
+ .custom-footer {
+ 	font-size: 12px;
+ }
+
+ .custom-footer2 {
+ 	font-size: 4px;
+ 	line-height: 50px;
  }
