@@ -32,7 +32,7 @@ class StatusesController < ApplicationController
     @status.summoner_name = @ignindex.summoner_name
     respond_to do |format|
       if @status.save
-        format.html { redirect_to @status, notice: 'Status was successfully created.' }
+        format.html { redirect_to @status, notice: 'Challenge started!' }
         format.json { render :show, status: :created, location: @status }
       else
         format.html { render :new }
@@ -51,7 +51,7 @@ class StatusesController < ApplicationController
 
     respond_to do |format|
       if @status.update(status_params)
-        format.html { redirect_to @status, notice: 'Status was successfully updated.' }
+        format.html { redirect_to @status, notice: 'Challenge was changed!' }
         format.json { render :show, status: :ok, location: @status }
       else
         format.html { render :edit }
@@ -65,7 +65,7 @@ class StatusesController < ApplicationController
   def destroy
     @status.destroy
     respond_to do |format|
-      format.html { redirect_to statuses_url, notice: 'Status was successfully destroyed.' }
+      format.html { redirect_to statuses_url, notice: 'Challenge was canceled' }
       format.json { head :no_content }
     end
   end
