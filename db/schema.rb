@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141105220725) do
+ActiveRecord::Schema.define(version: 20141108223309) do
 
   create_table "champions", force: true do |t|
     t.string   "champion"
@@ -55,6 +55,12 @@ ActiveRecord::Schema.define(version: 20141105220725) do
     t.integer  "win_value"
     t.integer  "queue_number"
     t.string   "challenge_description"
+    t.integer  "api_ping"
+    t.text     "game_1"
+    t.text     "game_2"
+    t.text     "game_3"
+    t.text     "game_4"
+    t.text     "game_5"
   end
 
   add_index "statuses", ["user_id"], name: "index_statuses_on_user_id"
