@@ -78,7 +78,7 @@ class StatusesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def status_params
-      params.require(:status).permit(:name, :content, :value, :user_id, :kind, :points)
+      params.require(:status).permit(:name, :content, :value, :user_id, :kind, :points, :api_ping, :win_value, :queue_number, :challenge_description, game_1: [:champion_id, :matchCreation, :win_loss, :matchDuration, :kills, :deaths, :assists], game_2: [:champion_id, :matchCreation, :win_loss, :matchDuration, :kills, :deaths, :assists], game_3: [:champion_id, :matchCreation, :win_loss, :matchDuration, :kills, :deaths, :assists], game_4: [:champion_id, :matchCreation, :win_loss, :matchDuration, :kills, :deaths, :assists], game_5: [:champion_id, :matchCreation, :win_loss, :matchDuration, :kills, :deaths, :assists])
     end
 end
 

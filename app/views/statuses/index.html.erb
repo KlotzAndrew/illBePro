@@ -53,15 +53,34 @@
 
 <% @statuses.where("user_id = ?", current_user.id).order(created_at: :desc).each do |status| %>
 <div class="status">
+  
   <strong><string><%= status.summoner_name %></strong>
-  <p><%= status.content %></p>
-  <p>Minutes left in challenge: <%= status.value/60 %></p>
+  <% if status.game_1.empty? %>
+    <p>No game stats recorded yet!</p>
+  <% else %>
+    <% if status.queue_number == 1 %>
+      <p>You won/lost this 1/1 challenge!<p>
+      <%= status.game_1 %>
+    <% elsif status.queue_number == 2 %>
+      <% if status.game_2.empty? %>
+        <p>This 2/2 challenge is still running</p>
+        <%= status.game_1 %>
+      <% else %>
+      <p>You won/lost htis 2/2 challenge!</p>
+      <%= status.game_1 %>
+      <%= status.game_2 %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <p>Minutes left in challenge: <%= status.value/60 %>/180</p>
   <div class="meta">
     <%= link_to time_ago_in_words(status.created_at) + " ago", status %>
     <span class="admin">
         <%= link_to "Cancel", status, method: :delete, data: { confirm: "You feelin' lucky punk?" } %>
     </span>
   </div>
+  
 </div>
 <% end %>
 
