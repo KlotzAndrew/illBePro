@@ -55,7 +55,7 @@
 <div class="status">
   
 
-    <strong><%= status.challenge_description %> <%= status.summoner_name %></strong>
+    <strong><%= status.challenge_description %> <%= status.summoner_id %></strong>
     <% if status.value > 0 %>
       <p>Last updated: <%= (Time.now - status.updated_at) %></p>
     <% end %>
