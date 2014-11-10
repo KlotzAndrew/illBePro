@@ -15,18 +15,45 @@
         <h1>Current challenge</h1>
       </div>
       <% current_challenge = Status.where("value > ?", 0).find_by_user_id(current_user.id) %>
-        <div class="status">
-          <strong><string><%= current_challenge.summoner_name %></strong>
-          <p><%= current_challenge.content %></p>
-          <p>Points for completing: <%= current_challenge.points %></p>
-          <p>Minutes left in challenge: <%= current_challenge.value/60 %></p>
-          <div class="meta">
-            <%= link_to time_ago_in_words(current_challenge.created_at) + " ago", current_challenge %>
-            <span class="admin">
-              <%= link_to "Cancel", current_challenge, method: :delete, data: { confirm: "You feelin' lucky punk?" } %>
-            </span>
-          </div>
+      <div class="status">
+        
+          <strong><%= current_challenge.challenge_description %> <%= current_challenge.summoner_id %></strong>
+          <strong> <%= current_challenge.points %> 1 points for winning</strong>
+          <% if current_challenge.value > 0 %>
+            <p>Last updated: <%= (Time.now - current_challenge.updated_at) %></p>
+          <% end %>
+
+        <div>
+          <% if current_challenge.value <= 0 %>
+            <p>Challenge over</p>
+            <% if current_challenge.win_value == 0 %>
+              <p>Lost the challenge!<p>
+            <% elsif current_challenge.win_value == 2 %>
+              <p>You won! <%= current_challenge.kind %>
+            <% else %>
+              <p>Ran out of time</P>
+            <% end %>
+          <% else %>
+            <p>Challnge still running!</p>
+          <% end %>
         </div>
+
+        <% if !current_challenge.game_1.empty? %>
+          1st game: <%= current_challenge.game_1 %>
+          <% if !current_challenge.game_2.empty? %>
+            2nd game: <%= current_challenge.game_2 %>
+          <% end %>
+        <% end %>
+
+        <p>Minutes left in challenge: <%= current_challenge.value/60 %>/180</p>
+        <div class="meta">
+          <%= link_to time_ago_in_words(current_challenge.created_at) + " ago", current_challenge %>
+          <span class="admin">
+              <%= link_to "Cancel", current_challenge, method: :delete, data: { confirm: "You feelin' lucky punk?" } %>
+          </span>
+        </div>
+        
+      </div>
       <% end %>
 
   <% else %>
@@ -38,14 +65,16 @@
 
   <div class="col-md-4">
     <div class="page-header">
-      <h1>More content</h1>
-      <p>Total score: xx<p>
+      <h1>Current score: 
+        <% if Score.find_by_user_id(current_user.id).week_1.nil? %>
+          0
+        <% else %>
+          <%= Score.find_by_user_id(current_user.id).week_1 %>
+        <% end %> </h1>
     </div>
   </div>
 
 </div>
-
-
 
 <div class="page-header">
   <h1>Your history</h1>
@@ -54,12 +83,11 @@
 <% @statuses.where("user_id = ?", current_user.id).order(created_at: :desc).each do |status| %>
 <div class="status">
   
-
     <strong><%= status.challenge_description %> <%= status.summoner_id %></strong>
+    <strong> <%= status.points %> 1 points for winning</strong>
     <% if status.value > 0 %>
       <p>Last updated: <%= (Time.now - status.updated_at) %></p>
     <% end %>
-
 
   <div>
     <% if status.value <= 0 %>
@@ -82,7 +110,6 @@
       2nd game: <%= status.game_2 %>
     <% end %>
   <% end %>
-
 
   <p>Minutes left in challenge: <%= status.value/60 %>/180</p>
   <div class="meta">

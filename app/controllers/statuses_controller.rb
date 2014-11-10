@@ -19,10 +19,6 @@ class StatusesController < ApplicationController
     @status = Status.new
   end
 
-  # GET /statuses/1/edit
-  def edit
-  end
-
   # POST /statuses
   # POST /statuses.json
   def create

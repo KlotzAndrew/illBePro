@@ -15,6 +15,7 @@ class Status < ActiveRecord::Base
     d = Time.now
     api_call_count = 0
     val_count = 0
+    sleep_value = 0.4
     Ignindex.where("validation_timer > ?", 0 ).each do |x|
       if api_call_count+val_count > 60
         Rails.logger.info "API OVERLOAD! Unable to validate #{x.summoner_name}!"
@@ -27,7 +28,7 @@ class Status < ActiveRecord::Base
           Rails.logger.info "#{x.summoner_name} still has #{300 + x.validation_timer - Time.now.to_i} seconds!"
         if x.summoner_id.nil?
           Rails.logger.info "update id for #{x.summoner_name}"
-          sleep 0.6
+          sleep sleep_value
           url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/#{x.summoner_name}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
           val_count += 1
             begin
@@ -44,7 +45,7 @@ class Status < ActiveRecord::Base
           Rails.logger.info "no update id for #{x.summoner_name}"
         end
 
-        sleep 0.6
+        sleep sleep_value
         url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/#{x.summoner_id}/masteries?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
         val_count += 1
           begin
@@ -92,7 +93,7 @@ class Status < ActiveRecord::Base
             x.update(value: 0)
             x.update(win_value: 1)
           else
-            sleep 0.6
+            sleep sleep_value
             url = "https://na.api.pvp.net/api/lol/na/v2.2/matchhistory/#{x.summoner_id}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
             Rails.logger.info "api call for #{x.summoner_id}"
             api_call_count += 1 
