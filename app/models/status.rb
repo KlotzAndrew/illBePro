@@ -15,9 +15,11 @@ class Status < ActiveRecord::Base
     d = Time.now
     api_call_count = 0
     val_count = 0
-    sleep_value = 0.4
+    sleep_value = 0.3
     Ignindex.where("validation_timer > ?", 0 ).each do |x|
-      if api_call_count+val_count > 60
+      if Time.now-d > 55
+         Rails.logger.info "CRON OVERLOAD! Unable to validate #{x.summoner_name}!"
+      elsif api_call_count+val_count > 60
         Rails.logger.info "API OVERLOAD! Unable to validate #{x.summoner_name}!"
       else
         if x.validation_timer < (Time.now.to_i - 300)
@@ -84,7 +86,9 @@ class Status < ActiveRecord::Base
     end
 
     Status.where("value > ?", 0).each do |x|
-      if api_call_count+val_count > 60
+      if Time.now-d > 55
+         Rails.logger.info "CRON OVERLOAD! Unable to validate #{x.summoner_name}!"
+      elsif api_call_count+val_count > 60
         Rails.logger.info "API OVERLOAD! Unable to update challenges for #{x.summoner_name}!"
       else
         x.update(value: 10860 - (Time.now.to_i - x.created_at.to_i))
