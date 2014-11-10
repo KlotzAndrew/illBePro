@@ -30,7 +30,13 @@ class Status < ActiveRecord::Base
           sleep 0.6
           url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/#{x.summoner_name}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
           val_count += 1
-          summoner_data = open(url,{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE}).read
+            begin
+              summoner_data = open(url,{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE}).read
+            rescue Timeout::Error
+              Rails.logger.info "uri timeout request for #{x.summoner_name} on name"
+            rescue OpenURI::Error => e
+              Rails.logger.info "uri error request for #{x.summoner_name} on name"
+            end
           summoner_hash = JSON.parse(summoner_data)
           summoner_hash["#{Ignindex.last.summoner_name.downcase}"]["id"]
           x.update(summoner_id: summoner_hash["#{Ignindex.last.summoner_name.downcase}"]["id"])
@@ -41,7 +47,13 @@ class Status < ActiveRecord::Base
         sleep 0.6
         url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/#{x.summoner_id}/masteries?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
         val_count += 1
-        mastery_data = open(url,{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE}).read
+          begin
+            mastery_data = open(url,{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE}).read
+          rescue Timeout::Error
+            Rails.logger.info "uri timeout request for #{x.summoner_name} on masteries"
+          rescue OpenURI::Error => e
+            Rails.logger.info "uri error request for #{x.summoner_name} on masteries"
+          end
         mastery_hash = JSON.parse(mastery_data)
         name = mastery_hash["#{x.summoner_id}"]["pages"][0]["name"]
         Rails.logger.info "1st page name: #{name}; should be: #{x.validation_string}"
@@ -84,7 +96,13 @@ class Status < ActiveRecord::Base
             url = "https://na.api.pvp.net/api/lol/na/v2.2/matchhistory/#{x.summoner_id}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
             Rails.logger.info "api call for #{x.summoner_id}"
             api_call_count += 1 
-            remote4_data = open(url,{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE}).read
+              begin
+                remote4_data = open(url,{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE}).read
+              rescue Timeout::Error
+                 Rails.logger.info "uri timeout request for #{x.summoner_name} on stats"
+              rescue OpenURI::Error => e
+                Rails.logger.info "uri error request for #{x.summoner_name} on stats"
+              end
             games_hash = JSON.parse(remote4_data)
             valid_games = []
             i = 0
