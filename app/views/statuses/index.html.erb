@@ -54,24 +54,35 @@
 <% @statuses.where("user_id = ?", current_user.id).order(created_at: :desc).each do |status| %>
 <div class="status">
   
-  <strong><string><%= status.summoner_name %></strong>
-  <% if status.game_1.empty? %>
-    <p>No game stats recorded yet!</p>
-  <% else %>
-    <% if status.queue_number == 1 %>
-      <p>You won/lost this 1/1 challenge!<p>
-      <%= status.game_1 %>
-    <% elsif status.queue_number == 2 %>
-      <% if status.game_2.empty? %>
-        <p>This 2/2 challenge is still running</p>
-        <%= status.game_1 %>
+
+    <strong><%= status.challenge_description %> <%= status.summoner_name %></strong>
+    <% if status.value > 0 %>
+      <p>Last updated: <%= (Time.now - status.updated_at) %></p>
+    <% end %>
+
+
+  <div>
+    <% if status.value <= 0 %>
+      <p>Challenge over</p>
+      <% if status.win_value == 0 %>
+        <p>Lost the challenge!<p>
+      <% elsif status.win_value == 2 %>
+        <p>You won! <%= status.kind %>
       <% else %>
-      <p>You won/lost htis 2/2 challenge!</p>
-      <%= status.game_1 %>
-      <%= status.game_2 %>
+        <p>Ran out of time</P>
       <% end %>
+    <% else %>
+      <p>Challnge still running!</p>
+    <% end %>
+  </div>
+
+  <% if !status.game_1.empty? %>
+    1st game: <%= status.game_1 %>
+    <% if !status.game_2.empty? %>
+      2nd game: <%= status.game_2 %>
     <% end %>
   <% end %>
+
 
   <p>Minutes left in challenge: <%= status.value/60 %>/180</p>
   <div class="meta">

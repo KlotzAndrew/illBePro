@@ -27,7 +27,7 @@ class Status < ActiveRecord::Base
           Rails.logger.info "#{x.summoner_name} still has #{300 + x.validation_timer - Time.now.to_i} seconds!"
         if x.summoner_id.nil?
           Rails.logger.info "update id for #{x.summoner_name}"
-          sleep 0.8
+          sleep 0.6
           url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/#{x.summoner_name}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
           val_count += 1
           summoner_data = open(url,{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE}).read
@@ -38,7 +38,7 @@ class Status < ActiveRecord::Base
           Rails.logger.info "no update id for #{x.summoner_name}"
         end
 
-        sleep 0.8
+        sleep 0.6
         url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/#{x.summoner_id}/masteries?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
         val_count += 1
         mastery_data = open(url,{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE}).read
@@ -77,10 +77,10 @@ class Status < ActiveRecord::Base
         x.update(value: 10860 - (Time.now.to_i - x.created_at.to_i))
         Rails.logger.info "start for #{x.summoner_id}"
           if Time.now.to_i - x.created_at.to_i > 10860
-            x.update(value: 0) #update win value to 0
-            
+            x.update(value: 0)
+            x.update(win_value: 1)
           else
-            sleep 0.8
+            sleep 0.6
             url = "https://na.api.pvp.net/api/lol/na/v2.2/matchhistory/#{x.summoner_id}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
             Rails.logger.info "api call for #{x.summoner_id}"
             api_call_count += 1 
@@ -104,12 +104,12 @@ class Status < ActiveRecord::Base
             elsif !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
               x.update(game_1: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[0]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"})
               x.update(value: 0)
-              x.update(win_value: "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}")
+              x.update(win_value: 0)
               Rails.logger.info "updated lost first for #{x.summoner_id}"
             elsif !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
                x.update(game_1: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[0]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"})
               x.update(value: 0)
-              x.update(win_value: "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}")
+              x.update(win_value: 2)
               Score.find_by_user_id(x.user_id).update(week_1: Score.find_by_user_id(x.user_id).week_1 + x.points)
               Score.find_by_summoner_id(x.summoner_id).update(week_1: Score.find_by_summoner_id(x.summoner_id).week_1 + x.points)
               Rails.logger.info "won 1/1 for #{x.summoner_id}"            
@@ -125,7 +125,7 @@ class Status < ActiveRecord::Base
             elsif !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
               x.update(game_1: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[0]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"})
               x.update(value: 0)
-              x.update(win_value: "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}")
+              x.update(win_value: 1)
               Rails.logger.info "updated lost first for #{x.summoner_id}"
             elsif valid_games.count <2 
              
@@ -136,7 +136,7 @@ class Status < ActiveRecord::Base
               end
                 x.update(game_2: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[1]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[1]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[1]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["assists"]}"})
               x.update(value: 0)
-              x.update(win_value: "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["winner"]}")
+              x.update(win_value: 1)
               Rails.logger.info "updated lost second for #{x.summoner_id}"
             elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"] && games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["winner"]
                 if x.game_1.nil?
@@ -144,7 +144,7 @@ class Status < ActiveRecord::Base
               end
                 x.update(game_2: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[1]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[1]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[1]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["assists"]}"})
               x.update(value: 0)
-              x.update(win_value: "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["winner"]}")
+              x.update(win_value: 2)
               Score.find_by_user_id(x.user_id).update(week_1: Score.find_by_user_id(x.user_id).week_1 + x.points)
               Score.find_by_summoner_id(x.summoner_id).update(week_1: Score.find_by_summoner_id(x.summoner_id).week_1 + x.points)
               Rails.logger.info "updated won 2/2 for #{x.summoner_id}"
