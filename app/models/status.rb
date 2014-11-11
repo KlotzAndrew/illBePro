@@ -15,7 +15,6 @@ class Status < ActiveRecord::Base
     d = Time.now.to_i
     api_call_count = 0
     val_count = 0
-    sleep_value = 0.8
     Ignindex.where("validation_timer > ?", 0 ).each do |x|
       if Time.now.to_i - d > 55
          Rails.logger.info "CRON OVERLOAD! Unable to validate #{x.summoner_name}!"
@@ -30,7 +29,11 @@ class Status < ActiveRecord::Base
           Rails.logger.info "#{x.summoner_name} still has #{300 + x.validation_timer - Time.now.to_i} seconds!"
         if x.summoner_id.nil?
           Rails.logger.info "update id for #{x.summoner_name}"
-          sleep sleep_value
+          g = Time.now.to_i
+          if (api_call_count + val_count)*(1/0.80) > g-d
+            puts "Throttle for #{(api_call_count + val_count)*(1/0.80) + d - g}"
+            sleep (api_call_count + val_count)*(1/0.80) + d - g
+          end
           url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/#{x.summoner_name}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
           val_count += 1
             begin
@@ -46,7 +49,11 @@ class Status < ActiveRecord::Base
           Rails.logger.info "no update id for #{x.summoner_name}"
         end
 
-        sleep sleep_value
+       g = Time.now.to_i
+        if (api_call_count + val_count)*(1/0.80) > g-d
+          puts "Throttle for #{(api_call_count + val_count)*(1/0.80) + d - g}"
+          sleep (api_call_count + val_count)*(1/0.80) + d - g
+        end
         url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/#{x.summoner_id}/masteries?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
         val_count += 1
           begin
@@ -97,7 +104,11 @@ class Status < ActiveRecord::Base
             x.update(value: 0)
             x.update(win_value: 1)
           else
-            sleep sleep_value
+            g = Time.now.to_i
+            if (api_call_count + val_count)*(1/0.80) > g-d
+              puts "Throttle for #{(api_call_count + val_count)*(1/0.80) + d - g}"
+              sleep (api_call_count + val_count)*(1/0.80) + d - g
+            end
             url = "https://na.api.pvp.net/api/lol/na/v2.2/matchhistory/#{x.summoner_id}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
             Rails.logger.info "api call for #{x.summoner_id}"
             api_call_count += 1 
@@ -182,8 +193,8 @@ class Status < ActiveRecord::Base
         end
       end
     end
-    Rails.logger.info "Validation calls = #{val_count} | Challenge calls = #{api_call_count} | #{((val_count + api_call_count*1.0)/(Time.now.to_i - d)).round(2)}/Second"
-    Rails.logger.info "*****Finished cron in #{Time.now.to_i - d} seconds!*****"
+    Rails.logger.info "Validation calls = #{val_count} | Challenge calls = #{api_call_count} | #{((val_count + api_call_count*1.00)/(Time.now.to_i - d)).round(2)}/Second"
+    Rails.logger.info "*****Finished cron in #{Time.now.to_i - d*1.00} seconds!*****"
     Rails.logger.info "-----------------------------------"
   end
 
