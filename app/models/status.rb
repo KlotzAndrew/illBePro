@@ -27,27 +27,27 @@ class Status < ActiveRecord::Base
           Rails.logger.info "#{x.id} ran out of time"
         else
           Rails.logger.info "#{x.summoner_name} still has #{300 + x.validation_timer - Time.now.to_i} seconds!"
-        if x.summoner_id.nil?
-          Rails.logger.info "update id for #{x.summoner_name}"
-          g = Time.now.to_i
-          if (api_call_count + val_count)*(1/0.80) > g-d
-            puts "Throttle for #{(api_call_count + val_count)*(1/0.80) + d - g}"
-            sleep (api_call_count + val_count)*(1/0.80) + d - g
-          end
-          url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/#{x.summoner_name}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
-          val_count += 1
-            begin
-              summoner_data = open(url,{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,:read_timeout=>2}).read
-              summoner_hash = JSON.parse(summoner_data)
-              x.update(summoner_id: summoner_hash["#{Ignindex.last.summoner_name.downcase}"]["id"])
-            rescue Timeout::Error
-              Rails.logger.info "URI-TIMEOUT request for #{x.summoner_name} on name"
-            rescue => e
-              Rails.logger.info "uri error request for #{x.summoner_name} on name"
+          if x.summoner_id.nil?
+            Rails.logger.info "update id for #{x.summoner_name}"
+            g = Time.now.to_i
+            if (api_call_count + val_count)*(1/0.80) > g-d
+              puts "Throttle for #{(api_call_count + val_count)*(1/0.80) + d - g}"
+              sleep (api_call_count + val_count)*(1/0.80) + d - g
             end
-        else
-          Rails.logger.info "no update id for #{x.summoner_name}"
-        end
+            url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/#{x.summoner_name}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
+            val_count += 1
+              begin
+                summoner_data = open(url,{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,:read_timeout=>3}).read
+                summoner_hash = JSON.parse(summoner_data)
+                x.update(summoner_id: summoner_hash["#{x.summoner_name.downcase}"]["id"])
+              rescue Timeout::Error
+                Rails.logger.info "URI-TIMEOUT request for #{x.summoner_name} on name"
+              rescue => e
+                Rails.logger.info "uri error request for #{x.summoner_name} on name"
+              end
+          else
+            Rails.logger.info "no update id for #{x.summoner_name}"
+          end
 
         g = Time.now.to_i
         if (api_call_count + val_count)*(1/0.80) > g-d
@@ -57,7 +57,7 @@ class Status < ActiveRecord::Base
         url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/#{x.summoner_id}/masteries?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
         val_count += 1
           begin
-            mastery_data = open(url,{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,:read_timeout=>2}).read
+            mastery_data = open(url,{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,:read_timeout=>3}).read
             mastery_hash = JSON.parse(mastery_data)
             name = mastery_hash["#{x.summoner_id}"]["pages"][0]["name"]
             Rails.logger.info "1st page name: #{name}; should be: #{x.validation_string}"
