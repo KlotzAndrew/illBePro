@@ -98,7 +98,7 @@ class Status < ActiveRecord::Base
       elsif api_call_count+val_count > 60
         Rails.logger.info "API OVERLOAD! Unable to update challenges for #{x.summoner_name}!"
       else
-        x.update(value: 10860 - (Time.now.to_i - x.created_at.to_i))
+        x.update(value: x.value - (Time.now.to_i - x.created_at.to_i))
         Rails.logger.info "start for #{x.summoner_id}"
           if Time.now.to_i - x.created_at.to_i > 10860
             x.update(value: 0)

@@ -2,17 +2,27 @@
 
 <p>
   <strong>Summoner:</strong>
-  <%= @status.user.profile_name %>
+  <%= @status.summoner_name %>
 </p>
 
 <p>
-  <strong>Status:</strong>
-  <%= @status.content %>
+  <strong>Description:</strong>
+  <%= @status.challenge_description %>
 </p>
 
 <p>
-  <strong>Score:</strong>
-  <%= @status.value %>
+  <strong>Points:</strong>
+  <%= @status.points %>
 </p>
 
-<%= link_to 'Back', statuses_path %>
+<p>
+  <strong>Time left:</strong>
+  <%= @status.value/60 %> Minutes
+</p>
+
+<p>
+  <strong>Started:</strong>
+  <%= time_ago_in_words(@status.created_at) %> ago
+</p>
+
+<%= link_to 'Back to challenges Page', statuses_path %>

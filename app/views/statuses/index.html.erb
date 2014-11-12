@@ -17,14 +17,14 @@
       <% current_challenge = Status.where("value > ?", 0).find_by_user_id(current_user.id) %>
       <div class="status">
           <strong><%= current_challenge.challenge_description %> <%= current_challenge.summoner_id %></strong>
-          <strong> <%= current_challenge.points %> 1 points for winning</strong>
+          <strong> <%= current_challenge.points %> points for winning</strong>
           <% if current_challenge.value > 0 %>
             <p>Last updated: <%= (Time.now - current_challenge.updated_at) %></p>
           <% end %>
         <div>
           <% if current_challenge.value <= 0 %>
             <p>Challenge over</p>
-            <% if current_challenge.win_value == 0 %>
+            <% if current_challenge.win_value == 0 or 3%>
               <p>Lost the challenge!<p>
             <% elsif current_challenge.win_value == 2 %>
               <p>You won! <%= current_challenge.kind %>
@@ -44,9 +44,13 @@
         <p>Minutes left in challenge: <%= current_challenge.value/60 %>/180</p>
         <div class="meta">
           <%= link_to time_ago_in_words(current_challenge.created_at) + " ago", current_challenge %>
-          <span class="admin">
-              <%= link_to "Cancel", current_challenge, method: :delete, data: { confirm: "You feelin' lucky punk?" } %>
-          </span>
+          
+            <%= form_for current_challenge do |a| %>
+              <%= a.hidden_field :value, :value=>0 %>
+              <%= a.hidden_field :win_loss, :value=>3 %>
+              <%= a.submit "Cancel challenge", data: { confirm: "There is no going back!" } %>
+            <% end %>
+          
         </div>
       </div>
       <% end %>
@@ -60,7 +64,7 @@
 
   <div class="col-md-4">
     <div class="page-header">
-      <h1>Current score: 
+      <h1>Total score: 
         <% if Score.find_by_user_id(current_user.id).week_1.nil? %>
           0
         <% else %>
@@ -76,7 +80,7 @@
 </div>
 
 <% @statuses.where("user_id = ?", current_user.id).order(created_at: :desc).each do |status| %>
-<% if status.win_value == 0 %>
+<% if status.win_value == 0 or 3 %>
   <div class="challenge-history-loss">
 <% elsif status.win_value == 2 %>
   <div class="challenge-history-win">
@@ -97,7 +101,7 @@
         <div class="challenge-description"><%= status.challenge_description %></div>
       </div>
       <div class="col-md-2">
-        <% if status.win_value == 0 %>
+        <% if status.win_value == 0 or 3%>
           <div class="challenge-description">Lost the challenge!</div>
         <% elsif status.win_value == 2 %>
           <div class="challenge-description">You won!</div>
