@@ -22,3 +22,43 @@
 .status.hover .admin {
 	display: inline;
 }
+
+.challenge-history-default {
+	border-bottom: solid 1px #CCC;
+	border-top: solid 1px #CCC;
+	border-right: solid 1px #CCC;
+	margin-bottom: 20px;
+}
+
+.challenge-history-win {
+	border-bottom: solid 1px #CCC;
+	border-top: solid 1px #CCC;
+	border-left: solid 8px #58b258;
+	border-right: solid 1px #CCC;
+	margin-bottom: 20px;
+}
+
+.challenge-history-loss {
+	border-bottom: solid 1px #CCC;
+	border-top: solid 1px #CCC;
+	border-left: solid 8px #cf4640;
+	border-right: solid 1px #CCC;
+	margin-bottom: 20px;
+}
+
+.challenge-history-running {
+	border-bottom: solid 1px #CCC;
+	border-top: solid 1px #CCC;
+	border-right: solid 1px #CCC;
+	margin-bottom: 20px;
+}
+
+.challenge-description {
+	border-right: solid 1px #CCC;
+	font-size: 14px;
+}
+
+.challenge-summoner {
+	padding: 0 0 0 5px;
+	border-right: solid 1px #CCC;
+}

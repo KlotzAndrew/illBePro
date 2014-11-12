@@ -16,13 +16,11 @@
       </div>
       <% current_challenge = Status.where("value > ?", 0).find_by_user_id(current_user.id) %>
       <div class="status">
-        
           <strong><%= current_challenge.challenge_description %> <%= current_challenge.summoner_id %></strong>
           <strong> <%= current_challenge.points %> 1 points for winning</strong>
           <% if current_challenge.value > 0 %>
             <p>Last updated: <%= (Time.now - current_challenge.updated_at) %></p>
           <% end %>
-
         <div>
           <% if current_challenge.value <= 0 %>
             <p>Challenge over</p>
@@ -37,14 +35,12 @@
             <p>Challnge still running!</p>
           <% end %>
         </div>
-
         <% if !current_challenge.game_1.empty? %>
           1st game: <%= current_challenge.game_1 %>
           <% if !current_challenge.game_2.empty? %>
             2nd game: <%= current_challenge.game_2 %>
           <% end %>
         <% end %>
-
         <p>Minutes left in challenge: <%= current_challenge.value/60 %>/180</p>
         <div class="meta">
           <%= link_to time_ago_in_words(current_challenge.created_at) + " ago", current_challenge %>
@@ -52,7 +48,6 @@
               <%= link_to "Cancel", current_challenge, method: :delete, data: { confirm: "You feelin' lucky punk?" } %>
           </span>
         </div>
-        
       </div>
       <% end %>
 
@@ -81,48 +76,84 @@
 </div>
 
 <% @statuses.where("user_id = ?", current_user.id).order(created_at: :desc).each do |status| %>
-<div class="status">
-  
-    <strong><%= status.challenge_description %> <%= status.summoner_id %></strong>
-    <strong> <%= status.points %> 1 points for winning</strong>
-    <% if status.value > 0 %>
-      <p>Last updated: <%= (Time.now - status.updated_at) %></p>
-    <% end %>
+<% if status.win_value == 0 %>
+  <div class="challenge-history-loss">
+<% elsif status.win_value == 2 %>
+  <div class="challenge-history-win">
+<% elsif status.win_value == 1 %>
+  <div class="challenge-history-loss">
+<% else %>
+  <div class="challenge-history-running">
+<% end %>
 
-  <div>
-    <% if status.value <= 0 %>
-      <p>Challenge over</p>
-      <% if status.win_value == 0 %>
-        <p>Lost the challenge!<p>
-      <% elsif status.win_value == 2 %>
-        <p>You won! <%= status.kind %>
-      <% else %>
-        <p>Ran out of time</P>
-      <% end %>
-    <% else %>
-      <p>Challnge still running!</p>
-    <% end %>
-  </div>
-
-  <% if !status.game_1.empty? %>
-    <div class="panel panel-danger">
-      <div class="panel-heading">
-          1st game: <%= status.game_1 %>
+    <div class="row" >
+      <div class="col-md-2">
+        <div class="challenge-summoner"><%= status.summoner_id %></div>
+      </div>
+      <div class="col-md-1">
+        <div class="challenge-description"><%= status.points %> Point</div>
+      </div>
+      <div class="col-md-3">
+        <div class="challenge-description"><%= status.challenge_description %></div>
+      </div>
+      <div class="col-md-2">
+        <% if status.win_value == 0 %>
+          <div class="challenge-description">Lost the challenge!</div>
+        <% elsif status.win_value == 2 %>
+          <div class="challenge-description">You won!</div>
+        <% elsif status.win_value == 1 %>
+          <div class="challenge-description">Ran out of time</div>
+        <% else %>
+          <div class="challenge-description">Challnge still running!</div>
+        <% end %>
+      </div>
+      <div class="col-md-2">
+        <% if status.value > 0 %>
+          <p>Last updated: <%= (Time.now - status.updated_at).round(0) %>s</p>
+        <% end %>
       </div>
     </div>
-    <% if !status.game_2.empty? %>
-      2nd game: <%= status.game_2 %>
+ 
+
+  <% if !status.game_1.empty? %>
+    <% if status.game_1[:win_loss] == "true" %>
+      <div class="panel panel-success">
+    <% else %>
+      <div class="panel panel-danger">
     <% end %>
+        <div class="panel-heading">
+             1st game: <%= status.game_1[:champion_id] %>
+             <%= status.game_1[:kills] %>/<%= status.game_1[:deaths] %>/<%= status.game_1[:assists] %> - <%= status.game_1[:matchDuration].to_i/60 %> Minutes
+        </div>
+      </div>
+    <% else %>
+      
+    <% if !status.game_2.empty? %>
+      <% if status.game_2[:win_loss] == "true" %>
+        <div class="panel panel-success">
+      <% else %>
+        <div class="panel panel-danger">
+      <% end %>
+        <div class="panel-heading">
+             2nd game: <%= status.game_2[:champion_id] %>
+             <%= status.game_2[:kills] %>/<%= status.game_2[:deaths] %>/<%= status.game_2[:assists] %> - <%= status.game_2[:matchDuration].to_i/60 %> Minutes
+        </div>
+      </div>
+    
+
+    <% end %>
+
   <% end %>
 
-  <p>Minutes left in challenge: <%= status.value/60 %>/180</p>
+  <% if status.value > 0 %>
+    <p>Minutes left in challenge: <%= status.value/60 %>/180</p>
+  <% end %>
   <div class="meta">
     <%= link_to time_ago_in_words(status.created_at) + " ago", status %>
     <span class="admin">
         <%= link_to "Cancel", status, method: :delete, data: { confirm: "You feelin' lucky punk?" } %>
     </span>
   </div>
-  
 </div>
 <% end %>
 
