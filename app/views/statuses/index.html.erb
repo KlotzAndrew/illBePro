@@ -105,7 +105,11 @@
   </div>
 
   <% if !status.game_1.empty? %>
-    1st game: <%= status.game_1 %>
+    <div class="panel panel-danger">
+      <div class="panel-heading">
+          1st game: <%= status.game_1 %>
+      </div>
+    </div>
     <% if !status.game_2.empty? %>
       2nd game: <%= status.game_2 %>
     <% end %>
