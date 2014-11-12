@@ -93,14 +93,19 @@ class Status < ActiveRecord::Base
     end
 
     Status.where("value > ?", 0).each do |x|
+      if x.kind == 1
+        time_holder = 5400
+      else
+        time_holder = 7200
+      end
       if Time.now.to_i - d > 53
          Rails.logger.info "CRON OVERLOAD! Unable to validate #{x.summoner_name}!"
       elsif api_call_count+val_count > 60
         Rails.logger.info "API OVERLOAD! Unable to update challenges for #{x.summoner_name}!"
       else
-        x.update(value: x.value - (Time.now.to_i - x.created_at.to_i))
+        x.update(value: time_holder - (Time.now.to_i - x.created_at.to_i))
         Rails.logger.info "start for #{x.summoner_id}"
-          if Time.now.to_i - x.created_at.to_i > 10860
+          if Time.now.to_i - x.created_at.to_i > time_holder
             x.update(value: 0)
             x.update(win_value: 1)
           else

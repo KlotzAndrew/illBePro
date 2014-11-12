@@ -80,7 +80,9 @@
 </div>
 
 <% @statuses.where("user_id = ?", current_user.id).order(created_at: :desc).each do |status| %>
-<% if status.win_value == 0 or 3 %>
+<% if status.win_value == 0 %>
+  <div class="challenge-history-loss">
+<% elsif status.win_value == 3 %>
   <div class="challenge-history-loss">
 <% elsif status.win_value == 2 %>
   <div class="challenge-history-win">
@@ -101,7 +103,9 @@
         <div class="challenge-description"><%= status.challenge_description %></div>
       </div>
       <div class="col-md-2">
-        <% if status.win_value == 0 or 3%>
+        <% if status.win_value == 0 %>
+          <div class="challenge-description">Lost the challenge!</div>
+        <% elsif status.win_value == 3 %>
           <div class="challenge-description">Lost the challenge!</div>
         <% elsif status.win_value == 2 %>
           <div class="challenge-description">You won!</div>
