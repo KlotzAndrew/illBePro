@@ -52,8 +52,6 @@ ActiveRecord::Schema.define(version: 20141108223309) do
     t.string   "summoner_name"
     t.integer  "kind"
     t.integer  "points"
-    t.integer  "win_value"
-    t.integer  "queue_number"
     t.string   "challenge_description"
     t.integer  "api_ping"
     t.text     "game_1"
