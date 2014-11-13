@@ -59,16 +59,6 @@ class StatusesController < ApplicationController
     end
   end
 
-  # DELETE /statuses/1
-  # DELETE /statuses/1.json
-  def destroy
-    @status.destroy
-    respond_to do |format|
-      format.html { redirect_to statuses_url, notice: 'Challenge was canceled' }
-      format.json { head :no_content }
-    end
-  end
-
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_status
@@ -80,6 +70,3 @@ class StatusesController < ApplicationController
       params.require(:status).permit(:name, :content, :value, :user_id, :kind, :points, :api_ping, :win_value, :queue_number, :challenge_description, game_1: [:champion_id, :matchCreation, :win_loss, :matchDuration, :kills, :deaths, :assists], game_2: [:champion_id, :matchCreation, :win_loss, :matchDuration, :kills, :deaths, :assists], game_3: [:champion_id, :matchCreation, :win_loss, :matchDuration, :kills, :deaths, :assists], game_4: [:champion_id, :matchCreation, :win_loss, :matchDuration, :kills, :deaths, :assists], game_5: [:champion_id, :matchCreation, :win_loss, :matchDuration, :kills, :deaths, :assists])
     end
 end
-
-#user name input, from _form.html.erb
-#<%= f.input :user_id, collection: User.all, label_method: :full_name %>

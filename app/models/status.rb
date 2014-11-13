@@ -214,8 +214,10 @@ def self.update_value2
 end
 
 def one_fox_one_gun
-  if Status.all.where("user_id = ?", self.id).where("value > ?", 0).count == 0
-    errors.add(:ice_cream, 'is melted.')
+  if Status.all.where("user_id = ?", self.user_id).where("value > ?", 0).count >= 1
+    errors.add(:you_can, 'only have 1 challenge running at a time!')
+  elsif Status.where("value > ?", 0).count >= 40
+    errors.add(:challenge_hampster, ' is overloaded with other challenges! Try back in a few minutes')
   end
 end
 
