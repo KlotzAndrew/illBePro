@@ -5,11 +5,12 @@
   <div class="col-md-6">
     <div class="well">
 
-      <h2>Win your next game: 1 point<h2>
+      <h3>Requirements: Win your next game<h3>
+      <h3>Points: 1<h3>
       <%= simple_form_for(@status, html: {class: 'form-hoizontal'}) do |f| %>
         <div class="form-actions">
           <%= f.hidden_field :kind, :value=>1 %>
-          <%= f.submit "Start", :name => "challenge_1" %>
+          <%= f.button :submit, "Start", class: "btn btn-large btn-primary" %>
         </div>
       <% end %>
 
@@ -24,11 +25,12 @@
   <div class="col-md-6">
     <div class="well">
 
-      <h2>Win two games in a row: 3 points<h2>
+      <h3>Requirements: Win your next 2 game<h3>
+      <h3>Points: 3<h3>
       <%= simple_form_for(@status, html: {class: 'form-hoizontal'}) do |f| %>
         <div class="form-actions">
           <%= f.hidden_field :kind, :value=>2 %>
-          <%= f.button :submit, "Start" %>
+          <%= f.button :submit, "Start", class: "btn btn-large btn-primary" %>
         </div>
       <% end %>
     

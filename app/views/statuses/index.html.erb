@@ -44,7 +44,7 @@
         <% if status.win_value == 0 %>
           <div class="challenge-description">Lost the challenge!</div>
         <% elsif status.win_value == 3 %>
-          <div class="challenge-description">Lost the challenge!</div>
+          <div class="challenge-description">Canceled!</div>
         <% elsif status.win_value == 2 %>
           <div class="challenge-description">You won!</div>
         <% elsif status.win_value == 1 %>
@@ -55,12 +55,24 @@
       </div>
       <div class="col-md-2">
         <% if status.value > 0 %>
-          <p>Last updated: <%= (Time.now - status.updated_at).round(0) %>s</p>
+          <% if (Time.now - status.updated_at) < 120 %>
+            <p>Ping: good<p>
+          <% elsif (Time.now - status.updated_at) < 180 %>
+            <p>Ping: slow<p>
+          <% elsif (Time.now - status.updated_at) < 240 %>
+            <p>Ping: lagging<p>
+          <% else %>
+            <p>Ping: disconnected<p>
+          <% end %>
         <% end %>
+
       </div>
       <div class="col-md-3">
         <div class="meta">
-          <%= link_to time_ago_in_words(status.created_at) + " ago", status %>
+          <%= time_ago_in_words(status.created_at) + " ago" %> |
+          <span class="admin">
+            <%= link_to "Cancel", status, method: :delete, data: { confirm: "Are you sure you want to cancel this challelenge? There is no going back" } %>
+          </span>
         </div>
       </div>
     </div>
@@ -135,7 +147,7 @@
   <h1>Your history</h1>
 </div>
 
-<% @statuses.where("user_id = ?", current_user.id).order(created_at: :desc).each do |status| %>
+<% @statuses.where("user_id = ?", current_user.id).where("value < ?", 1).order(created_at: :desc).each do |status| %>
 <% if status.win_value == 0 %>
   <div class="challenge-history-loss">
 <% elsif status.win_value == 3 %>
@@ -162,26 +174,31 @@
         <% if status.win_value == 0 %>
           <div class="challenge-description">Lost the challenge!</div>
         <% elsif status.win_value == 3 %>
-          <div class="challenge-description">Lost the challenge!</div>
+          <div class="challenge-description">Canceled!</div>
         <% elsif status.win_value == 2 %>
           <div class="challenge-description">You won!</div>
         <% elsif status.win_value == 1 %>
           <div class="challenge-description">Ran out of time</div>
         <% else %>
-          <div class="challenge-description">Minutes left: <%= status.value/60 %>/180</div>
+          <div class="challenge-description">Minutes left: <%= status.value/60 %></div>
         <% end %>
       </div>
       <div class="col-md-2">
         <% if status.value > 0 %>
-          <p>Last updated: <%= (Time.now - status.updated_at).round(0) %>s</p>
+          <% if (Time.now - status.updated_at) < 120 %>
+            <p>Ping: good<p>
+          <% elsif (Time.now - status.updated_at) < 180 %>
+            <p>Ping: slow<p>
+          <% elsif (Time.now - status.updated_at) < 240 %>
+            <p>Ping: lagging<p>
+          <% else %>
+            <p>Ping: disconnected<p>
+          <% end %>
         <% end %>
       </div>
       <div class="col-md-3">
         <div class="meta">
-          <%= link_to time_ago_in_words(status.created_at) + " ago", status %>
-          <span class="admin">
-              <%= link_to "Cancel", status, method: :delete, data: { confirm: "You feelin' lucky punk?" } %>
-          </span>
+          <%= time_ago_in_words(status.created_at) + " ago" %>
         </div>
       </div>
     </div>
