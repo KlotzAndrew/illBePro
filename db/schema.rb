@@ -53,6 +53,7 @@ ActiveRecord::Schema.define(version: 20141108223309) do
     t.integer  "kind"
     t.integer  "points"
     t.string   "challenge_description"
+    t.integer  "win_value"
     t.integer  "api_ping"
     t.text     "game_1"
     t.text     "game_2"
