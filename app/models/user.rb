@@ -12,10 +12,8 @@ class User < ActiveRecord::Base
   after_create :index_me
 
   def index_me
-    @ignindex = Ignindex.create!(:user_id => self.id)
-    @ignindex.save
-    @score = Score.create!(:user_id => self.id, :week_1 => 0)
-    @score.save
+    Ignindex.create!(:user_id => self.id) 
+    Score.create!(:user_id => self.id, :week_1 => 0)
   end
 
   def full_name

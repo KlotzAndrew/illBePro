@@ -3,6 +3,9 @@ class Status < ActiveRecord::Base
 	belongs_to :user
 	
 	validates :user_id, presence: true
+  validate :one_fox_one_gun, on: :create
+
+  after_create :challenge_init
 
   serialize :game_1, Hash
   serialize :game_2, Hash
@@ -209,6 +212,29 @@ class Status < ActiveRecord::Base
 def self.update_value2
   Rails.logger.info "updating..... things...."
 end
+
+def one_fox_one_gun
+  if Status.all.where("user_id = ?", self.id).where("value > ?", 0).count == 0
+    errors.add(:ice_cream, 'is melted.')
+  end
+end
+
+def challenge_init
+  if self.kind == 1
+    self.update(challenge_description: "Win your next game!")
+    self.update(value: 5400)
+    self.update(points: 1)
+  elsif self.kind == 2
+    self.update(challenge_description: "Win your next 2 games in a row!")
+    self.update(value: 7200)
+    self.update(points: 3)
+  else
+    self.update(challenge_description: "Something went wrong! Sorry!")
+    self.update(value: 0)
+    self.update(points: 0)
+  end
+end
+
 
 def update_champions
 p = 1

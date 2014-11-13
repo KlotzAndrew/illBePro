@@ -7,6 +7,8 @@ class StatusesController < ApplicationController
   # GET /statuses.json
   def index
     @statuses = Status.all
+    @ignindex = Ignindex.find_by_user_id(current_user.id)
+    @score = Score.find_by_user_id(current_user.id)
   end
 
   # GET /statuses/1
@@ -26,6 +28,7 @@ class StatusesController < ApplicationController
     @status = current_user.statuses.new(status_params)
     @status.summoner_id = @ignindex.summoner_id
     @status.summoner_name = @ignindex.summoner_name
+    
     respond_to do |format|
       if @status.save
         format.html { redirect_to @status, notice: 'Challenge started!' }

@@ -19,11 +19,8 @@
 
 
         <div class="form-actions">
-          <%= f.hidden_field :challenge_description, :value=>"Win your next game!" %>
-          <%= f.hidden_field :value, :value=>5400 %>
           <%= f.hidden_field :kind, :value=>1 %>
-          <%= f.hidden_field :points, :value=>1 %>
-          <%= f.button :submit, "Start" %>
+          <%= f.submit "Start", :name => "challenge_1" %>
         </div>
       <% end %>
     </div>
@@ -51,10 +48,7 @@
   <% end %>
 
   <div class="form-actions">
-    <%= f.hidden_field :challenge_description, :value=>"Win your next 2 games in a row!" %>
-    <%= f.hidden_field :value, :value=>7200 %>
     <%= f.hidden_field :kind, :value=>2 %>
-    <%= f.hidden_field :points, :value=>3 %>
     <%= f.button :submit, "Start" %>
   </div>
 <% end %>
