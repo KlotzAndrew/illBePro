@@ -5,28 +5,6 @@ class ScoresController < ApplicationController
     @scores = Score.all
   end
 
-  def show
-  end
-
-  def new
-    @score = Score.new
-  end
-
-  def edit
-  end
-
-  def create
-    @score = Score.new(score_params)
-    @score.save
-  end
-
-  def update
-    @score.update(score_params)
-  end
-
-  def destroy
-    @score.destroy
-  end
 
   private
     def set_score
