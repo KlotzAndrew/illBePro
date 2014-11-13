@@ -21,12 +21,8 @@
     <div class="btn-group">
       <%= form_for @ignindex do |t| %>
         <%= t.text_field :summoner_name %>
-        <%= t.hidden_field :summoner_validated, :value=>false %>
-        <%= t.hidden_field :summoner_id, :value=>nil %>
-        <%= t.hidden_field :validation_string, :value=>nil %>
-        <%= t.hidden_field :validation_timer, :value=>nil %>
         <% if @ignindex.summoner_name.nil? %>
-            <%= t.submit "Add Summoner Name" %>
+          <%= t.submit "Add Summoner Name" %>
         <% else %>
           <%= t.submit "Update Summoner Name", data: { confirm: "Pressing 'ok' removes validation from any of your past summoner names!" } %>
         <% end %>

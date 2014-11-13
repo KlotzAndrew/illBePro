@@ -7,6 +7,20 @@ class IgnindicesController < ApplicationController
     @ignindex = Ignindex.find_by_user_id(current_user.id)
   end
 
+  def update
+    @ignindex = Ignindex.find_by_user_id(current_user.id)
+
+    respond_to do |format|
+      if @ignindex.update(ignindex_params)
+        format.html { redirect_to update_url, notice: 'Summoner name was changed!' }
+        format.json { render :show, status: :ok, location: @status }
+      else
+        format.html { redirect_to statuses_url }
+        format.json { render json: @status.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
   private
     def set_ignindex
       @ignindex = Ignindex.find(params[:id])
