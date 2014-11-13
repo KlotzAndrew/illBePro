@@ -31,8 +31,8 @@
   <% status = @statuses.where("value > ?", 0).find_by_user_id(current_user.id) %>
   <div class="challenge-history-running">
     <div class="row" >
-      <div class="col-md-2">
-        <div class="challenge-summoner"><%= status.summoner_id %></div>
+      <div class="col-md-1">
+        <div class="challenge-summoner"><strong><%= status.summoner_name %></strong></div>
       </div>
       <div class="col-md-1">
         <div class="challenge-description"><%= status.points %> Point</div>
@@ -50,7 +50,7 @@
         <% elsif status.win_value == 1 %>
           <div class="challenge-description">Ran out of time</div>
         <% else %>
-          <div class="challenge-description">Challnge still running!</div>
+          <div class="challenge-description">Minutes left: <%= status.value/60 %></div>
         <% end %>
       </div>
       <div class="col-md-2">
@@ -59,14 +59,8 @@
         <% end %>
       </div>
       <div class="col-md-3">
-        <% if status.value > 0 %>
-          <p>Minutes left in challenge: <%= status.value/60 %>/180</p>
-        <% end %>
         <div class="meta">
           <%= link_to time_ago_in_words(status.created_at) + " ago", status %>
-          <span class="admin">
-              <%= link_to "Cancel", status, method: :delete, data: { confirm: "You feelin' lucky punk?" } %>
-          </span>
         </div>
       </div>
     </div>
@@ -154,8 +148,8 @@
 <% end %>
 
     <div class="row" >
-      <div class="col-md-2">
-        <div class="challenge-summoner"><%= status.summoner_id %></div>
+      <div class="col-md-1">
+        <div class="challenge-summoner"><strong><%= status.summoner_name %></strong></div>
       </div>
       <div class="col-md-1">
         <div class="challenge-description"><%= status.points %> Point</div>
@@ -173,7 +167,7 @@
         <% elsif status.win_value == 1 %>
           <div class="challenge-description">Ran out of time</div>
         <% else %>
-          <div class="challenge-description">Challnge still running!</div>
+          <div class="challenge-description">Minutes left: <%= status.value/60 %>/180</div>
         <% end %>
       </div>
       <div class="col-md-2">
@@ -182,9 +176,6 @@
         <% end %>
       </div>
       <div class="col-md-3">
-        <% if status.value > 0 %>
-          <p>Minutes left in challenge: <%= status.value/60 %>/180</p>
-        <% end %>
         <div class="meta">
           <%= link_to time_ago_in_words(status.created_at) + " ago", status %>
           <span class="admin">
