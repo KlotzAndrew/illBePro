@@ -4,7 +4,7 @@
       <h1>Summoner Name: <%= @ignindex.summoner_name %></h1>
     </div>
   </div>
-
+  
   <div class="col-md-4 col-md-offset-2">
     <div class="page-header">
       <% if @ignindex.summoner_validated %>
@@ -22,7 +22,7 @@
       <%= form_for @ignindex do |t| %>
         <%= t.text_field :summoner_name %>
         <% if @ignindex.summoner_name.nil? %>
-          <%= t.submit "Add Summoner Name" %>
+          <%= t.submit "Update Summoner Name" %>
         <% else %>
           <%= t.submit "Update Summoner Name", data: { confirm: "Pressing 'ok' removes validation from any of your past summoner names!" } %>
     </div>

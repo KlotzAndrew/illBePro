@@ -4096,4 +4096,15 @@ I, [2014-11-13T01:54:51.390702 #2613]  INFO -- : Triggering 'api_caller.job'
 I, [2014-11-13T01:55:51.426433 #2613]  INFO -- : Triggering 'api_caller.job'
 I, [2014-11-13T01:56:51.474762 #2613]  INFO -- : Triggering 'api_caller.job'
 I, [2014-11-13T01:57:51.520742 #2613]  INFO -- : Triggering 'api_caller.job'
-                                                                             
+                                                                             I, [2014-11-14T01:39:30.631778 #7602]  INFO -- : Starting clock for 1 events: [ api_caller.job ]
+I, [2014-11-14T01:39:30.631959 #7602]  INFO -- : Triggering 'api_caller.job'
+I, [2014-11-14T01:40:30.922419 #7602]  INFO -- : Triggering 'api_caller.job'
+I, [2014-11-14T01:41:31.487590 #7602]  INFO -- : Triggering 'api_caller.job'
+I, [2014-11-14T01:42:32.036702 #7602]  INFO -- : Triggering 'api_caller.job'
+I, [2014-11-14T01:43:32.684080 #7602]  INFO -- : Triggering 'api_caller.job'
+I, [2014-11-14T01:44:32.723514 #7602]  INFO -- : Triggering 'api_caller.job'
+I, [2014-11-14T01:45:32.773255 #7602]  INFO -- : Triggering 'api_caller.job'
+I, [2014-11-14T02:09:02.527654 #7774]  INFO -- : Starting clock for 1 events: [ api_caller.job ]
+I, [2014-11-14T02:09:02.527957 #7774]  INFO -- : Triggering 'api_caller.job'
+I, [2014-11-14T02:10:02.904545 #7774]  INFO -- : Triggering 'api_caller.job'
+I, [2014-11-14T02:11:03.542590 #7774]  INFO -- : Triggering 'api_caller.job'

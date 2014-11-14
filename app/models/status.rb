@@ -3,8 +3,8 @@ class Status < ActiveRecord::Base
 	belongs_to :user
 	
 	validates :user_id, presence: true
-  validate :dr_who, on: :create
-  validate :one_fox_one_gun, on: :create
+  validate :dr_who, :on => :create
+  validate :one_fox_one_gun, :on => :create
 
   after_create :challenge_init
 
@@ -216,13 +216,14 @@ end
 
 def dr_who
   w = self.user_id
-  if Ignindex.find_by_user_id(w).summoner_validated = true
+  if Ignindex.find_by_user_id(w).summoner_validated == true
+  else
     errors.add(:you_need, ' a valid summoner name before you can start a challenge!')
   end
 end
 
 def one_fox_one_gun
-  if Status.all.where("user_id = ?", self.user_id).where("value > ?", 0).count >= 1
+  if Status.all.where("user_id = ?", self.user_id).where("value > ?", 0).count >= 5
     errors.add(:you_can, 'only have 1 challenge running at a time!')
   elsif Status.where("value > ?", 0).count >= 40
     errors.add(:challenge_hampster, ' is overloaded with other challenges! Try back in a few minutes')

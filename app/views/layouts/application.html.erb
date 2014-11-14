@@ -10,7 +10,7 @@
 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<ul class="navbar-text navbar-right">
 			<% if user_signed_in? %>
-				<%= link_to current_user.profile_name, edit_user_registration_path %>
+				<%= link_to current_user.profile_name, summoner_path %>
 				<button type="button"><%= link_to "Sign Out", logout_path %></button>
 			<% else %>
 				<%= link_to "Register", register_path %>
@@ -21,9 +21,9 @@
 		<div class="navbar-inner">
 			<div class="container">
 				<ul class="nav navbar-nav">
-					<a class="navbar-brand" href=""> HeroMenu </a>
+					<a class="navbar-brand" href=""> MidYolo </a>
 					<li><%= link_to "Challenges", challenges_path %></li>
-					<li><%= link_to "Summoner", ignindices_path %></li>
+					<li><%= link_to "Summoner", summoner_path %></li>
 					<li><%= link_to "Scoreboard", scores_path %></li>
 				</ul>
 				</div>
