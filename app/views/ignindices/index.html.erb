@@ -17,7 +17,7 @@
 </div>
 
 <div class="row">
-  <div class="col-md-4">
+  <div class="col-md-6">
     <div class="btn-group">
       <%= form_for @ignindex do |t| %>
         <%= t.text_field :summoner_name %>
@@ -25,6 +25,10 @@
           <%= t.submit "Add Summoner Name" %>
         <% else %>
           <%= t.submit "Update Summoner Name", data: { confirm: "Pressing 'ok' removes validation from any of your past summoner names!" } %>
+    </div>
+  </div>
+   <div class="col-md-4 col-md-offset-2">
+    <div class="btn-group">
           <%= t.submit "Generate validation code" %>
         <% end %>
       <% end %>
@@ -32,7 +36,7 @@
   </div>
 </div>
 
-<div class="body-object">
+<div class="new-challenge2">
 <div class="row">
   <div class="col-md-6">
     <div class="well">
@@ -47,18 +51,13 @@
   </div>
 
 
-  <div class="col-md-4 col-md-offset-2">
-    <div class="well">
-
-
-    
-    <% if !@ignindex.validation_timer.nil? %>
-      <h5>Validation code: <strong><%= @ignindex.validation_string %></strong></h5>
-      <h4>Code valid for <%= ((300 - (Time.now.to_i - @ignindex.validation_timer))/60) %> more minutes!<h4>
-    <% end %>
-
+  <div class="col-md-6">
+    <div class="well">   
+      <% if !@ignindex.validation_timer.nil? %>
+        <h5>Validation code: <strong><%= @ignindex.validation_string %></strong></h5>
+        <h4>Code valid for <%= ((300 - (Time.now.to_i - @ignindex.validation_timer))/60) %> more minutes!<h4>
+      <% end %>
     </div>
-    
   </div>
 </div>
 </div>
