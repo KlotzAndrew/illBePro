@@ -83,7 +83,7 @@ class Status < ActiveRecord::Base
             x.update(validation_timer: nil)
             x.update(validation_string: nil)
             Rails.logger.info "#{x.summoner_name} validated"
-            if !Score.where("summoner_id = ?", x.summoner_id).nil?
+            if Score.where("summoner_id = ?", x.summoner_id).nil?
               Score.create!(:summoner_id => x.summoner_id, :summoner_name => x.summoner_name, :week_1 => 0)
               Rails.logger.info "scorecard created for #{x.summoner_name}"
             else
