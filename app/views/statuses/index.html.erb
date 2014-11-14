@@ -42,13 +42,13 @@
       </div>
       <div class="col-md-2">
         <% if status.win_value == 0 %>
-          <div class="challenge-description">Lost the challenge!</div>
+          <div class="challenge-description">Defeat</div>
         <% elsif status.win_value == 3 %>
-          <div class="challenge-description">Canceled!</div>
+          <div class="challenge-description">Canceled</div>
         <% elsif status.win_value == 2 %>
-          <div class="challenge-description">You won!</div>
+          <div class="challenge-description">Victory</div>
         <% elsif status.win_value == 1 %>
-          <div class="challenge-description">Ran out of time</div>
+          <div class="challenge-description">Out of Time</div>
         <% else %>
           <div class="challenge-description">Minutes left: <%= status.value/60 %></div>
         <% end %>

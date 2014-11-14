@@ -3,6 +3,7 @@ class Status < ActiveRecord::Base
 	belongs_to :user
 	
 	validates :user_id, presence: true
+  validate :dr_who, on: :create
   validate :one_fox_one_gun, on: :create
 
   after_create :challenge_init
@@ -211,6 +212,13 @@ class Status < ActiveRecord::Base
 
 def self.update_value2
   Rails.logger.info "updating..... things...."
+end
+
+def dr_who
+  w = self.user_id
+  if Ignindex.find_by_user_id(w).summoner_validated = true
+    errors.add(:you_need, ' a valid summoner name before you can start a challenge!')
+  end
 end
 
 def one_fox_one_gun

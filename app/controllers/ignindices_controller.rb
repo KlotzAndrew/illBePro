@@ -16,9 +16,13 @@ class IgnindicesController < ApplicationController
     elsif params[:commit] == "Generate validation code"
       redirect_to :action => :index
       @ignindex.refresh_validation
-      flash[:notice] = "New validation code!"
+        if @ignindex.errors.nil?
+          flash[:notice] = "New validation code!"
+        else
+          flash[:alert] = "The validation hampster is overloaded with other validations! Try back in a few minutes, he needs a little rest"
+        end
     else
-      flash[:notice] = "Something messed up. It was probably Ashe mid. Yolo."
+      flash[:alert] = "Something messed up. It was probably Ashe mid. Yolo."
     end
   
   end
