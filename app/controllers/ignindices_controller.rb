@@ -15,7 +15,7 @@ class IgnindicesController < ApplicationController
       @ignindex.refresh_summoner
       redirect_to :action => :index
     elsif params[:commit] == "Generate validation code"
-        if @ignindexes.where("validation_string > ?", 0).count < 6
+        if @ignindexes.where("validation_timer > ?", 0).count < 6
           flash[:notice] = "New validation code!"
           @ignindex.refresh_validation
           redirect_to :action => :index
