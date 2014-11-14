@@ -12,20 +12,20 @@ class IgnindicesController < ApplicationController
     @ignindex.update(ignindex_params)
     if params[:commit] == "Update Summoner Name"
       flash[:notice] = "Updated summoner name!"
-      redirect_to :action => :index
       @ignindex.refresh_summoner
+      redirect_to :action => :index
     elsif params[:commit] == "Generate validation code"
         if @ignindexes.where("validation_string > ?", 0).count < 6
           flash[:notice] = "New validation code!"
-          redirect_to :action => :index
           @ignindex.refresh_validation
-        else
           redirect_to :action => :index
+        else
           flash[:alert] = "The validation hampster is overloaded with other validations! Try back in a few minutes, he needs a little rest"
+          redirect_to :action => :index
         end
     else
-      redirect_to :action => :index
       flash[:alert] = "Something messed up. It was probably Ashe mid. Yolo."
+      redirect_to :action => :index
     end
   end
 
