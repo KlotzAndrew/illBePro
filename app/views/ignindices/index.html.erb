@@ -25,6 +25,7 @@
           <%= t.submit "Add Summoner Name" %>
         <% else %>
           <%= t.submit "Update Summoner Name", data: { confirm: "Pressing 'ok' removes validation from any of your past summoner names!" } %>
+          <%= t.submit "Generate validation code" %>
         <% end %>
       <% end %>
     </div>
@@ -49,13 +50,7 @@
   <div class="col-md-4 col-md-offset-2">
     <div class="well">
 
-    <% if !@ignindex.summoner_validated %>
-      <%= form_for @ignindex do |t| %>
-        <%= t.hidden_field :validation_timer, :value=>Time.now.to_i %>
-        <%= t.hidden_field :validation_string, :value=>('a'..'z').to_a.shuffle.first(6).join %>
-        <%= t.submit "Generate validation code" %>
-      <% end %>
-    <% end %>
+
     
     <% if !@ignindex.validation_timer.nil? %>
       <h5>Validation code: <strong><%= @ignindex.validation_string %></strong></h5>
