@@ -29,7 +29,10 @@
   </div>
    <div class="col-md-4 col-md-offset-2">
     <div class="btn-group">
-          <%= t.submit "Generate validation code" %>
+          <% if @ignindex.summoner_validated %>
+          <% else %>
+            <%= t.submit "Generate validation code" %>
+          <% end %>
         <% end %>
       <% end %>
     </div>
