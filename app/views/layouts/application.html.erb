@@ -25,11 +25,12 @@
 					<a class="navbar-brand" href=""> i'llBePro </a>
 					<li><%= link_to "Challenges", challenges_path %></li>
 					<li><%= link_to "Summoner", summoner_path %></li>
-					<li><%= link_to "Scoreboard", scores_path %></li>
+					<li><%= link_to "Leaderboard", scores_path %></li>
 				</ul>
-				</div>
 			</div>
-		</nav>
+		</div>
+	</nav>
+		
 	<div class="container">
 		<% flash.each do |type, message| %>
 			<div class="alert <%= flash_class type %> alert-dismissible" role="alert">
