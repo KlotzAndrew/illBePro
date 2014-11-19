@@ -127,7 +127,7 @@ class Status < ActiveRecord::Base
                 valid_games = []
                 i = 0
                 games_hash["matches"].each do |match|
-                  if match["queueType"] == "RANKED_SOLO_5x5" && (match["matchCreation"] - match["matchDuration"]) >= (x.created_at.to_i - 180)*1000
+                  if match["queueType"] == "RANKED_SOLO_5x5" && (match["matchCreation"] - match["matchDuration"]) >= (x.created_at.to_i - 420)*1000
                     valid_games << i
                     i = i + 1
                   else
