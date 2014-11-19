@@ -41,7 +41,9 @@
 .challenge-history-win {
 	border-bottom: solid 1px #CCC;
 	border-top: solid 1px #CCC;
-	border-left: solid 8px #58b258;
+	border-left: solid 1px #58b258;
+	border-bottom-left-radius: 36px;
+	border-top-left-radius: 36px;
 	border-right: solid 1px #CCC;
 	margin-bottom: 20px;
 }
@@ -49,7 +51,9 @@
 .challenge-history-loss {
 	border-bottom: solid 1px #CCC;
 	border-top: solid 1px #CCC;
-	border-left: solid 8px #cf4640;
+	border-left: solid 18px #cf4640;
+	border-bottom-left-radius: 36px;
+	border-top-left-radius: 36px;
 	border-right: solid 1px #CCC;
 	margin-bottom: 20px;
 }
@@ -57,18 +61,22 @@
 .challenge-history-running {
 	border-bottom: solid 1px #CCC;
 	border-top: solid 1px #CCC;
-	border-left: solid 8px #FFA414;
+	border-left: solid 18px #FFA414;
+	border-bottom-left-radius: 36px;
+	border-top-left-radius: 36px;
 	border-right: solid 1px #CCC;
 	margin-bottom: 20px;
 }
 
 .challenge-description {
 	border-left: solid 1px #CCC;
+	text-align: center;
 	font-size: 14px;
+	padding: 5px 0 0 0px;
 }
 
 .challenge-summoner {
-	padding: 0 0 0 5px;
+	padding: 5px 0 0 5px;
 	font-size: 16px;
 	
 }

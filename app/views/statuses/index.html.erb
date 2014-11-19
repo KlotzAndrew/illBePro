@@ -2,7 +2,7 @@
   <div class="col-md-6">
   <% if @ignindex.summoner_validated? %>
    <div class="page-header"> 
-    <h1>Current Challenge</h1>
+    <h1><strong>Current Challenge</strong></h1>
   </div>
   <% else %>
     <div class="page-header">
@@ -13,12 +13,12 @@
 
   <div class="col-md-6">
     <div class="page-header">
-      <h1>Total score: 
+      <h1 class="text-center"><strong>Total score: 
         <% if @score.week_1.nil? %>
           0
         <% else %>
           <%= @score.week_1 %>
-        <% end %> </h1>
+        <% end %></strong> </h1>
     </div>
   </div>
 </div>
@@ -29,41 +29,42 @@
   </div>
 <% else %>
   <% status = @statuses.where("value > ?", 0).find_by_user_id(current_user.id) %>
+  <div class="well">
   <div class="challenge-history-running">
     <div class="row" >
       <div class="col-md-2">
         <div class="challenge-summoner"><strong><p class="text-center"><%= status.summoner_name %></p> </strong></div>
       </div>
       <div class="col-md-1">
-        <div class="challenge-description"><p class="text-center"><%= status.points %> Points</p></div>
+        <div class="challenge-description"><%= status.points %> Points</p></div>
       </div>
       <div class="col-md-3">
-        <div class="challenge-description"><p class="text-center"><%= status.challenge_description %></p></div>
+        <div class="challenge-description"><%= status.challenge_description %></p></div>
       </div>
       <div class="col-md-2">
         <% if status.win_value == 0 %>
-          <div class="challenge-description"><p class="text-center">Defeat</p></div>
+          <div class="challenge-description"><p>Defeat</p></div>
         <% elsif status.win_value == 3 %>
-          <div class="challenge-description"><p class="text-center">Canceled</p></div>
+          <div class="challenge-description"><p>Canceled</p></div>
         <% elsif status.win_value == 2 %>
-          <div class="challenge-description"><p class="text-center">Victory</p></div>
+          <div class="challenge-description"><p>Victory</p></div>
         <% elsif status.win_value == 1 %>
-          <div class="challenge-description"><p class="text-center">Out of Time</p></div>
+          <div class="challenge-description"><p>Out of Time</p></div>
         <% else %>
-          <div class="challenge-description"><p class="text-center">Minutes left: <%= status.value/60 %></p></div>
+          <div class="challenge-description"><p>Minutes left: <%= status.value/60 %></p></div>
         <% end %>
       </div>
       <div class="col-md-2">
         <div class="challenge-description">
         <% if status.value > 0 %>
           <% if (Time.now - status.updated_at) < 120 %>
-            <p class="text-center">Ping: good<p>
+            <p>Ping: good<p>
           <% elsif (Time.now - status.updated_at) < 180 %>
-            <p class="text-center">Ping: slow<p>
+            <p>Ping: slow<p>
           <% elsif (Time.now - status.updated_at) < 240 %>
-            <p class="text-center">Ping: lagging<p>
+            <p>Ping: lagging<p>
           <% else %>
-            <p class="text-center">Ping: disconnected<p>
+            <p>Ping: disconnected<p>
           <% end %>
         <% end %>
         </div>
@@ -72,7 +73,7 @@
       <div class="col-md-2">
         <div class="challenge-description">
         <div class="meta">
-          <p class="text-center"><%= time_ago_in_words(status.created_at) + " ago" %> |
+          <p><%= time_ago_in_words(status.created_at) + " ago" %> |
           <span class="admin">
             <%= link_to "Cancel", status, method: :delete, data: { confirm: "Are you sure you want to cancel this challelenge? There is no going back" } %></p>
           </span>
@@ -81,10 +82,10 @@
       </div>
     </div>
 
-<% if status.kind == 1 %>
+  <% if status.kind == 1 %>
     <% if status.game_1.empty? %>
       <div class="panel panel-default">
-        <div class="panel-heading">
+        <div class="panel-body">
           Game 1
         </div>
       </div>
@@ -104,7 +105,7 @@
   <% elsif status.kind == 2 %>
    <% if status.game_1.empty? %>
       <div class="panel panel-default">
-        <div class="panel-heading">
+        <div class="panel-body">
           Game 1
         </div>
       </div>
@@ -123,7 +124,7 @@
 
     <% if status.game_2.empty? %>
       <div class="panel panel-default">
-        <div class="panel-heading">
+        <div class="panel-body">
           Game 2
         </div>
       </div>
@@ -140,12 +141,12 @@
       </div>
     <% end %> 
   <% end %>
-
+  </div>
   </div>
 <% end %> 
 
 <div class="page-header">
-  <h1>Your history</h1>
+  <h1 class="text-center"><strong>History</strong></h1>
 </div>
 
 <% @statuses.where("user_id = ?", current_user.id).where("value < ?", 1).order(created_at: :desc).each do |status| %>
@@ -166,35 +167,35 @@
         <div class="challenge-summoner"><strong><p class="text-center"><%= status.summoner_name %></p> </strong></div>
       </div>
       <div class="col-md-1">
-        <div class="challenge-description"><p class="text-center"><%= status.points %> Points</p></div>
+        <div class="challenge-description"><p><%= status.points %> Points</p></div>
       </div>
       <div class="col-md-3">
-        <div class="challenge-description"><p class="text-center"><%= status.challenge_description %></p></div>
+        <div class="challenge-description"><p><%= status.challenge_description %></p></div>
       </div>
       <div class="col-md-2">
         <% if status.win_value == 0 %>
-          <div class="challenge-description"><p class="text-center">Defeat</p></div>
+          <div class="challenge-description"><p>Defeat</p></div>
         <% elsif status.win_value == 3 %>
-          <div class="challenge-description"><p class="text-center">Canceled</p></div>
+          <div class="challenge-description"><p>Canceled</p></div>
         <% elsif status.win_value == 2 %>
-          <div class="challenge-description"><p class="text-center">Victory</p></div>
+          <div class="challenge-description"><p>Victory</p></div>
         <% elsif status.win_value == 1 %>
-          <div class="challenge-description"><p class="text-center">Out of Time</p></div>
+          <div class="challenge-description"><p>Out of Time</p></div>
         <% else %>
-          <div class="challenge-description"><p class="text-center">Minutes left: <%= status.value/60 %></p></div>
+          <div class="challenge-description"><p>Minutes left: <%= status.value/60 %></p></div>
         <% end %>
       </div>
       <div class="col-md-2">
         <div class="challenge-description">
         <% if status.value > 0 %>
           <% if (Time.now - status.updated_at) < 120 %>
-            <p class="text-center">Ping: good<p>
+            <p>Ping: good<p>
           <% elsif (Time.now - status.updated_at) < 180 %>
-            <p class="text-center">Ping: slow<p>
+            <p>Ping: slow<p>
           <% elsif (Time.now - status.updated_at) < 240 %>
-            <p class="text-center">Ping: lagging<p>
+            <p>Ping: lagging<p>
           <% else %>
-            <p class="text-center">Ping: disconnected<p>
+            <p>Ping: disconnected<p>
           <% end %>
         <% end %>
         </div>
@@ -202,7 +203,7 @@
       <div class="col-md-2 col-md-offset-2">
         <div class="challenge-description">
         <div class="meta">
-         <p class="text-center"><%= time_ago_in_words(status.created_at) + " ago" %> </p>
+         <p><%= time_ago_in_words(status.created_at) + " ago" %> </p>
         </div>
       </div>
       </div>
