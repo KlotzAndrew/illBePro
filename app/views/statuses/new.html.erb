@@ -7,19 +7,24 @@
       <div class="well">
 
         <div class="row">
+          <div class="col-md-3">
+            <h4>Requirements:<h4>
+            <h4>Points:<h4>
+            <h4>Time limit:<h4>
+          </div>
           <div class="col-md-6">
             <h4>Win a ranked game<h4>
-            <h4>Points: 1<h4>
+            <h4>1<h4>
             <h4>90 Minutes<h4>
           </div>
 
-          <div class="col-md-6" >
+          <div class="col-md-3" >
             <div class="form-actions">
               <div class="text-center">
                 <div class="new-challenge2">
                   <%= simple_form_for(@status, html: {class: 'form-hoizontal'}) do |f| %>
                     <%= f.hidden_field :kind, :value=>1 %>
-                    <%= f.button :submit, "Start", class: "btn btn-lg btn-primary" %>
+                    <%= f.button :submit, "Start", class: "btn btn-lg btn-success" %>
                   <% end %>
               </div>
               </div>
@@ -37,19 +42,24 @@
 
       <div class="well">
         <div class="row">
+          <div class="col-md-3">
+            <h4>Requirements:<h4>
+            <h4>Points:<h4>
+            <h4>Time limit:<h4>
+          </div>
           <div class="col-md-6">
             <h4>Win 2 ranked games in a row<h4>
-            <h4>Points: 3<h4>
+            <h4>3<h4>
             <h4>120 Minutes<h4>
           </div>
 
-          <div class=".col-md-6" >
+          <div class=".col-md-3" >
             <div class="form-actions">
               <div class="text-center">
                 <div class="new-challenge2">
               <%= simple_form_for(@status, html: {class: 'form-hoizontal'}) do |f| %>
                 <%= f.hidden_field :kind, :value=>2 %>
-                <%= f.button :submit, "Start", class: "btn btn-lg btn-primary" %>
+                <%= f.button :submit, "Start", class: "btn btn-lg btn-success" %>
               <% end %>
             </div>
             </div>
