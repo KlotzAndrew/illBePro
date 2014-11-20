@@ -51,7 +51,7 @@
         <% elsif status.win_value == 1 %>
           <div class="challenge-description"><p>Out of Time</p></div>
         <% else %>
-          <div class="challenge-description"><p>Minutes left: <%= status.value/60 %></p></div>
+          <div class="challenge-description"><p><strong>Minutes left: <%= status.value/60 %></strong></p></div>
         <% end %>
       </div>
       <div class="col-md-2">
