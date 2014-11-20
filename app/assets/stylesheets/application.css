@@ -47,7 +47,15 @@ body {
  }
 
  .loader-image {
- 	padding-left: 150px;
+ 	padding-left: 0px;
+ }
+
+ .teaser-context {
+ 	padding-top: 30px;
+ }
+
+ .prize-teaser {
+ 	padding-top: 100px;
  }
 
  .custom-footer {

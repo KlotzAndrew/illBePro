@@ -1,6 +1,7 @@
-<div class="devise-border-form">
-  <div class="row">
-    <div class="col-md-4">
+
+<div class="row">
+  <div class="col-md-3">
+    <div class="devise-border-form">
 
       <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: {class: "well"}) do |f| %>
         <%= devise_error_messages! %>
@@ -15,14 +16,27 @@
       <% end %>
 
       <%= render "devise/shared/links" %>
-      
-      </div>
-
-      <div class="col-md-8">
-      <h3><u><strong>$10 RP giveaway on Thursday</u></strong></h3>
-      <div class="loader-image">
-        <%= image_tag("basic-gif.gif", :alt => "rss feed", height: '358', width: '607') %>
-      <div>
-      </div>
+    </div>
   </div>
+
+    <div class="col-md-9">
+        <h3 class="text-center"><strong>Add extra in-game challenges to League of Legends!</strong></h3>
+        
+        <div class="teaser-context">
+          <div class="row">
+            <div class="col-md-4">
+              <ul class="prize-teaser">
+                  <li><h4><strong>$10 RP giveaway on Thursday Nov.20th</strong></h4></li>
+                  <ul>
+            </div>
+
+          <div class="col-md-8">
+            <div class="loader-image">
+                <%= image_tag("basic-gif.gif", :alt => "rss feed", height: '304', width: '516') %>
+            </div>
+          </div>
+        </div>
+      </div>  
+
+    </div>
 </div>
