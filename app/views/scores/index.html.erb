@@ -1,5 +1,6 @@
 <div class="page-header">
-  <h3 class="text-center">Laurent just won $10 RP, stay tuned for next weeks prize</h3>
+  <h3 class="text-center">$10 RP Prize</h3>
+  <h4 class="text-center">Summoner with the highest score by Thursday Nov. 27th 10:00pm</h4>
 </div>
 
 
@@ -26,7 +27,7 @@
           <% end %>
             <td><%= x.ordinalize %></td>
             <td><%= @users.find(score.user_id).profile_name %></td>
-            <td><%= score.week_1 %></td>
+            <td><%= score.week_2 %></td>
           </tr>
         <% end %>
       </tbody>
@@ -50,7 +51,7 @@
           <tr>
             <td><%= y.ordinalize %></td>
             <td><%= score.summoner_name %></td>
-            <td><%= score.week_1 %></td>
+            <td><%= score.week_2 %></td>
           </tr>
         <% end %>
       </tbody>
@@ -59,3 +60,4 @@
 
 </div>
 
+<h3 class="text-center">Laurent won $10 RP for last weeks high score!</h3>
