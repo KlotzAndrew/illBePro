@@ -103,7 +103,7 @@
     <% end %>
 
   <% elsif status.kind == 2 %>
-   <% if status.game_1.empty? %>
+    <% if status.game_1.empty? %>
       <div class="panel panel-default">
         <div class="panel-body">
           Game 1
@@ -140,6 +140,65 @@
         </div>
       </div>
     <% end %> 
+
+  <% elsif status.kind == 3 %>
+    <% if status.game_1.empty? %>
+      <div class="panel panel-default">
+        <div class="panel-body">
+          Game 1
+        </div>
+      </div>
+    <% else %>
+      <% if status.game_1[:win_loss] == "true" %>
+        <div class="panel panel-success">
+      <% else %>
+        <div class="panel panel-danger">
+      <% end %>
+          <div class="panel-heading">
+               1st game: <%= status.game_1[:champion_id] %>
+               <%= status.game_1[:kills] %>/<%= status.game_1[:deaths] %>/<%= status.game_1[:assists] %> - <%= status.game_1[:matchDuration].to_i/60 %> Minutes
+          </div>
+        </div>
+    <% end %>
+
+    <% if status.game_2.empty? %>
+      <div class="panel panel-default">
+        <div class="panel-body">
+          Game 2
+        </div>
+      </div>
+    <% else %> 
+      <% if status.game_2[:win_loss] == "true" %>
+        <div class="panel panel-success">
+      <% else %>
+        <div class="panel panel-danger">
+      <% end %>
+        <div class="panel-heading">
+             3nd game: <%= status.game_2[:champion_id] %>
+             <%= status.game_2[:kills] %>/<%= status.game_2[:deaths] %>/<%= status.game_2[:assists] %> - <%= status.game_2[:matchDuration].to_i/60 %> Minutes
+        </div>
+      </div>
+    <% end %> 
+
+    <% if status.game_3.empty? %>
+      <div class="panel panel-default">
+        <div class="panel-body">
+          Game 3
+        </div>
+      </div>
+    <% else %> 
+      <% if status.game_3[:win_loss] == "true" %>
+        <div class="panel panel-success">
+      <% else %>
+        <div class="panel panel-danger">
+      <% end %>
+        <div class="panel-heading">
+             3nd game: <%= status.game_2[:champion_id] %>
+             <%= status.game_3[:kills] %>/<%= status.game_3[:deaths] %>/<%= status.game_3[:assists] %> - <%= status.game_3[:matchDuration].to_i/60 %> Minutes
+        </div>
+      </div>
+    <% end %> 
+
   <% end %>
   </div>
   </div>
@@ -267,6 +326,66 @@
         </div>
       </div>
     <% end %> 
+
+<% elsif status.kind == 3 %>
+    <% if status.game_1.empty? %>
+      <div class="panel panel-default">
+        <div class="panel-body">
+          Game 1
+        </div>
+      </div>
+    <% else %>
+      <% if status.game_1[:win_loss] == "true" %>
+        <div class="panel panel-success">
+      <% else %>
+        <div class="panel panel-danger">
+      <% end %>
+          <div class="panel-heading">
+               1st game: <%= status.game_1[:champion_id] %>
+               <%= status.game_1[:kills] %>/<%= status.game_1[:deaths] %>/<%= status.game_1[:assists] %> - <%= status.game_1[:matchDuration].to_i/60 %> Minutes
+          </div>
+        </div>
+    <% end %>
+
+    <% if status.game_2.empty? %>
+      <div class="panel panel-default">
+        <div class="panel-body">
+          Game 2
+        </div>
+      </div>
+    <% else %> 
+      <% if status.game_2[:win_loss] == "true" %>
+        <div class="panel panel-success">
+      <% else %>
+        <div class="panel panel-danger">
+      <% end %>
+        <div class="panel-heading">
+             3nd game: <%= status.game_2[:champion_id] %>
+             <%= status.game_2[:kills] %>/<%= status.game_2[:deaths] %>/<%= status.game_2[:assists] %> - <%= status.game_2[:matchDuration].to_i/60 %> Minutes
+        </div>
+      </div>
+    <% end %> 
+
+    <% if status.game_3.empty? %>
+      <div class="panel panel-default">
+        <div class="panel-body">
+          Game 3
+        </div>
+      </div>
+    <% else %> 
+      <% if status.game_3[:win_loss] == "true" %>
+        <div class="panel panel-success">
+      <% else %>
+        <div class="panel panel-danger">
+      <% end %>
+        <div class="panel-heading">
+             3nd game: <%= status.game_2[:champion_id] %>
+             <%= status.game_3[:kills] %>/<%= status.game_3[:deaths] %>/<%= status.game_3[:assists] %> - <%= status.game_3[:matchDuration].to_i/60 %> Minutes
+        </div>
+      </div>
+    <% end %> 
+
+    
   <% end %>
 
 </div>
