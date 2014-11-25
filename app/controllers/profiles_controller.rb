@@ -1,10 +1,8 @@
 class ProfilesController < ApplicationController
   
   def show
-
   	account_update_params = devise_parameter_sanitizer.sanitize(:account_update)
-
-  	 if account_update_params[:password].blank?
+  	if account_update_params[:password].blank?
       account_update_params.delete("password")
       account_update_params.delete("password_confirmation")
     end

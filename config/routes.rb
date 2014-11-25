@@ -16,7 +16,7 @@ Rails.application.routes.draw do
 
   resources :statuses
   get 'challenges', to: 'statuses#index', as: :challenges
-  root to: 'statuses#index'
+  root to: "staticpages#homepage"
 
   get '/:id', to: 'profiles#show', as: :user
   patch '/:id' => 'profiles#show'
