@@ -62,6 +62,7 @@
       <% if !@ignindex.validation_timer.nil? %>
         <h5>Validation code: <strong><%= @ignindex.validation_string %></strong></h5>
         <h4>Code valid for <%= ((300 - (Time.now.to_i - @ignindex.validation_timer))/60) %> more minutes!<h4>
+        <h6>(current page: <%= @ignindex.mastery_1_name %>, next check in ~<%= 60 - ((Time.now.to_i - @ignindex.updated_at.to_i) % 60) %> seconds)</h6>      
       <% end %>
     </div>
   </div>

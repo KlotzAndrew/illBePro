@@ -15,7 +15,7 @@
 				
 				<li><%= button_to "Sign Out", logout_path, :class => "btn btn-danger navbar-btn", :method => :get  %></li>
 			<% else %>
-				<li><%= link_to "Register", register_path %></li>
+				<li><%= link_to "Sign up", register_path %></li>
 				<li><%= button_to "Sign in", login_path, :class => "btn btn-info navbar-btn", :method => :get  %></li>
 			<% end %>
 
@@ -24,8 +24,23 @@
 			<div class="container">
 				<ul class="nav navbar-nav">
 					<a class="navbar-brand" href="/"><strong> i'llBePro </strong></a>
-					<li><%= link_to "Challenges", challenges_path %></li>
-					<li><%= link_to "Summoner", summoner_path %></li>
+					<% if user_signed_in? %>
+						<% if summoner_onboarding %>
+							<li><%= link_to "Summoner", summoner_path %></li>	
+						<% else %>
+							<li><%= link_to "1) Summoner", summoner_path, style: "color:red" %></li>
+						<% end %>
+						<% if challenge_onboarding > 0 %>
+							<li><%= link_to "Challenges", challenges_path %></li>
+						<% else %>
+							<li><%= link_to "2) Challenges", challenges_path, style: "color:red" %></li>
+						<% end %>
+					<% else %>
+						<li><%= link_to "Summoner", summoner_path %></li>
+						<li><%= link_to "Challenges", challenges_path %></li>
+					<% end %>
+
+
 					<li><%= link_to "Leaderboard", scores_path %></li>
 				</ul>
 			</div>
@@ -45,6 +60,7 @@
 
 </body>
 </html>
+
 
 
 <nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">

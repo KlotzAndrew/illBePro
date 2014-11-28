@@ -5,11 +5,12 @@ class ScoresController < ApplicationController
     @scores = Score.all
     @users = User.all
     @ignindex = Ignindex.all
-    @top_profiles = Score.all.where.not(user_id: nil).where("week_2 > ?", 0).order(week_2: :desc).limit(5)
-    @top_summoners = Score.all.where.not(summoner_id: nil).where("week_2 > ?", 0).order(week_2: :desc).limit(5)
+    @status = Status.all
+    @top_profiles = Score.all.where.not(user_id: nil).where("week_3 > ?", 0).order(week_3: :desc).limit(5)
+    @top_summoners = Score.all.where.not(summoner_id: nil).where("week_3 > ?", 0).order(week_3: :desc).limit(5)
 
-    @top_profiles_last = Score.all.where.not(user_id: nil).where("week_1 > ?", 0).order(week_1: :desc).limit(5)
-    @top_summoners_last = Score.all.where.not(summoner_id: nil).where("week_1 > ?", 0).order(week_1: :desc).limit(5)
+    @top_profiles_last = Score.all.where.not(user_id: nil).where("week_2 > ?", 0).order(week_2: :desc).limit(5)
+    @top_summoners_last = Score.all.where.not(summoner_id: nil).where("week_2 > ?", 0).order(week_2: :desc).limit(5)
   end
 
 
@@ -19,6 +20,6 @@ class ScoresController < ApplicationController
     end
 
     def score_params
-      params.require(:score).permit(:summoner_name, :week_1, :week_2)
+      params.require(:score).permit(:summoner_name, :week_1, :week_2, :week_3)
     end
 end

@@ -65,6 +65,7 @@ class Status < ActiveRecord::Base
             mastery_hash = JSON.parse(mastery_data)
             name = mastery_hash["#{x.summoner_id}"]["pages"][0]["name"]
             Rails.logger.info "1st page name: #{name}; should be: #{x.validation_string}"
+            x.update(mastery_1_name: "#{name}")
           rescue Timeout::Error
             Rails.logger.info "URI-TIMEOUT request for #{x.summoner_name} on masteries"
           rescue => e
@@ -84,7 +85,7 @@ class Status < ActiveRecord::Base
             x.update(validation_string: nil)
             Rails.logger.info "#{x.summoner_name} validated"
             if Score.find_by_summoner_id(x.summoner_id).nil?
-              Score.create!(:summoner_id => x.summoner_id, :summoner_name => x.summoner_name, :week_2 => 0)
+              Score.create!(:summoner_id => x.summoner_id, :summoner_name => x.summoner_name, :week_3 => 0)
               Rails.logger.info "scorecard created for #{x.summoner_name}"
             else
               Rails.logger.info "scorecard already exists for #{x.summoner_name}"
@@ -158,8 +159,8 @@ class Status < ActiveRecord::Base
                  x.update(game_1: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[0]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"})
                 x.update(value: 0)
                 x.update(win_value: 2)
-                Score.find_by_user_id(x.user_id).update(week_2: Score.find_by_user_id(x.user_id).week_2 + x.points)
-                Score.find_by_summoner_id(x.summoner_id).update(week_2: Score.find_by_summoner_id(x.summoner_id).week_2 + x.points)
+                Score.find_by_user_id(x.user_id).update(week_3: Score.find_by_user_id(x.user_id).week_3 + x.points)
+                Score.find_by_summoner_id(x.summoner_id).update(week_3: Score.find_by_summoner_id(x.summoner_id).week_3 + x.points)
                 Rails.logger.info "won 1/1 for #{x.summoner_id}"            
               else
                 Rails.logger.info "updated else for #{x.summoner_id}"
@@ -194,8 +195,8 @@ class Status < ActiveRecord::Base
                   x.update(game_2: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[1]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[1]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[1]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["assists"]}"})
                   x.update(value: 0)
                   x.update(win_value: 2)
-                  Score.find_by_user_id(x.user_id).update(week_2: Score.find_by_user_id(x.user_id).week_2 + x.points)
-                  Score.find_by_summoner_id(x.summoner_id).update(week_2: Score.find_by_summoner_id(x.summoner_id).week_2 + x.points)
+                  Score.find_by_user_id(x.user_id).update(week_3: Score.find_by_user_id(x.user_id).week_3 + x.points)
+                  Score.find_by_summoner_id(x.summoner_id).update(week_3: Score.find_by_summoner_id(x.summoner_id).week_3 + x.points)
                   Rails.logger.info "updated won 2/2 for #{x.summoner_id}"
                 else
                   Rails.logger.info "updated else for #{x.summoner_id}"
@@ -252,8 +253,8 @@ class Status < ActiveRecord::Base
                   x.update(game_3: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[2]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[2]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[2]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[2]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[2]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[2]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[2]]["participants"][0]["stats"]["assists"]}"})
                   x.update(value: 0)
                   x.update(win_value: 2)
-                  Score.find_by_user_id(x.user_id).update(week_2: Score.find_by_user_id(x.user_id).week_2 + x.points)
-                  Score.find_by_summoner_id(x.summoner_id).update(week_2: Score.find_by_summoner_id(x.summoner_id).week_2 + x.points)
+                  Score.find_by_user_id(x.user_id).update(week_3: Score.find_by_user_id(x.user_id).week_3 + x.points)
+                  Score.find_by_summoner_id(x.summoner_id).update(week_3: Score.find_by_summoner_id(x.summoner_id).week_3 + x.points)
                   Rails.logger.info "updated won 3/3 for #{x.summoner_id}"
                 else
                   Rails.logger.info "updated else for #{x.summoner_id}"
@@ -301,11 +302,11 @@ def challenge_init
   elsif self.kind == 2
     self.update(challenge_description: "Win the next 2 games in a row")
     self.update(value: 7200)
-    self.update(points: 4)
+    self.update(points: 0)
   elsif self.kind == 3
     self.update(challenge_description: "Win the next 3 games in a row")
     self.update(value: 10800)
-    self.update(points: 9)
+    self.update(points: 0)
   else
     self.update(challenge_description: "Something went wrong! Sorry!")
     self.update(value: 0)

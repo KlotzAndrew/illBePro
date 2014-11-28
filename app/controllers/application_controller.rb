@@ -3,8 +3,16 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-
  before_filter :configure_permitted_parameters, if: :devise_controller?
+
+helper_method :summoner_onboarding, :challenge_onboarding
+def summoner_onboarding
+	@ignindex_validated = Ignindex.find_by_user_id(current_user.id).summoner_validated
+end
+
+def challenge_onboarding
+	@status_onboarding = Status.all.where("user_id = ?", current_user.id).count
+end
 
   protected
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141108223309) do
+ActiveRecord::Schema.define(version: 20141127203909) do
 
   create_table "champions", force: true do |t|
     t.string   "champion"
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 20141108223309) do
     t.integer  "validation_timer"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "mastery_1_name"
   end
 
   create_table "scores", force: true do |t|
