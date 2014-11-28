@@ -1,5 +1,5 @@
 class AddCurrentMasteryPage < ActiveRecord::Migration
   def change
-  	add_column :Ignindices, :mastery_1_name, :string
+  	add_column :ignindices, :mastery_1_name, :string
   end
 end
