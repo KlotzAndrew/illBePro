@@ -59,10 +59,7 @@
             <div class="form-actions">
               <div class="text-center">
                 <div class="new-challenge2">
-                  <%= simple_form_for(@status, html: {class: 'form-hoizontal'}) do |f| %>
-                    <%= f.hidden_field :kind, :value=>2 %>
-                    <%= f.button :submit, "Start", class: "btn btn-lg btn-success" %>
-                  <% end %>
+                  <%= button_to "Locked", new_status_path, :class => "btn btn-warning", :method => :get  %>
                 </div>
               </div>
             </div>
@@ -96,10 +93,7 @@
             <div class="form-actions">
               <div class="text-center">
                 <div class="new-challenge2">
-                  <%= simple_form_for(@status, html: {class: 'form-hoizontal'}) do |f| %>
-                    <%= f.hidden_field :kind, :value=>3 %>
-                    <%= f.button :submit, "Start", class: "btn btn-lg btn-success" %>
-                  <% end %>
+                  <%= button_to "Locked", new_status_path, :class => "btn btn-warning", :method => :get  %>
                 </div>
               </div>
             </div>
@@ -110,40 +104,8 @@
       </div>
     </div>
 
-    <div class="col-md-6">
-
-      <div class="well">
-        <div class="row">
-          <div class="col-md-3">
-            <h4>Requirements:<h4>
-            <h4>Points:<h4>
-            <h4>Time limit:<h4>
-          </div>
-          <div class="col-md-6">
-            <h4>Something about yordles<h4>
-            <h4><h4>
-            <h4><h4>
-          </div>
-
-          <div class=".col-md-3" >
-            <div class="form-actions">
-              <div class="text-center">
-                <div class="new-challenge2">
-                  <%= button_to "Coming Soon", new_status_path, :class => "btn btn-warning", :method => :get  %>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-      </div>
-    </div>
-  
   </div>
 </div>
-
-<div>
-<h4>More challenges coming soon! </br>Let me know if there is anything you want to see</h4>
-<div>
 
 <div>
   <%= button_to "Back", challenges_path, :class => "btn btn-primary", :method => :get  %>
