@@ -19,6 +19,19 @@
 <div class="row">
   <div class="col-md-6">
     <div class="well">
+      <h3>How do I setup my summoner name?</h3>
+      <ol>
+        <li>Enter a summoner name and press <strong>Update Summoner Name</strong></li>
+        <li>Press <strong>New validation code</strong></li>
+        <li>Rename your 1st masteries page to match the validation code</li>
+        <li>Make sure the name change saved (click anywhere, then back to the 1st mastery page)</li>
+        <li>Wait for the page to say "Validated!" (usually 1-2 minutes)</li>
+        <li>Afterwards, you can rename your mastery page</li>
+      </ol>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="well">
       <div class="btn-group">
         <%= form_for @ignindex do |t| %>
           <%= t.text_field :summoner_name %>
@@ -29,42 +42,34 @@
       </div>
     </div>
   </div>
-   <div class="col-md-4 col-md-offset-2">
-    <div class="btn-group">
-            <% if @ignindex.summoner_validated %>
-            <% else %>
-              <%= t.submit "Generate validation code", class: "btn btn-large btn-primary" %>
+    
+    <div class="col-md-2">
+      <div class="gen-button">
+        <div class="btn-group">
+                <% if @ignindex.summoner_validated %>
+                <% elsif @ignindex.summoner_name == "" %>
+                <% else %>
+                  <%= t.submit "New validation code", class: "btn btn-large btn-primary" %>
+                <% end %>
+              <% end %>
             <% end %>
+        </div>
+      </div>
+    </div>
+  <div>
+    <div class="col-md-4">
+        <% if !@ignindex.validation_timer.nil? %>
+      <div class="well">   
+          <h5>Validation code: <strong><%= @ignindex.validation_string %></strong></h5>
+          <% if !@ignindex.mastery_1_name.nil? %>
+            <h5>Current 1st page: <strong>  <%= @ignindex.mastery_1_name %></strong></h5>
+          <% else %>
           <% end %>
+          <h4>Code valid for <%= ((300 - (Time.now.to_i - @ignindex.validation_timer))/60) %> more minutes!<h4>
+          <h6>(next check in ~<%= 60 - ((Time.now.to_i - @ignindex.updated_at.to_i) % 60) %> seconds)</h6>      
+      </div>
         <% end %>
     </div>
   </div>
 </div>
 
-<div class="new-challenge2">
-<div class="row">
-  <div class="col-md-6">
-    <div class="well">
-      <h3>How do I setup my summoner name?</h3>
-      <ol>
-        <li>Enter a summoner name and press 'generate validation code'</li>
-        <li>Change the name of your 1st masteries page to match the code (within the time limit)</li>
-        <li>Make sure the name change saved (click anywhere, then back to the 1st mastery page)</li>
-        <li>Wait for the page to say "Validated!" (usually 1-2 minutes)</li>
-        <li>Afterwards, you can rename your mastery page</li>
-      </ol>
-    </div>
-  </div>
-
-
-  <div class="col-md-6">
-    <div class="well">   
-      <% if !@ignindex.validation_timer.nil? %>
-        <h5>Validation code: <strong><%= @ignindex.validation_string %></strong></h5>
-        <h4>Code valid for <%= ((300 - (Time.now.to_i - @ignindex.validation_timer))/60) %> more minutes!<h4>
-        <h6>(current page: <%= @ignindex.mastery_1_name %>, next check in ~<%= 60 - ((Time.now.to_i - @ignindex.updated_at.to_i) % 60) %> seconds)</h6>      
-      <% end %>
-    </div>
-  </div>
-</div>
-</div>
