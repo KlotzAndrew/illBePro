@@ -1,7 +1,11 @@
 <div class="row">
   <div class="col-md-6">
     <div class="page-header">
+      <% if @ignindex.summoner_name.nil? %>
+       <h1><strong>Summoner:</strong> <i>empty</i></h1>
+      <% else %>
       <h1><strong>Summoner: <%= @ignindex.summoner_name %></strong></h1>
+      <% end %>
     </div>
   </div>
   
@@ -19,7 +23,7 @@
 <div class="row">
   <div class="col-md-6">
     <div class="well">
-      <h3>How do I setup my summoner name?</h3>
+      <h3>How do I add my summoner name?</h3>
       <ol>
         <li>Enter a summoner name and press <strong>Update Summoner Name</strong></li>
         <li>Press <strong>New validation code</strong></li>
@@ -34,7 +38,7 @@
     <div class="well">
       <div class="btn-group">
         <%= form_for @ignindex do |t| %>
-          <%= t.text_field :summoner_name %>
+          <%= t.text_field :summoner_name, :placeholder => 'Summoner name' %>
           <% if @ignindex.summoner_name.nil? %>
             <%= t.submit "Update Summoner Name", class: "btn btn-large btn-primary" %>
           <% else %>
