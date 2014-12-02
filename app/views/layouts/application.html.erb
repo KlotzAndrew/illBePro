@@ -28,12 +28,12 @@
 						<% if summoner_onboarding %>
 							<li><%= link_to "Summoner", summoner_path %></li>	
 						<% else %>
-							<li><%= link_to "1) Summoner", summoner_path, style: "color:red" %></li>
+							<li><%= link_to "1) Add your Summoner Name", summoner_path, style: "color:red" %></li>
 						<% end %>
 						<% if challenge_onboarding > 0 %>
 							<li><%= link_to "Challenges", challenges_path %></li>
 						<% else %>
-							<li><%= link_to "2) Challenges", challenges_path, style: "color:red" %></li>
+							<li><%= link_to "2) Start a challenge", new_status_path, style: "color:red" %></li>
 						<% end %>
 					<% else %>
 						<li><%= link_to "Summoner", summoner_path %></li>
