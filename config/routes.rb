@@ -18,6 +18,9 @@ Rails.application.routes.draw do
   get 'challenges', to: 'statuses#index', as: :challenges
   root to: "staticpages#homepage"
 
+  get 'teaser_summoner', to: "staticpages#teaser_summoner"
+  get 'teaser_challenges', to: "staticpages#teaser_challenges"
+
   get '/:id', to: 'profiles#show', as: :user
   patch '/:id' => 'profiles#show'
 

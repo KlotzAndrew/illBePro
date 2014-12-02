@@ -66,3 +66,7 @@ body {
  	font-size: 4px;
  	line-height: 50px;
  }
+
+.teaser-tag {
+	color: red;
+}
