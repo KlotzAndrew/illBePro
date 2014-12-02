@@ -20,7 +20,7 @@ class IgnindicesController < ApplicationController
           @ignindex.refresh_validation
           redirect_to :action => :index
         else
-          flash[:alert] = "The validation hampster is overloaded with other validations! Try back in a few minutes, he needs a little rest"
+          flash[:alert] = "The validation hamster is overloaded with other validations! Try back in a few minutes, he needs a little rest"
           redirect_to :action => :index
         end
     else

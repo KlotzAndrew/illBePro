@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
 
   validates :profile_name, presence: true,
                     uniqueness: true,
-                    length: { in: 4..14 },
+                    length: { in: 4..15 },
                     format: { with: /\A[a-zA-Z]+\z/, message: "only allows letters" }
 
   after_create :index_me
