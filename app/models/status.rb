@@ -41,7 +41,7 @@ class Status < ActiveRecord::Base
             url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/#{x.summoner_name.gsub(' ', '%20')}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
             val_count += 1
               begin
-                summoner_data = open(url,{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,:read_timeout=>3}).read
+                summoner_data = open(URI.encode(url),{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,:read_timeout=>3}).read
                 summoner_hash = JSON.parse(summoner_data)
                 x.update(summoner_id: summoner_hash["#{x.summoner_name.downcase.gsub(' ', '')}"]["id"])
               rescue Timeout::Error
