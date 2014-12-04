@@ -70,3 +70,7 @@ body {
 .teaser-tag {
 	color: red;
 }
+
+.navbar .nav > li {
+	display: inline-block;
+	}
