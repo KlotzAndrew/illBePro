@@ -107,9 +107,9 @@ class Status < ActiveRecord::Base
       end
 
       if Time.now.to_i - d > 53
-         Rails.logger.info "CRON OVERLOAD! Unable to validate #{x.summoner_name}!"
+         Rails.logger.info "CRON OVERLOAD! Unable to get matches for #{x.summoner_name}!"
       elsif api_call_count+val_count > 60
-        Rails.logger.info "API OVERLOAD! Unable to update challenges for #{x.summoner_name}!"
+        Rails.logger.info "API OVERLOAD! Unable to get matches for #{x.summoner_name}!"
       else
         x.update(value: time_holder - (Time.now.to_i - x.created_at.to_i))
         Rails.logger.info "start for #{x.summoner_id}"
@@ -275,7 +275,11 @@ class Status < ActiveRecord::Base
   end
 
 def self.update_value2
-  Rails.logger.info "updating..... things...."
+  bf = []
+  while bf.count < 100
+    bf << bf.count+1
+  end
+  puts "outside loop #{bf}!"
 end
 
 def dr_who
