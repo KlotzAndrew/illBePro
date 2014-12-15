@@ -338,4 +338,139 @@ end
 end
 
 
+
+
+
+def self.king_kong
+  st = Time.now.to_i
+  index_cycle = []
+  status_cycle = []
+  hydra_food = []
+  hydra_runs = 0
+  time_holder = 3900
+  times_run = 0
+  val_count = 0
+  api_call_count = 0
+
+  #build active update object array
+  Ignindex.where("validation_timer > ?", 0 ).each do |ign|
+    index_cycle = 0
+  end
+
+  #build active status object array
+  Status.all.where("value > ?", 0).each do |x|
+    status_cycle << x
+  end
+
+  #itterate over object updates
+  status_cycle.each do |x|
+    
+    if Time.now.to_i - st > 55
+       Rails.logger.info "CRON TIMEPOUT OVERLOAD! Unable to get matches for #{x.summoner_name}!"
+    else
+      x.update(value: time_holder - (Time.now.to_i - x.created_at.to_i))
+      Rails.logger.info "start for #{x.summoner_name}"
+      if Time.now.to_i - x.created_at.to_i > time_holder
+        x.update(value: 0)
+        x.update(win_value: 1)
+        Rails.logger.info "timout for #{x.summoner_name}"
+      else
+        hydra_food << x
+        Rails.logger.info "add to hydra for #{x.summoner_name} on #{times_run}"
+        if hydra_food.count >= 8 or hydra_runs == status_cycle.count
+          times_run += 1
+          api_call_count += hydra_food
+
+          Rails.logger.info "ran hydra times_run cycle #{times_run}"
+          hydra = Typhoeus::Hydra.new(:max_concurrency => 200)
+          hst = Time.now
+          hydra_food.each do |champ_id|
+            url = "https://na.api.pvp.net/api/lol/na/v2.2/matchhistory/#{x.summoner_id}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
+            request = Typhoeus::Request.new(url, :timeout => 2)
+            hydra.queue(request)
+            request.on_complete do |response|
+              if response.success?
+                
+                games_hash = JSON.parse(response.body)
+
+                valid_games = []
+                i = 0
+                games_hash["matches"].each do |match|
+                  if match["queueType"] == "RANKED_SOLO_5x5" && (match["matchCreation"] - match["matchDuration"]) >= (x.created_at.to_i - 420)*1000
+                    valid_games << i
+                    i = i + 1
+                  else
+                    i = i + 1
+                  end
+                end
+
+                if valid_games.nil?
+                  Rails.logger.info "nil valid_games for #{x.summoner_id}"
+                else
+                  if x.kind == 1
+                    Rails.logger.info "challenge kind 1 for #{x.summoner_id}"
+                    if valid_games.count == 0               
+                      Rails.logger.info "updated zero games for #{x.summoner_id}" 
+                    elsif !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
+                      x.update(game_1: {
+                        :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
+                        :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", 
+                        :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", 
+                        :matchDuration => "#{games_hash["matches"][valid_games[0]]["matchDuration"]}", 
+                        :kills => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["kills"]}", 
+                        :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", 
+                        :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
+                        })
+                      x.update(value: 0)
+                      x.update(win_value: 0)
+                      Rails.logger.info "updated lost first for #{x.summoner_id}"
+                    elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
+                       x.update(game_1: {
+                        :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
+                        :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", 
+                        :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", 
+                        :matchDuration => "#{games_hash["matches"][valid_games[0]]["matchDuration"]}", 
+                        :kills => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["kills"]}", 
+                        :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", 
+                        :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
+                        })
+                      x.update(value: 0)
+                      x.update(win_value: 2)
+                      Score.find_by_user_id(x.user_id).update(week_4: Score.find_by_user_id(x.user_id).week_4 + x.points)
+                      Score.find_by_summoner_id(x.summoner_id).update(week_4: Score.find_by_summoner_id(x.summoner_id).week_4 + x.points)
+                      Rails.logger.info "won 1/1 for #{x.summoner_id}"            
+                    else
+                      Rails.logger.info "updated else for #{x.summoner_id}"
+                    end
+                  else
+                    Rails.logger.info "wrong kind for #{x.summoner_id}"
+                  end
+                end
+
+              elsif response.timed_out?
+                puts "got a time out"
+              elsif response.code == 0
+                puts response.return_message
+              else
+                puts "HTTP request failed: " + response.code.to_s
+              end
+            end
+          end
+          hydra.run
+          het = Time.now
+          puts "\n" + (het - hst).to_s() + " seconds for hydra"
+          throttle_counter = []
+
+          ct = Time.now.to_i
+          if (ct-st) < times_run*10
+            sleep time_run*10-(ct-st)
+          end
+
+        end
+      end
+    end
+  end
+    Rails.logger.info "Validation calls = #{val_count} | Challenge calls = #{api_call_count} | #{((val_count + api_call_count*1.00)/(Time.now.to_i - st)).round(2)}/Second - total: #{Time.now.to_i - st*1.00} seconds!"
+end
+
 end
