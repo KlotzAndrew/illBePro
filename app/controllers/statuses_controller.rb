@@ -13,8 +13,6 @@ class StatusesController < ApplicationController
 
   # GET /statuses/1
   # GET /statuses/1.json
-  def show
-  end
 
   # GET /statuses/new
   def new
@@ -43,6 +41,11 @@ class StatusesController < ApplicationController
   # PATCH/PUT /statuses/1
   # PATCH/PUT /statuses/1.json
   def update
+    if params[:commit] == "Pause"
+      flash[:notice] = "Challenge paused!"
+    elsif params[:commit] == "Unpause"
+      flash[:notice] = "Challenge unpaused!"
+    end
   end
 
   # DELETE /statuses/1

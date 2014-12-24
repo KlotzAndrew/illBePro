@@ -338,139 +338,223 @@ end
 end
 
 
+  def self.api_call
+    cron_st = Time.now.to_i
+    time_holder = 3900
+    index_cycle = []
+    status_cycle = []
+    hydra_food = []
+    hydra_runs = 0
+    times_run = 0
+    val_count = 0
+    api_call_count = 0
 
+    mass_summoner = ""
+    mass_count = 0 
+    that_comma = 0
+    val_st = Time.now.to_i
 
-
-def self.king_kong
-  st = Time.now.to_i
-  index_cycle = []
-  status_cycle = []
-  hydra_food = []
-  hydra_runs = 0
-  time_holder = 3900
-  times_run = 0
-  val_count = 0
-  api_call_count = 0
-
-  #build active update object array
-  Ignindex.where("validation_timer > ?", 0 ).each do |ign|
-    index_cycle = 0
-  end
-
-  #build active status object array
-  Status.all.where("value > ?", 0).each do |x|
-    status_cycle << x
-  end
-
-  #itterate over object updates
-  status_cycle.each do |x|
-    
-    if Time.now.to_i - st > 55
-       Rails.logger.info "CRON TIMEPOUT OVERLOAD! Unable to get matches for #{x.summoner_name}!"
-    else
-      x.update(value: time_holder - (Time.now.to_i - x.created_at.to_i))
-      Rails.logger.info "start for #{x.summoner_name}"
-      if Time.now.to_i - x.created_at.to_i > time_holder
-        x.update(value: 0)
-        x.update(win_value: 1)
-        Rails.logger.info "timout for #{x.summoner_name}"
+    Ignindex.where("validation_timer > ?", 0 ).each do |x|
+      if x.validation_timer < (Time.now.to_i - 300)
+        Ignindex.find_by_id(x.id).update(validation_timer: nil)
+        Ignindex.find_by_id(x.id).update(validation_string: nil)
+        Rails.logger.info "#{x.summoner_name} ran out of time"
       else
-        hydra_food << x
-        Rails.logger.info "add to hydra for #{x.summoner_name} on #{times_run}"
-        if hydra_food.count >= 8 or hydra_runs == status_cycle.count
-          times_run += 1
-          api_call_count += hydra_food
-
-          Rails.logger.info "ran hydra times_run cycle #{times_run}"
-          hydra = Typhoeus::Hydra.new(:max_concurrency => 200)
-          hst = Time.now
-          hydra_food.each do |champ_id|
-            url = "https://na.api.pvp.net/api/lol/na/v2.2/matchhistory/#{x.summoner_id}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
-            request = Typhoeus::Request.new(url, :timeout => 2)
-            hydra.queue(request)
-            request.on_complete do |response|
-              if response.success?
-                
-                games_hash = JSON.parse(response.body)
-
-                valid_games = []
-                i = 0
-                games_hash["matches"].each do |match|
-                  if match["queueType"] == "RANKED_SOLO_5x5" && (match["matchCreation"] - match["matchDuration"]) >= (x.created_at.to_i - 420)*1000
-                    valid_games << i
-                    i = i + 1
-                  else
-                    i = i + 1
-                  end
+        Rails.logger.info "#{x.summoner_name} still has #{300 + x.validation_timer - Time.now.to_i} seconds!"
+        if x.summoner_id.nil?
+          mass_count += 1
+          if x.summoner_name_ref != x.summoner_name.downcase.gsub(' ', '')
+            x.update(summoner_name_ref: "#{x.summoner_name.downcase.gsub(' ', '')}")
+          end
+          Rails.logger.info "updating id for #{x.summoner_name}"
+          if that_comma == 0
+            mass_summoner << "#{x.summoner_name.downcase}"
+             that_comma +=1
+          else
+            mass_summoner << ",#{x.summoner_name.downcase}"
+          end
+          puts mass_summoner
+          Rails.logger.info "time before api call #{Time.now.to_i - val_st} seconds!"
+          if mass_count > 0 && mass_count%40 == 0
+            url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/#{mass_summoner}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
+            puts url
+            val_count += 1
+            Rails.logger.info "time before api call begin #{Time.now.to_i - val_st} seconds!"
+            begin
+              summoner_data = open(URI.encode(url),{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,:read_timeout=>3}).read
+              Rails.logger.info "time before parse #{Time.now.to_i - val_st} seconds!"
+              summoner_hash = JSON.parse(summoner_data)
+               Rails.logger.info "after call but before hash #{Time.now.to_i - val_st} seconds!"           
+                summoner_hash.each_pair do |x,y|
+                  Ignindex.find_by_summoner_name_ref(x).update(summoner_id: summoner_hash["#{x}"]["id"])
                 end
-
-                if valid_games.nil?
-                  Rails.logger.info "nil valid_games for #{x.summoner_id}"
-                else
-                  if x.kind == 1
-                    Rails.logger.info "challenge kind 1 for #{x.summoner_id}"
-                    if valid_games.count == 0               
-                      Rails.logger.info "updated zero games for #{x.summoner_id}" 
-                    elsif !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
-                      x.update(game_1: {
-                        :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
-                        :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", 
-                        :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", 
-                        :matchDuration => "#{games_hash["matches"][valid_games[0]]["matchDuration"]}", 
-                        :kills => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["kills"]}", 
-                        :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", 
-                        :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
-                        })
-                      x.update(value: 0)
-                      x.update(win_value: 0)
-                      Rails.logger.info "updated lost first for #{x.summoner_id}"
-                    elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
-                       x.update(game_1: {
-                        :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
-                        :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", 
-                        :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", 
-                        :matchDuration => "#{games_hash["matches"][valid_games[0]]["matchDuration"]}", 
-                        :kills => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["kills"]}", 
-                        :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", 
-                        :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
-                        })
-                      x.update(value: 0)
-                      x.update(win_value: 2)
-                      Score.find_by_user_id(x.user_id).update(week_4: Score.find_by_user_id(x.user_id).week_4 + x.points)
-                      Score.find_by_summoner_id(x.summoner_id).update(week_4: Score.find_by_summoner_id(x.summoner_id).week_4 + x.points)
-                      Rails.logger.info "won 1/1 for #{x.summoner_id}"            
-                    else
-                      Rails.logger.info "updated else for #{x.summoner_id}"
-                    end
-                  else
-                    Rails.logger.info "wrong kind for #{x.summoner_id}"
-                  end
-                end
-
-              elsif response.timed_out?
-                puts "got a time out"
-              elsif response.code == 0
-                puts response.return_message
-              else
-                puts "HTTP request failed: " + response.code.to_s
-              end
+              Rails.logger.info "time after hash #{Time.now.to_i - val_st} seconds!"
+              mass_summoner = ""
+              that_comma = 0
+            rescue Timeout::Error
+              Rails.logger.info "URI-TIMEOUT request for mass_summoner on name"
+              mass_summoner = ""
+              that_comma = 0
+            rescue => e
+              Rails.logger.info "uri error request for mass_summoner on name"
+              mass_summoner = ""
+              that_comma = 0
             end
-          end
-          hydra.run
-          het = Time.now
-          puts "\n" + (het - hst).to_s() + " seconds for hydra"
-          throttle_counter = []
 
-          ct = Time.now.to_i
-          if (ct-st) < times_run*10
-            sleep time_run*10-(ct-st)
+          else
+            Rails.logger.info "#{x.summoner_name} queued for mass cycle"
           end
-
+        else
+          Rails.logger.info "already have id for #{x.summoner_name}"
         end
       end
     end
+
+    if mass_count > 40 && mass_count%40 != 0
+      Rails.logger.info "ran remainder count for summoner name => id"
+      url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/#{mass_summoner}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
+      puts url
+      val_count += 1
+      Rails.logger.info "time before api call begin #{Time.now.to_i - val_st} seconds!"
+      begin
+        summoner_data = open(URI.encode(url),{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,:read_timeout=>1}).read
+        Rails.logger.info "time before parse #{Time.now.to_i - val_st} seconds!"
+        summoner_hash = JSON.parse(summoner_data)
+        Rails.logger.info "after call but before hash #{Time.now.to_i - val_st} seconds!"
+
+        summoner_hash.each_pair do |x,y|
+          Ignindex.find_by_summoner_name_ref(x).update(summoner_id: summoner_hash["#{x}"]["id"])
+        end
+
+        Rails.logger.info "time after hash #{Time.now.to_i - val_st} seconds!"
+      rescue Timeout::Error
+        Rails.logger.info "URI-TIMEOUT request for mass_summoner on name"
+      rescue => e
+        Rails.logger.info "uri error request for mass_summoner on name"
+      end
+    else
+      Rails.logger.info "ran remainder count didn't run, but sees #{mass_count}"
+    end
+    Rails.logger.info "completed summoner_name to _id in #{Time.now.to_i - val_st} seconds!"
+
+    mass_count = 0
+    mass_summoner = ""
+    that_comma = 0
+
+    Ignindex.where("validation_timer > ?", 0 ).where.not(summoner_id: nil).each do |x|
+      mass_count += 1
+      if that_comma == 0
+        mass_summoner << "#{x.summoner_id}"
+         that_comma +=1
+      else
+        mass_summoner << ",#{x.summoner_id}"
+      end
+
+      if mass_count > 0 && mass_count%40 == 0
+        Rails.logger.info "time before ign call #{Time.now.to_i - val_st} seconds!"
+        url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/#{mass_summoner}/masteries?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
+        val_count += 1
+        begin
+          mastery_data = open(url,{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,:read_timeout=>3}).read
+          mastery_hash = JSON.parse(mastery_data)
+          Rails.logger.info "time after ign call #{Time.now.to_i - val_st} seconds!"
+          
+          mastery_hash.each_pair do |key,value|
+
+            Ignindex.find_by_summoner_id(key).update(mastery_1_name: "#{mastery_hash["#{key}"]["pages"][0]["name"]}")
+            Rails.logger.info "1st page name: #{mastery_hash["#{key}"]["pages"][0]["name"]}"
+
+            if "#{mastery_hash["#{key}"]["pages"][0]["name"]}" == Ignindex.find_by_summoner_id(key).validation_string
+              if Ignindex.where(summoner_id: key).where(summoner_validated: true).count > 1
+                Ignindex.where(summoner_id: key).where(summoner_validated: true).each do |ign|
+                  ign.update(summoner_validated: false)
+                  Rails.logger.info "User #{ign.user_id} is no longer valid, duplicate summoner name"
+                end
+              end
+              Ignindex.find_by_summoner_id(key).update(summoner_validated: true)
+              Ignindex.find_by_summoner_id(key).update(validation_timer: nil)
+              Ignindex.find_by_summoner_id(key).update(validation_string: nil)
+              Rails.logger.info "key validated"
+
+              if Score.find_by_summoner_id(key).nil?
+                Score.create!(:summoner_id => key, :summoner_name => x.summoner_name, :week_4 => 0)
+                Rails.logger.info "scorecard created for #{key}"
+              else
+                Rails.logger.info "scorecard already exists for #{key}"
+              end
+            else
+              Rails.logger.info "key not validated"
+            end
+          end
+          that_comma = 0
+          mass_summoner = ""
+        rescue Timeout::Error
+          Rails.logger.info "URI-TIMEOUT request on masteries"
+          that_comma = 0
+          mass_summoner = ""
+        rescue => e
+          Rails.logger.info "uri error request on masteries"
+          that_comma = 0
+          mass_summoner = ""
+        end
+      end 
+    end #part 2
+
+    #remainder api call
+    if mass_count > 40 && mass_count%40 != 0
+      Rails.logger.info "ran remainder count for masteries"
+
+      Rails.logger.info "time before ign call #{Time.now.to_i - val_st} seconds!"
+      url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/#{mass_summoner}/masteries?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
+      val_count += 1
+      begin
+        mastery_data = open(url,{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,:read_timeout=>3}).read
+        mastery_hash = JSON.parse(mastery_data)
+        Rails.logger.info "time after ign call #{Time.now.to_i - val_st} seconds!"
+        mastery_hash.each_pair do |key,value|
+
+          Ignindex.find_by_summoner_id(key).update(mastery_1_name: "#{mastery_hash["#{key}"]["pages"][0]["name"]}")
+          Rails.logger.info "1st page name: #{mastery_hash["#{key}"]["pages"][0]["name"]}"
+
+          if "#{mastery_hash["#{key}"]["pages"][0]["name"]}" == Ignindex.find_by_summoner_id(key).validation_string
+            if Ignindex.where(summoner_id: key).where(summoner_validated: true).count > 1
+              Ignindex.where(summoner_id: key).where(summoner_validated: true).each do |ign|
+                ign.update(summoner_validated: false)
+                Rails.logger.info "User #{ign.user_id} is no longer valid, duplicate summoner name"
+              end
+            end
+            Ignindex.find_by_summoner_id(key).update(summoner_validated: true)
+            Ignindex.find_by_summoner_id(key).update(validation_timer: nil)
+            Ignindex.find_by_summoner_id(key).update(validation_string: nil)
+            Rails.logger.info "key validated"
+
+            if Score.find_by_summoner_id(key).nil?
+              Score.create!(:summoner_id => key, :summoner_name => x.summoner_name, :week_4 => 0)
+              Rails.logger.info "scorecard created for #{key}"
+            else
+              Rails.logger.info "scorecard already exists for #{key}"
+            end
+          else
+
+            Rails.logger.info "key not validated"
+          end
+        end
+        that_comma = 0
+        mass_summoner = ""
+      rescue Timeout::Error
+        Rails.logger.info "URI-TIMEOUT request on masteries"
+        that_comma = 0
+        mass_summoner = ""
+      rescue => e
+        Rails.logger.info "uri error request on masteries"
+        that_comma = 0
+        mass_summoner = ""
+      end
+    else
+    Rails.logger.info "ran remainder count didn't run, but sees #{mass_count} for masteries"
+    end
+    Rails.logger.info "completed cron in #{Time.now.to_i - cron_st} seconds!"
   end
-    Rails.logger.info "Validation calls = #{val_count} | Challenge calls = #{api_call_count} | #{((val_count + api_call_count*1.00)/(Time.now.to_i - st)).round(2)}/Second - total: #{Time.now.to_i - st*1.00} seconds!"
-end
+
 
 end

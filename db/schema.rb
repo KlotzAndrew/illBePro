@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141127203909) do
+ActiveRecord::Schema.define(version: 20141220034329) do
 
   create_table "champions", force: true do |t|
     t.string   "champion"
@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(version: 20141127203909) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "mastery_1_name"
+    t.string   "summoner_name_ref"
   end
 
   create_table "scores", force: true do |t|
@@ -61,6 +62,8 @@ ActiveRecord::Schema.define(version: 20141127203909) do
     t.text     "game_3"
     t.text     "game_4"
     t.text     "game_5"
+    t.integer  "pause_timer"
+    t.integer  "trigger_timer"
   end
 
   add_index "statuses", ["user_id"], name: "index_statuses_on_user_id"
