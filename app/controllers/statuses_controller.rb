@@ -6,6 +6,7 @@ class StatusesController < ApplicationController
   # GET /statuses
   # GET /statuses.json
   def index
+    @champion = Champion.all
     @statuses = Status.all
     @ignindex = Ignindex.find_by_user_id(current_user.id)
     @score = Score.find_by_user_id(current_user.id)
@@ -41,21 +42,49 @@ class StatusesController < ApplicationController
   # PATCH/PUT /statuses/1
   # PATCH/PUT /statuses/1.json
   def update
-    if params[:commit] == "Pause"
-      flash[:notice] = "Challenge paused!"
-    elsif params[:commit] == "Unpause"
-      flash[:notice] = "Challenge unpaused!"
+    if (Time.now.to_i - @status.created_at.to_i) < 1200
+      if @status.pause_timer == 0
+        @status.update(pause_timer: Time.now.to_i)
+        respond_to do |format|
+          format.html { redirect_to statuses_url, notice: 'Challenge Paused' }
+          format.json { head :no_content }
+        end
+      else 
+        @status.update(value: (@status.value + Time.now.to_i - @status.pause_timer))
+        @status.update(pause_timer: 0)
+        respond_to do |format|
+          format.html { redirect_to statuses_url, notice: 'Challenge Unpaused' }
+          format.json { head :no_content }
+        end
+      end
+    else
+      @status.update(trigger_timer: Time.now.to_i)
+        respond_to do |format|
+          format.html { redirect_to statuses_url, notice: 'Updating your game results...' }
+          format.json { head :no_content }
+        end
     end
   end
 
   # DELETE /statuses/1
   # DELETE /statuses/1.json
   def destroy
-    @status.update(value: 0)
-    @status.update(win_value: 3)
-    respond_to do |format|
-      format.html { redirect_to statuses_url, notice: 'Challenge was canceled' }
-      format.json { head :no_content }
+    if (Time.now.to_i - @status.created_at.to_i) < 1200 && @status.kind == 4
+      @status.update(value: 0)
+      @status.update(win_value: 3)
+      Score.find_by_user_id(@status.user_id).update(week_4: Score.find_by_user_id(@status.user_id).week_4 - 1)
+      Score.find_by_summoner_id(@status.summoner_id).update(week_4: Score.find_by_summoner_id(@status.summoner_id).week_4 - 1)
+      respond_to do |format|
+        format.html { redirect_to statuses_url, notice: 'Challenge was surrendered, 1 point lost' }
+        format.json { head :no_content }
+      end
+    else 
+      @status.update(value: 0)
+      @status.update(win_value: 3)
+      respond_to do |format|
+        format.html { redirect_to statuses_url, notice: 'Challenge was canceled' }
+        format.json { head :no_content }
+      end
     end
   end
 

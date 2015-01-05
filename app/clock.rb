@@ -19,6 +19,6 @@ end
   #   puts "Running #{job}, at #{time}"
   # end
 
-  every(1.minute, 'api_caller.job') {Status.update_value}
+  every(1.minute, 'api_caller.job') {Status.api_call}
 
 end

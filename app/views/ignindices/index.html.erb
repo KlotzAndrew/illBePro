@@ -39,6 +39,12 @@
       <div class="btn-group">
         <%= form_for @ignindex do |t| %>
           <%= t.text_field :summoner_name, :placeholder => 'Summoner name' %>
+              </span>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">NA<span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="#">North America</a></li>
+                </ul>
+              </span>
           <% if @ignindex.summoner_name.nil? %>
             <%= t.submit "Update Summoner Name", class: "btn btn-large btn-primary" %>
           <% else %>
@@ -84,6 +90,7 @@
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
   ga('create', 'UA-57285202-1', 'auto');
+  ga('require', 'displayfeatures');
   ga('send', 'pageview');
 
 </script>

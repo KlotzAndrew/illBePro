@@ -14,21 +14,21 @@
   <div class="col-md-6">
     <div class="page-header">
       <h1 class="text-center"><strong>Total score: 
-        <% if @score.week_4.nil? %>
+        <% if @score.week_5.nil? %>
           0
         <% else %>
-          <%= @score.week_4 %>
+          <%= @score.week_5 %>
         <% end %></strong> </h1>
     </div>
   </div>
 </div>
 
-<% if @statuses.where("value > ?", 0).find_by_user_id(current_user.id).nil? %>
+<% if @statuses.where(win_value: nil).find_by_user_id(current_user.id).nil? %>
   <div class="btn-group">
     <%= link_to 'New Challenge', new_status_path, class: "btn btn-success" %>
   </div>
 <% else %>
-  <% status = @statuses.where("value > ?", 0).find_by_user_id(current_user.id) %>
+  <% status = @statuses.where(win_value: nil).find_by_user_id(current_user.id) %>
   <div class="well">
   <div class="challenge-history-running">
     <div class="row" >
@@ -50,36 +50,45 @@
           <div class="challenge-description"><p>Victory</p></div>
         <% elsif status.win_value == 1 %>
           <div class="challenge-description"><p>Out of Time</p></div>
+        <% elsif status.pause_timer > 0 %>
+          <div class="challenge-description"><p><strong>Unpauses in: <%= (360 - (Time.now.to_i - status.pause_timer))/60 %> min</strong></p></div>
         <% else %>
-          <div class="challenge-description"><p><strong>Minutes left: <%= status.value/60 %></strong></p></div>
+          <div class="challenge-description"><p><strong>Time left: <%= (status.value - (Time.now.to_i - status.created_at.to_i))/60 %> min</strong></p></div>
         <% end %>
       </div>
-      <div class="col-md-2">
-        <div class="challenge-description">
-        <% if status.value > 0 %>
-          <% if (Time.now - status.updated_at) < 120 %>
-            <p>Ping: good<p>
-          <% elsif (Time.now - status.updated_at) < 180 %>
-            <p>Ping: slow<p>
-          <% elsif (Time.now - status.updated_at) < 240 %>
-            <p>Ping: lagging<p>
-          <% else %>
-            <p>Ping: disconnected<p>
-          <% end %>
-        <% end %>
-        </div>
 
+      <div class="col-md-1">
+        <div class="challenge-description">
+
+          <% if (Time.now.to_i - status.created_at.to_i) < 1200 %>
+            <%= link_to "Surrender", status, method: :delete, data: { confirm: "Canceling before 20 minutes costs 1 point, are you sure?" } %>
+          <% elsif %>
+            <%= link_to "Cancel", status, method: :delete, data: { confirm: "No penalty for canceling, are you sure?" } %>
+          <% end %>
+
+        </div>
       </div>
+
       <div class="col-md-2">
         <div class="challenge-description">
-        <div class="meta">
-          <p><%= time_ago_in_words(status.created_at) + " ago" %> |
-          <span class="admin">
-            <%= link_to "Cancel", status, method: :delete, data: { confirm: "Are you sure you want to cancel this challelenge? There is no going back" } %></p>
-          </span>
-        </div>
+
+          <% if (Time.now.to_i - status.created_at.to_i) < 1200 %>
+            <% if status.pause_timer == 0 %>
+              <%= link_to "Pause", status, method: :put %>
+            <% else %>
+              <%= link_to "Unpause", status, method: :put %>
+            <% end %>
+          <% else %>
+            <% if status.trigger_timer > (Time.now.to_i - 300) %>
+             Updating game data...
+            <% else %>
+              <%= link_to "Finished", status, method: :put %>
+            <% end %>
+          <% end %>
+
         </div>
       </div>
+
     </div>
 
   <% if status.kind == 1 %>
@@ -199,6 +208,30 @@
       </div>
     <% end %> 
 
+  <% elsif status.kind == 4 %>
+    <% if status.game_1.empty? %>
+      <div class="panel panel-default">
+        <div class="panel-body">
+          Choose one of these (9):
+          <% @champion.find(status.content[1...status.content.length-1].split.map(&:to_i)).each do |x| %>
+            <%= x.champion %>,
+          <% end %>
+
+        </div>
+      </div>
+    <% else %>
+      <% if status.game_1[:win_loss] == "true" %>
+        <div class="panel panel-success">
+      <% else %>
+        <div class="panel panel-danger">
+      <% end %>
+          <div class="panel-heading">
+               1st game: <%= status.game_1[:champion_id] %>
+               <%= status.game_1[:kills] %>/<%= status.game_1[:deaths] %>/<%= status.game_1[:assists] %> - <%= status.game_1[:matchDuration].to_i/60 %> Minutes
+          </div>
+        </div>
+    <% end %>
+
   <% end %>
   </div>
   </div>
@@ -208,7 +241,7 @@
   <h1 class="text-center"><strong>History</strong></h1>
 </div>
 
-<% @statuses.where("user_id = ?", current_user.id).where("value < ?", 1).order(created_at: :desc).each do |status| %>
+<% @statuses.where("user_id = ?", current_user.id).where.not(win_value: nil).order(created_at: :desc).each do |status| %> 
 <% if status.win_value == 0 %>
   <div class="challenge-history-loss">
 <% elsif status.win_value == 3 %>
@@ -244,21 +277,6 @@
           <div class="challenge-description"><p>Minutes left: <%= status.value/60 %></p></div>
         <% end %>
       </div>
-      <div class="col-md-2">
-        <div class="challenge-description">
-        <% if status.value > 0 %>
-          <% if (Time.now - status.updated_at) < 120 %>
-            <p>Ping: good<p>
-          <% elsif (Time.now - status.updated_at) < 180 %>
-            <p>Ping: slow<p>
-          <% elsif (Time.now - status.updated_at) < 240 %>
-            <p>Ping: lagging<p>
-          <% else %>
-            <p>Ping: disconnected<p>
-          <% end %>
-        <% end %>
-        </div>
-      </div>
       <div class="col-md-2 col-md-offset-2">
         <div class="challenge-description">
         <div class="meta">
@@ -273,6 +291,28 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           Game 1
+        </div>
+      </div>
+    <% else %>
+      <% if status.game_1[:win_loss] == "true" %>
+        <div class="panel panel-success">
+      <% else %>
+        <div class="panel panel-danger">
+      <% end %>
+          <div class="panel-heading">
+               1st game: <%= status.game_1[:champion_id] %>
+               <%= status.game_1[:kills] %>/<%= status.game_1[:deaths] %>/<%= status.game_1[:assists] %> - <%= status.game_1[:matchDuration].to_i/60 %> Minutes
+          </div>
+        </div>
+    <% end %>
+
+  <% elsif status.kind == 4 %>
+    <% if status.game_1.empty? %>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <% @champion.find(status.content[1...status.content.length-1].split.map(&:to_i)).each do |x| %>
+            <%= x.champion %> |
+          <% end %>
         </div>
       </div>
     <% else %>
@@ -398,6 +438,7 @@
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
   ga('create', 'UA-57285202-1', 'auto');
+  ga('require', 'displayfeatures');
   ga('send', 'pageview');
 
 </script>

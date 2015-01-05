@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
 
   def index_me
     Ignindex.create!(:user_id => self.id) 
-    Score.create!(:user_id => self.id, :week_1 => 0, :week_2 => 0, :week_3 => 0, :week_4 => 0)
+    Score.create!(:user_id => self.id, :week_1 => 0, :week_2 => 0, :week_3 => 0, :week_4 => 0, :week_5 => 0, :week_6 => 0,:week_7 => 0,:week_8 => 0,:week_9 => 0,:week_10 => 0,:week_11 => 0)
   end
 
   def full_name

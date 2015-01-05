@@ -8,15 +8,19 @@
     <div class="col-md-6">
       <div class="well">
 
+        <h4 class="text-center">Win your next game</h4>
+
         <div class="row">
           <div class="col-md-3">
-            <h4>Requirements:<h4>
-            <h4>Points:<h4>
+            <h4><h4>
+            <h4>Victory:<h4>
+            <h4>Defeat:<h4>
             <h4>Time limit:<h4>
           </div>
           <div class="col-md-6">
-            <h4>Win the next game<h4>
+            <h4><h4>
             <h4>1<h4>
+            <h4>0<h4>
             <h4>65 Minutes<h4>
           </div>
 
@@ -28,48 +32,62 @@
                     <%= f.hidden_field :kind, :value=>1 %>
                     <%= f.button :submit, "Start", class: "btn btn-lg btn-success" %>
                   <% end %>
-              </div>
+                </div>
               </div>
             </div>
           </div>
 
         </div>
 
+         <h5 class="text-center">No penalty for canceling challenge</h5>
+      
       </div>
     </div>
 
 
 
     <div class="col-md-6">
-
       <div class="well">
+
+        <h4 class="text-center">Win your next game with a random champion</h4>
+
         <div class="row">
           <div class="col-md-3">
-            <h4>Requirements:<h4>
-            <h4>Points:<h4>
+            <h4><h4>
+            <h4>Victory:<h4>
+            <h4>Defeat:<h4>
             <h4>Time limit:<h4>
+        
           </div>
           <div class="col-md-6">
-            <h4>Win the next 2 games in a row<h4>
-            <h4>4<h4>
-            <h4>120 Minutes<h4>
+            <h4><h4>
+            <h4>2<h4>
+            <h4>0<h4>
+            <h4>65 Minutes<h4>
+      
           </div>
+
+
 
           <div class=".col-md-3" >
             <div class="form-actions">
               <div class="text-center">
                 <div class="new-challenge2">
-                  <%= button_to "Locked", new_status_path, :class => "btn btn-warning", :method => :get  %>
+                  <%= simple_form_for(@status, html: {class: 'form-hoizontal'}) do |f| %>
+                    <%= f.hidden_field :kind, :value=>4 %>
+                    <%= f.button :submit, "Start", class: "btn btn-lg btn-success" %>
+                  <% end %>
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
+         <h5 class="text-center">Canceling challenge before 20 minutes costs 1 point</h5>
       </div>
-    </div>
   
+    </div>
   </div>
-</div>
 
 <div class="new-challenge">
 
@@ -84,9 +102,9 @@
             <h4>Time limit:<h4>
           </div>
           <div class="col-md-6">
-            <h4>Win 3 games in a row<h4>
-            <h4>9<h4>
-            <h4>180 Minutes<h4>
+            <h4>Win 2 games in a row<h4>
+            <h4>3<h4>
+            <h4>120 Minutes<h4>
           </div>
 
           <div class="col-md-3" >
@@ -98,9 +116,34 @@
               </div>
             </div>
           </div>
-
         </div>
 
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="well">
+        <div class="row">
+          <div class="col-md-3">
+            <h4>Requirements:<h4>
+            <h4>Points:<h4>
+            <h4>Time limit:<h4>
+          </div>
+          <div class="col-md-6">
+            <h4>Win the next 3 games in a row<h4>
+            <h4>9<h4>
+            <h4>180 Minutes<h4>
+          </div>
+
+          <div class=".col-md-3" >
+            <div class="form-actions">
+              <div class="text-center">
+                <div class="new-challenge2">
+                  <%= button_to "Locked", new_status_path, :class => "btn btn-warning", :method => :get  %>
+                </div>
+              </div>
+            </div>
+          </div>
       </div>
     </div>
 
@@ -118,6 +161,7 @@
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
   ga('create', 'UA-57285202-1', 'auto');
+  ga('require', 'displayfeatures');
   ga('send', 'pageview');
 
 </script>

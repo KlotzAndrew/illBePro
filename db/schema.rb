@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141220034329) do
+ActiveRecord::Schema.define(version: 20150105181027) do
 
   create_table "champions", force: true do |t|
     t.string   "champion"
@@ -42,6 +42,13 @@ ActiveRecord::Schema.define(version: 20141220034329) do
     t.integer  "week_4"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "week_5",        default: 0
+    t.integer  "week_6",        default: 0
+    t.integer  "week_7",        default: 0
+    t.integer  "week_8",        default: 0
+    t.integer  "week_9",        default: 0
+    t.integer  "week_10",       default: 0
+    t.integer  "week_11",       default: 0
   end
 
   create_table "statuses", force: true do |t|

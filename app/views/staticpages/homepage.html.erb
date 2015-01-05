@@ -30,7 +30,7 @@
 
 	  <div class="col-md-6">
 	    <div class="loader-image">
-	        <%= image_tag("basic-gif.gif", :alt => "rss feed", height: '304', width: '516') %>
+	        <% image_tag("", :alt => "rss feed", height: '304', width: '516') %>
 	    </div>
 	  </div>
 <div>
@@ -42,6 +42,7 @@
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
   ga('create', 'UA-57285202-1', 'auto');
+  ga('require', 'displayfeatures');
   ga('send', 'pageview');
 
 </script>

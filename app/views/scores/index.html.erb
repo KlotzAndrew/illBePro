@@ -29,7 +29,7 @@
           <% end %>
             <td><%= x.ordinalize %></td>
             <td><%= @users.find(score.user_id).profile_name %></td>
-            <td><%= score.week_3 %></td>
+            <td><%= score.week_4 %></td>
             <td><%= @ignindex.find_by_user_id(score.user_id).summoner_name %></td>
 
           </tr>
@@ -58,7 +58,7 @@
           <tr>
             <td><%= y.ordinalize %></td>
             <td><%= @users.find(score.user_id).profile_name %></td>
-            <td><%= score.week_4 %></td>
+            <td><%= score.week_5 %></td>
             <td><%= @ignindex.find_by_user_id(score.user_id).summoner_name %></td>
             <% if @status.where("user_id = ?", score.user_id).where("value > ?", 0).count == 1 %>
             <td>In challenge</td>
@@ -85,6 +85,7 @@
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
   ga('create', 'UA-57285202-1', 'auto');
+  ga('require', 'displayfeatures');
   ga('send', 'pageview');
 
 </script>
