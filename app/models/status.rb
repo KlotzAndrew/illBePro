@@ -331,8 +331,8 @@ end
 
 
 def update_champions
-p = 415
-while p < 430
+p = 420
+while p < 422
 Champion.create(:id => p)
 begin
 url = "https://na.api.pvp.net/api/lol/static-data/na/v1.2/champion/#{p}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
