@@ -72,8 +72,8 @@ class StatusesController < ApplicationController
     if (Time.now.to_i - @status.created_at.to_i) < 1200 && @status.kind == 4
       @status.update(value: 0)
       @status.update(win_value: 3)
-      Score.find_by_user_id(@status.user_id).update(week_4: Score.find_by_user_id(@status.user_id).week_4 - 1)
-      Score.find_by_summoner_id(@status.summoner_id).update(week_4: Score.find_by_summoner_id(@status.summoner_id).week_4 - 1)
+      Score.find_by_user_id(@status.user_id).update(week_5: Score.find_by_user_id(@status.user_id).week_5 - 1)
+      Score.find_by_summoner_id(@status.summoner_id).update(week_5: Score.find_by_summoner_id(@status.summoner_id).week_5 - 1)
       respond_to do |format|
         format.html { redirect_to statuses_url, notice: 'Challenge was surrendered, 1 point lost' }
         format.json { head :no_content }

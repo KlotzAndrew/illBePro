@@ -394,7 +394,16 @@ end
               summoner_hash = JSON.parse(summoner_data)     
               Rails.logger.info "#{summoner_hash}"
                 summoner_hash.each_pair do |summoner_hash_key,summoner_hash_value|
+
                   Ignindex.find_by_summoner_name_ref(summoner_hash_key).update(summoner_id: summoner_hash["#{summoner_hash_key}"]["id"])
+                
+                    if Score.find_by_summoner_id(summoner_hash["#{x}"]["id"]).nil?
+                      Score.create!(:summoner_id => summoner_hash["#{x}"]["id"], :summoner_name => summoner_hash["#{x}"]["name"])
+                      Rails.logger.info "scorecard created for #{summoner_hash["#{x}"]["id"]}"
+                    else
+                      Rails.logger.info "scorecard already exists for #{summoner_hash["#{x}"]["id"]}"
+                    end
+
                 end
             rescue Timeout::Error
               Rails.logger.info "URI-TIMEOUT request for mass_summoner on name"
@@ -420,15 +429,21 @@ end
       url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/#{mass_summoner}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
       puts url
       val_count += 1
-      Rails.logger.info "time before api call begin #{Time.now.to_i - val_st} seconds!"
       begin
         summoner_data = open(URI.encode(url),{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,:read_timeout=>3}).read
-        Rails.logger.info "time before parse #{Time.now.to_i - val_st} seconds!"
         summoner_hash = JSON.parse(summoner_data)
-        Rails.logger.info "after call but before hash #{Time.now.to_i - val_st} seconds!"
 
         summoner_hash.each_pair do |x,y|
+          
           Ignindex.find_by_summoner_name_ref(x).update(summoner_id: summoner_hash["#{x}"]["id"])
+
+            if Score.find_by_summoner_id(summoner_hash["#{x}"]["id"]).nil?
+              Score.create!(:summoner_id => summoner_hash["#{x}"]["id"], :summoner_name => summoner_hash["#{x}"]["name"])
+              Rails.logger.info "scorecard created for #{summoner_hash["#{x}"]["id"]}"
+            else
+              Rails.logger.info "scorecard already exists for #{summoner_hash["#{x}"]["id"]}"
+            end
+        
         end
 
         Rails.logger.info "time after hash #{Time.now.to_i - val_st} seconds!"
@@ -456,13 +471,11 @@ end
       end
 
       if mass_count > 0 && mass_count%40 == 0
-        Rails.logger.info "time before ign call #{Time.now.to_i - val_st} seconds!"
         url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/#{mass_summoner}/masteries?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
         val_count += 1
         begin
           mastery_data = open(url,{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,:read_timeout=>3}).read
           mastery_hash = JSON.parse(mastery_data)
-          Rails.logger.info "time after ign call #{Time.now.to_i - val_st} seconds!"
           
           mastery_hash.each_pair do |key,value|
 
@@ -481,12 +494,6 @@ end
               Ignindex.find_by_summoner_id(key).update(validation_string: nil)
               Rails.logger.info "key validated"
 
-              if Score.find_by_summoner_id(key).nil?
-                Score.create!(:summoner_id => key, :summoner_name => x.summoner_name, :week_5 => 0)
-                Rails.logger.info "scorecard created for #{key}"
-              else
-                Rails.logger.info "scorecard already exists for #{key}"
-              end
             else
               Rails.logger.info "key not validated"
             end
@@ -515,7 +522,6 @@ end
       begin
         mastery_data = open(url,{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,:read_timeout=>3}).read
         mastery_hash = JSON.parse(mastery_data)
-        Rails.logger.info "time after ign call #{Time.now.to_i - val_st} seconds!"
         mastery_hash.each_pair do |key,value|
 
           Ignindex.find_by_summoner_id(key).update(mastery_1_name: "#{mastery_hash["#{key}"]["pages"][0]["name"]}")
@@ -532,13 +538,6 @@ end
             Ignindex.find_by_summoner_id(key).update(validation_timer: nil)
             Ignindex.find_by_summoner_id(key).update(validation_string: nil)
             Rails.logger.info "key validated"
-
-            if Score.find_by_summoner_id(key).nil?
-              Score.create!(:summoner_id => key, :summoner_name => x.summoner_name, :week_5 => 0)
-              Rails.logger.info "scorecard created for #{key}"
-            else
-              Rails.logger.info "scorecard already exists for #{key}"
-            end
           else
 
             Rails.logger.info "key not validated"

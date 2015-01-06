@@ -212,7 +212,7 @@
     <% if status.game_1.empty? %>
       <div class="panel panel-default">
         <div class="panel-body">
-          Choose one of these (12):
+          Choose one of these (60):
           <% @champion.find(status.content[1...status.content.length-1].split.map(&:to_i)).each do |x| %>
             <%= x.champion %>,
           <% end %>
