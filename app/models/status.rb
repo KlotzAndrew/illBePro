@@ -881,7 +881,7 @@ end
     #end status remainder
     Rails.logger.info "completed challenges in #{Time.now.to_i - status_st} seconds!"
     Rails.logger.info "#{Time.now.to_i} | Cron Duration: #{Time.now.to_i - cron_st} | Throttle: #{throttle_total} | API calls: #{val_count + api_call_count} | Total challenges: #{total_count} | API/second: #{(val_count + api_call_count)/(Time.now.to_i - cron_st).round(2)}/second | max @ #{(val_count + api_call_count*1.00)/(Time.now.to_i - cron_st - throttle_total)}/second | Timeouts: #{timeout_count} | Overloads #{api_overload_count}"
-    puts "#{Time.now.to_i} | Cron Duration: #{Time.now.to_i - cron_st} | Throttle: #{throttle_total} | API calls: #{val_count + api_call_count} | Total challenges: #{total_count} | API/second: #{(val_count + api_call_count)/(Time.now.to_i - cron_st).round(2)}/second | max @ #{(val_count + api_call_count*1.00)/(Time.now.to_i - cron_st - throttle_total)}/second | Timeouts: #{timeout_count} | Overloads #{api_overload_count}"
+    #puts "#{Time.now.to_i} | Cron Duration: #{Time.now.to_i - cron_st} | Throttle: #{throttle_total} | API calls: #{val_count + api_call_count} | Total challenges: #{total_count} | API/second: #{(val_count + api_call_count)/(Time.now.to_i - cron_st).round(2)}/second | max @ #{(val_count + api_call_count*1.00)/(Time.now.to_i - cron_st - throttle_total)}/second | Timeouts: #{timeout_count} | Overloads #{api_overload_count}"
 
   end #end of api_call_status
 
