@@ -585,9 +585,16 @@ end
         Rails.logger.info "CRON API OVERLOAD! Unable to get matches for #{status.summoner_name}!"
         api_overload_count += 1
       else
-        Rails.logger.info "issue1: #{status.pause_timer} "
-        Rails.logger.info "issue2: #{Time.now.to_i} "
-        Rails.logger.info "issue3: #{pause_timer_bench} "
+
+        
+        if status.pause_timer.nil?
+          status.update(pause_timer: 0)
+        end
+
+        if status.trigger_timer.nil?
+          status.update(trigger_timer: 0)
+        end
+
         if status.pause_timer > (Time.now.to_i - pause_timer_bench) #=> auto-end pause timers
           Rails.logger.info "Status: #{status.summoner_name} is auto-unpaused"
           status.update(value: (@status.value + Time.now.to_i - @status.pause_timer))
