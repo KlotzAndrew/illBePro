@@ -707,7 +707,7 @@ end
                             })
                           Status.find(key_summoner[0].id).update(win_value: 0)
                           Rails.logger.info "updated lost first for #{key_summoner[0].summoner_id}"
-                        elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"] && key_summoner[0].conent[1...key_summoner[0].content.length-1].split.map(&:to_i).include?(games_hash["matches"][valid_games[0]]["participants"][0]["championId"])
+                        elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"] && key_summoner[0].content[1...key_summoner[0].content.length-1].split.map(&:to_i).include?(games_hash["matches"][valid_games[0]]["participants"][0]["championId"])
                            Status.find(key_summoner[0].id).update(game_1: {
                             :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
                             :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", 
@@ -862,7 +862,7 @@ end
                             })
                           Status.find(key_summoner[0].id).update(win_value: 0)
                           Rails.logger.info "updated lost first for #{key_summoner[0].summoner_id}"
-                        elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"] && key_summoner[0].conent[1...key_summoner[0].content.length-1].split.map(&:to_i).include?(games_hash["matches"][valid_games[0]]["participants"][0]["championId"])
+                        elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"] && key_summoner[0].content[1...key_summoner[0].content.length-1].split.map(&:to_i).include?(games_hash["matches"][valid_games[0]]["participants"][0]["championId"])
                            Status.find(key_summoner[0].id).update(game_1: {
                             :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
                             :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", 
