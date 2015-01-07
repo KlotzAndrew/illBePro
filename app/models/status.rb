@@ -656,7 +656,7 @@ end
                     if valid_games.nil?
                       Rails.logger.info "nil valid_games for #{key_summoner[0].summoner_id}"
                     else
-
+                      Rails.logger.info "valid_games for #{key_summoner[0].summoner_id}: #{valid_games}"
                       if key_summoner[0].kind == 1
                         Rails.logger.info "challenge kind 1 for #{key_summoner[0].summoner_id}"
                         if valid_games.count == 0               
