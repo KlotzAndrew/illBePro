@@ -596,7 +596,7 @@ end
 
         if status.pause_timer < (Time.now.to_i - pause_timer_bench) #=> auto-end pause timers
           Rails.logger.info "Status: #{status.summoner_name} is auto-unpaused"
-          status.update(value: (@status.value + Time.now.to_i - @status.pause_timer))
+          status.update(value: (status.value + Time.now.to_i - status.pause_timer))
           status.update(pause_timer: 0)
         elsif status.pause_timer > 0 # status is paused, do nothing
           Rails.logger.info "Status: #{status.summoner_name} is paused"
