@@ -21,8 +21,6 @@ Rails.application.routes.draw do
   get 'teaser_summoner', to: "staticpages#teaser_summoner"
   get 'teaser_challenges', to: "staticpages#teaser_challenges"
 
-  get '/:id', to: 'profiles#show', as: :user
-  patch '/:id' => 'profiles#show'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
