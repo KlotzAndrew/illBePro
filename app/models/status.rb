@@ -653,7 +653,7 @@ end
                       end
                     end
 
-                    if valid_games.count > 0
+                    if valid_games[0].nil?
                       Rails.logger.info "nil valid_games for #{key_summoner[0].summoner_id}"
                     else
                       Rails.logger.info "valid_games for #{key_summoner[0].summoner_id}: #{valid_games}"
@@ -822,7 +822,7 @@ end
                     end
                   end
 
-                  if valid_games.count > 0
+                  if valid_games[0].nil?
                     Rails.logger.info "nil valid_games for #{key_summoner[0].summoner_id}"
                   else
                     Rails.logger.info "valid_games for #{key_summoner[0].summoner_id}: #{valid_games}"
