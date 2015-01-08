@@ -324,6 +324,15 @@
           <div class="panel-heading">
                1st game: <%= status.game_1[:champion_id] %>
                <%= status.game_1[:kills] %>/<%= status.game_1[:deaths] %>/<%= status.game_1[:assists] %> - <%= status.game_1[:matchDuration].to_i/60 %> Minutes
+            </br>
+               Chosen from:
+              <% @champion.find(status.content[1...status.content.length-1].split.map(&:to_i)).each do |x| %>
+                <% if status.game_1[:champion_id] == x.champion %>
+                <strong><%= x.champion %></strong> |
+                <% else %>
+                <%= x.champion %> |
+                <% end %>
+              <% end %>
           </div>
         </div>
     <% end %>
