@@ -3,7 +3,7 @@
   <% if @ignindex.summoner_validated? %>
     <div class="page-header">
       <h1 class="text-center"><strong>Challenges left today: 
-        <%= 5 - @statuses.where("user_id = ?", current_user.id).where("created_at > ?", Time.now - 22.hours).count %>
+        <%= 25 - @statuses.where("user_id = ?", current_user.id).where("created_at > ?", Time.now - 22.hours).count %>
     </div>
   <% else %>
     <div class="page-header">

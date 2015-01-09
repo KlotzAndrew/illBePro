@@ -294,7 +294,7 @@ end
 def one_fox_one_gun
   if Status.all.where("user_id = ?", self.user_id).where(win_value: nil).count >= 1
     errors.add(:you_can, 'only have 1 challenge running at a time!')
-  elsif Status.all.where("user_id = ?", self.user_id).where("created_at > ?", Time.now - 22.hours).count >= 5
+  elsif Status.all.where("user_id = ?", self.user_id).where("created_at > ?", Time.now - 22.hours).count >= 25
     errors.add(:you_have, 'reached your challenge limit for the day! The limit refreshes every 22 hours')
   elsif Status.all.where("created_at >= ?", Time.now - 60.seconds).count > 10
     errors.add(:challenge_hamster, ' is overloaded with other challenges! Try back in 60 seconds')
