@@ -294,6 +294,8 @@ end
 def one_fox_one_gun
   if Status.all.where("user_id = ?", self.user_id).where(win_value: nil).count >= 1
     errors.add(:you_can, 'only have 1 challenge running at a time!')
+  elsif Status.all.where("user_id = ?", self.user_id).where("created_at > ?", Time.now - 22.hours).count >= 5
+    errors.add(:you_have, 'reached your challenge limit for the day! The limit refreshes every 22 hours')
   elsif Status.all.where("created_at >= ?", Time.now - 60.seconds).count > 10
     errors.add(:challenge_hamster, ' is overloaded with other challenges! Try back in 60 seconds')
   end
@@ -659,9 +661,7 @@ end
                       Rails.logger.info "valid_games for #{key_summoner[0].summoner_id}: #{valid_games}"
                       if key_summoner[0].kind == 1
                         Rails.logger.info "challenge kind 1 for #{key_summoner[0].summoner_id}"
-                        if valid_games.count == 0               
-                          Rails.logger.info "updated zero games for #{key_summoner[0].summoner_id}" 
-                        elsif !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
+                        if !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
                           Status.find(key_summoner[0].id).update(game_1: {
                             :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
                             :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", 
@@ -692,9 +692,7 @@ end
                         end
                       elsif key_summoner[0].kind == 4
                         Rails.logger.info "challenge kind 4 for #{key_summoner[0].summoner_id}"
-                        if valid_games.count == 0               
-                          Rails.logger.info "updated zero games for #{key_summoner[0].summoner_id}" 
-                        elsif !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
+                        if !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
                           Status.find(key_summoner[0].id).update(game_1: {
                             :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
                             :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", 
@@ -830,9 +828,7 @@ end
                     
                     if key_summoner[0].kind == 1
                       Rails.logger.info "challenge kind 1 for #{key_summoner[0].summoner_id}"
-                      if valid_games.count == 0               
-                        Rails.logger.info "updated zero games for #{key_summoner[0].summoner_id}" 
-                     elsif !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
+                     if !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
                         Status.find(key_summoner[0].id).update(game_1: {
                           :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
                           :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", 
@@ -877,9 +873,7 @@ end
                       end     
                       elsif key_summoner[0].kind == 4
                         Rails.logger.info "challenge kind 4 for #{key_summoner[0].summoner_id}"
-                        if valid_games.count == 0               
-                          Rails.logger.info "updated zero games for #{key_summoner[0].summoner_id}" 
-                        elsif !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
+                        if !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
                           Status.find(key_summoner[0].id).update(game_1: {
                             :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
                             :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", 

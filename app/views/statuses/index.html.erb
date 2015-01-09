@@ -1,9 +1,10 @@
 <div class="row">
   <div class="col-md-6">
   <% if @ignindex.summoner_validated? %>
-   <div class="page-header"> 
-    <h1><strong>Current Challenge</strong></h1>
-  </div>
+    <div class="page-header">
+      <h1 class="text-center"><strong>Challenges left today: 
+        <%= 5 - @statuses.where("user_id = ?", current_user.id).where("created_at > ?", Time.now - 22.hours).count %>
+    </div>
   <% else %>
     <div class="page-header">
       <h1>You need a summoner name!</h1>
@@ -21,6 +22,7 @@
         <% end %></strong> </h1>
     </div>
   </div>
+
 </div>
 
 <% if @statuses.where(win_value: nil).find_by_user_id(current_user.id).nil? %>
