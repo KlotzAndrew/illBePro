@@ -371,14 +371,14 @@ end
         Ignindex.find_by_id(x.id).update(validation_timer: nil)
         Ignindex.find_by_id(x.id).update(validation_string: nil)
       else
-        Rails.logger.info "#{x.summoner_name} still has #{300 + x.validation_timer - Time.now.to_i} seconds!"
+        Rails.logger.info "#{cron_st}: #{x.summoner_name} still has #{300 + x.validation_timer - Time.now.to_i} seconds!"
         if x.summoner_id.nil?
-          Rails.logger.info "#{x.summoner_name} summoner.id is nill"
+          Rails.logger.info "#{cron_st}: #{x.summoner_name} summoner.id is nill"
           mass_count += 1
           if x.summoner_name_ref != x.summoner_name.downcase.gsub(' ', '')
             x.update(summoner_name_ref: "#{x.summoner_name.downcase.gsub(' ', '')}")
           end
-          Rails.logger.info "updating id for #{x.summoner_name}"
+          Rails.logger.info "#{cron_st}: updating id for #{x.summoner_name}"
           if that_comma == 0
             mass_summoner << "#{x.summoner_name.downcase}"
              that_comma +=1
@@ -386,31 +386,31 @@ end
             mass_summoner << ",#{x.summoner_name.downcase}"
           end
           if mass_count > 0 && mass_count%40 == 0
-            Rails.logger.info "Running api call for (#{mass_summoner})"
+            Rails.logger.info "#{cron_st}: Running api call for (#{mass_summoner})"
             url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/#{mass_summoner}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
             puts url
             val_count += 1
             begin
-              Rails.logger.info "Running API call successfully for mass_summoner on name"
+              Rails.logger.info "#{cron_st}: #{cron_st}: Running API call successfully for mass_summoner on name"
               summoner_data = open(URI.encode(url),{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,:read_timeout=>3}).read
               summoner_hash = JSON.parse(summoner_data)     
-              Rails.logger.info "#{summoner_hash}"
+              Rails.logger.info "#{cron_st}: #{summoner_hash}"
                 summoner_hash.each_pair do |summoner_hash_key,summoner_hash_value|
 
                   Ignindex.find_by_summoner_name_ref(summoner_hash_key).update(summoner_id: summoner_hash["#{summoner_hash_key}"]["id"])
                 
                     if Score.find_by_summoner_id(summoner_hash["#{x}"]["id"]).nil?
                       Score.create!(:summoner_id => summoner_hash["#{x}"]["id"], :summoner_name => summoner_hash["#{x}"]["name"])
-                      Rails.logger.info "scorecard created for #{summoner_hash["#{x}"]["id"]}"
+                      Rails.logger.info "#{cron_st}: scorecard created for #{summoner_hash["#{x}"]["id"]}"
                     else
-                      Rails.logger.info "scorecard already exists for #{summoner_hash["#{x}"]["id"]}"
+                      Rails.logger.info "#{cron_st}: scorecard already exists for #{summoner_hash["#{x}"]["id"]}"
                     end
 
                 end
             rescue Timeout::Error
-              Rails.logger.info "URI-TIMEOUT request for mass_summoner on name"
+              Rails.logger.info "#{cron_st}: URI-TIMEOUT request for mass_summoner on name"
             rescue => e
-              Rails.logger.info "uri error request for mass_summoner on name"
+              Rails.logger.info "#{cron_st}: uri error request for mass_summoner on name"
             end
 
             mass_summoner = ""
@@ -418,16 +418,16 @@ end
             times_run += 1
 
           else
-            Rails.logger.info "#{x.summoner_name} queued for mass cycle"
+            Rails.logger.info "#{cron_st}: #{x.summoner_name} queued for mass cycle"
           end
         else
-          Rails.logger.info "already have id for #{x.summoner_name}"
+          Rails.logger.info "#{cron_st}: already have id for #{x.summoner_name}"
         end
       end
     end
 
     if (mass_count > 40 && mass_count%40 != 0) or (mass_count < 40 && mass_count != 0)
-      Rails.logger.info "Remainder count for summoner name to id"
+      Rails.logger.info "#{cron_st}: Remainder count for summoner name to id"
       url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/#{mass_summoner}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
       puts url
       val_count += 1
@@ -441,23 +441,23 @@ end
 
             if Score.find_by_summoner_id(summoner_hash["#{x}"]["id"]).nil?
               Score.create!(:summoner_id => summoner_hash["#{x}"]["id"], :summoner_name => summoner_hash["#{x}"]["name"])
-              Rails.logger.info "scorecard created for #{summoner_hash["#{x}"]["id"]}"
+              Rails.logger.info "#{cron_st}: scorecard created for #{summoner_hash["#{x}"]["id"]}"
             else
-              Rails.logger.info "scorecard already exists for #{summoner_hash["#{x}"]["id"]}"
+              Rails.logger.info "#{cron_st}: scorecard already exists for #{summoner_hash["#{x}"]["id"]}"
             end
         
         end
 
-        Rails.logger.info "time after hash #{Time.now.to_i - val_st} seconds!"
+        Rails.logger.info "#{cron_st}: time after hash #{Time.now.to_i - val_st} seconds!"
       rescue Timeout::Error
-        Rails.logger.info "URI-TIMEOUT request for mass_summoner on name"
+        Rails.logger.info "#{cron_st}: URI-TIMEOUT request for mass_summoner on name"
       rescue => e
-        Rails.logger.info "uri error request for mass_summoner on name"
+        Rails.logger.info "#{cron_st}: uri error request for mass_summoner on name"
       end
     else
-      Rails.logger.info "ran remainder count didn't run, but sees #{mass_count}"
+      Rails.logger.info "#{cron_st}: ran remainder count didn't run, but sees #{mass_count}"
     end
-    Rails.logger.info "completed summoner_name to _id in #{Time.now.to_i - val_st} seconds!"
+    Rails.logger.info "#{cron_st}: completed summoner_name to _id in #{Time.now.to_i - val_st} seconds!"
 
     mass_count = 0
     mass_summoner = ""
@@ -482,32 +482,32 @@ end
           mastery_hash.each_pair do |key,value|
 
             Ignindex.find_by_summoner_id(key).update(mastery_1_name: "#{mastery_hash["#{key}"]["pages"][0]["name"]}")
-            Rails.logger.info "1st page name: #{mastery_hash["#{key}"]["pages"][0]["name"]}"
+            Rails.logger.info "#{cron_st}: 1st page name: #{mastery_hash["#{key}"]["pages"][0]["name"]}"
 
             if "#{mastery_hash["#{key}"]["pages"][0]["name"]}" == Ignindex.find_by_summoner_id(key).validation_string
               if Ignindex.where(summoner_id: key).where(summoner_validated: true).count > 1
                 Ignindex.where(summoner_id: key).where(summoner_validated: true).each do |ign|
                   ign.update(summoner_validated: false)
-                  Rails.logger.info "User #{ign.user_id} is no longer valid, duplicate summoner name"
+                  Rails.logger.info "#{cron_st}: User #{ign.user_id} is no longer valid, duplicate summoner name"
                 end
               end
               Ignindex.find_by_summoner_id(key).update(summoner_validated: true)
               Ignindex.find_by_summoner_id(key).update(validation_timer: nil)
               Ignindex.find_by_summoner_id(key).update(validation_string: nil)
-              Rails.logger.info "key validated"
+              Rails.logger.info "#{cron_st}: key validated"
 
             else
-              Rails.logger.info "key not validated"
+              Rails.logger.info "#{cron_st}: key not validated"
             end
           end
           that_comma = 0
           mass_summoner = ""
         rescue Timeout::Error
-          Rails.logger.info "URI-TIMEOUT request on masteries"
+          Rails.logger.info "#{cron_st}: URI-TIMEOUT request on masteries"
           that_comma = 0
           mass_summoner = ""
         rescue => e
-          Rails.logger.info "uri error request on masteries"
+          Rails.logger.info "#{cron_st}: uri error request on masteries"
           that_comma = 0
           mass_summoner = ""
         end
@@ -516,9 +516,9 @@ end
 
     #remainder api call
     if (mass_count > 40 && mass_count%40 != 0) or (mass_count < 40 && mass_count != 0)
-      Rails.logger.info "ran remainder count for masteries"
+      Rails.logger.info "#{cron_st}: ran remainder count for masteries"
 
-      Rails.logger.info "time before ign call #{Time.now.to_i - val_st} seconds!"
+      Rails.logger.info "#{cron_st}: time before ign call #{Time.now.to_i - val_st} seconds!"
       url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/#{mass_summoner}/masteries?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
       val_count += 1
       begin
@@ -527,39 +527,39 @@ end
         mastery_hash.each_pair do |key,value|
 
           Ignindex.find_by_summoner_id(key).update(mastery_1_name: "#{mastery_hash["#{key}"]["pages"][0]["name"]}")
-          Rails.logger.info "1st page name: #{mastery_hash["#{key}"]["pages"][0]["name"]}"
+          Rails.logger.info "#{cron_st}: 1st page name: #{mastery_hash["#{key}"]["pages"][0]["name"]}"
 
           if "#{mastery_hash["#{key}"]["pages"][0]["name"]}" == Ignindex.find_by_summoner_id(key).validation_string
             if Ignindex.where(summoner_id: key).where(summoner_validated: true).count > 1
               Ignindex.where(summoner_id: key).where(summoner_validated: true).each do |ign|
                 ign.update(summoner_validated: false)
-                Rails.logger.info "User #{ign.user_id} is no longer valid, duplicate summoner name"
+                Rails.logger.info "#{cron_st}: User #{ign.user_id} is no longer valid, duplicate summoner name"
               end
             end
             Ignindex.find_by_summoner_id(key).update(summoner_validated: true)
             Ignindex.find_by_summoner_id(key).update(validation_timer: nil)
             Ignindex.find_by_summoner_id(key).update(validation_string: nil)
-            Rails.logger.info "key validated"
+            Rails.logger.info "#{cron_st}: key validated"
           else
 
-            Rails.logger.info "key not validated"
+            Rails.logger.info "#{cron_st}: key not validated"
           end
         end
         that_comma = 0
         mass_summoner = ""
       rescue Timeout::Error
-        Rails.logger.info "URI-TIMEOUT request on masteries"
+        Rails.logger.info "#{cron_st}: URI-TIMEOUT request on masteries"
         that_comma = 0
         mass_summoner = ""
       rescue => e
-        Rails.logger.info "uri error request on masteries"
+        Rails.logger.info "#{cron_st}: uri error request on masteries"
         that_comma = 0
         mass_summoner = ""
       end
     else
-    Rails.logger.info "ran remainder count didn't run, but sees #{mass_count} for masteries"
+    Rails.logger.info "#{cron_st}: ran remainder count didn't run, but sees #{mass_count} for masteries"
     end
-    Rails.logger.info "completed validations in #{Time.now.to_i - cron_st} seconds!"
+    Rails.logger.info "#{cron_st}: completed validations in #{Time.now.to_i - cron_st} seconds!"
 
 
     #general instance veriables
@@ -580,10 +580,10 @@ end
     Status.where(win_value: nil).order(created_at: :desc).each do |status| #=> all active statuses
       total_count += 1
       if Time.now.to_i - cron_st > 55
-        Rails.logger.info "CRON TIMEOUT OVERLOAD! Unable to get matches for #{status.summoner_name}!"
+        Rails.logger.info "#{cron_st}: CRON TIMEOUT OVERLOAD! Unable to get matches for #{status.summoner_name}!"
         timeout_count += 1
       elsif mass_count > 40
-        Rails.logger.info "CRON API OVERLOAD! Unable to get matches for #{status.summoner_name}!"
+        Rails.logger.info "#{cron_st}: CRON API OVERLOAD! Unable to get matches for #{status.summoner_name}!"
         api_overload_count += 1
       else
 
@@ -597,24 +597,24 @@ end
         end
 
         if (status.pause_timer > 0) && (status.pause_timer < (Time.now.to_i - pause_timer_bench)) #=> auto-end pause timers
-          Rails.logger.info "Status: #{status.summoner_name} is auto-unpaused"
+          Rails.logger.info "#{cron_st}: Status: #{status.summoner_name} is auto-unpaused"
           status.update(value: (status.value + Time.now.to_i - status.pause_timer))
           status.update(pause_timer: 0)
         elsif status.pause_timer > 0 # status is paused, do nothing
-          Rails.logger.info "Status: #{status.summoner_name} is paused"
+          Rails.logger.info "#{cron_st}: Status: #{status.summoner_name} is paused"
         elsif Time.now.to_i - status.created_at.to_i - status.value > 0 #=> terminate timeouts
-          Rails.logger.info "Status: #{status.summoner_name} has timed out"
+          Rails.logger.info "#{cron_st}: Status: #{status.summoner_name} has timed out"
           status.update(win_value: 1)
         elsif ((Time.now.to_i - status.created_at.to_i - status.value) > -119) or (status.trigger_timer > (Time.now.to_i - trigger_timer_bench)) 
 
           mass_count += 1
           hydra_food << status
-          Rails.logger.info "add to hydra for #{status.summoner_name} on #{times_run}/#{mass_count}"
+          Rails.logger.info "#{cron_st}: add to hydra for #{status.summoner_name} on #{times_run}/#{mass_count}"
           if mass_count > 0 && mass_count%8 == 0 
 
           times_run += 1
           api_call_count += hydra_food.count
-          Rails.logger.info "***hydra_food/times_run at start: #{hydra_food.count}/#{times_run}"
+          Rails.logger.info "#{cron_st}: ***hydra_food/times_run at start: #{hydra_food.count}/#{times_run}"
 
           hydra = Typhoeus::Hydra.new(:max_concurrency => 200)
           hst = Time.now
@@ -628,7 +628,7 @@ end
                 games_hash = JSON.parse(response.body)
 
                 if games_hash["matches"].nil? #if API returns nil data
-                  Rails.logger.info "games_hash matches are nil for someone!"
+                  Rails.logger.info "#{cron_st}: games_hash matches are nil for someone!"
                 else
                  
                   key_summoner = []
@@ -640,9 +640,9 @@ end
                   end
 
                   if key_summoner == []
-                    Rails.logger.info "RIOT API ERROR: returning incorrect summonerid/name"
+                    Rails.logger.info "#{cron_st}: RIOT API ERROR: returning incorrect summonerid/name"
                   else 
-                    Rails.logger.info "****key summoner_id = #{key_summoner[0].summoner_id}, matched from #{games_hash["matches"][0]["participantIdentities"][0]["player"]["summonerId"]}"
+                    Rails.logger.info "#{cron_st}: ****key summoner_id = #{key_summoner[0].summoner_id}, matched from #{games_hash["matches"][0]["participantIdentities"][0]["player"]["summonerId"]}"
 
                     valid_games = []
                     i = 0
@@ -656,11 +656,11 @@ end
                     end
 
                     if valid_games[0].nil?
-                      Rails.logger.info "nil valid_games for #{key_summoner[0].summoner_id}"
+                      Rails.logger.info "#{cron_st}: nil valid_games for #{key_summoner[0].summoner_id}"
                     else
-                      Rails.logger.info "valid_games for #{key_summoner[0].summoner_id}: #{valid_games}"
+                      Rails.logger.info "#{cron_st}: valid_games for #{key_summoner[0].summoner_id}: #{valid_games}"
                       if key_summoner[0].kind == 1
-                        Rails.logger.info "challenge kind 1 for #{key_summoner[0].summoner_id}"
+                        Rails.logger.info "#{cron_st}: challenge kind 1 for #{key_summoner[0].summoner_id}"
                         if !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
                           Status.find(key_summoner[0].id).update(game_1: {
                             :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
@@ -672,7 +672,7 @@ end
                             :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
                             })
                           Status.find(key_summoner[0].id).update(win_value: 0)
-                          Rails.logger.info "updated lost first for #{key_summoner[0].summoner_id}"
+                          Rails.logger.info "#{cron_st}: updated lost first for #{key_summoner[0].summoner_id}"
                         elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
                            Status.find(key_summoner[0].id).update(game_1: {
                             :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
@@ -686,12 +686,12 @@ end
                           Status.find(key_summoner[0].id).update(win_value: 2)
                           Score.find_by_user_id(key_summoner[0].user_id).update(week_5: Score.find_by_user_id(key_summoner[0].user_id).week_5 + key_summoner[0].points)
                           Score.find_by_summoner_id(key_summoner[0].summoner_id).update(week_5: Score.find_by_summoner_id(key_summoner[0].summoner_id).week_5 + key_summoner[0].points)
-                          Rails.logger.info "won 1/1 for #{key_summoner[0].summoner_id}"            
+                          Rails.logger.info "#{cron_st}: won 1/1 for #{key_summoner[0].summoner_id}"            
                         else
-                          Rails.logger.info "updated else for #{key_summoner[0].summoner_id}"
+                          Rails.logger.info "#{cron_st}: updated else for #{key_summoner[0].summoner_id}"
                         end
                       elsif key_summoner[0].kind == 4
-                        Rails.logger.info "challenge kind 4 for #{key_summoner[0].summoner_id}"
+                        Rails.logger.info "#{cron_st}: challenge kind 4 for #{key_summoner[0].summoner_id}"
                         if !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
                           Status.find(key_summoner[0].id).update(game_1: {
                             :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
@@ -703,7 +703,7 @@ end
                             :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
                             })
                           Status.find(key_summoner[0].id).update(win_value: 0)
-                          Rails.logger.info "updated lost first for #{key_summoner[0].summoner_id}"
+                          Rails.logger.info "#{cron_st}: updated lost first for #{key_summoner[0].summoner_id}"
                         elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
                           if key_summoner[0].content[1...key_summoner[0].content.length-1].split.map(&:to_i).include?(games_hash["matches"][valid_games[0]]["participants"][0]["championId"])
                             Status.find(key_summoner[0].id).update(game_1: {
@@ -718,7 +718,7 @@ end
                             Status.find(key_summoner[0].id).update(win_value: 2)
                             Score.find_by_user_id(key_summoner[0].user_id).update(week_5: Score.find_by_user_id(key_summoner[0].user_id).week_5 + key_summoner[0].points)
                             Score.find_by_summoner_id(key_summoner[0].summoner_id).update(week_5: Score.find_by_summoner_id(key_summoner[0].summoner_id).week_5 + key_summoner[0].points)
-                            Rails.logger.info "won 1/1 for #{key_summoner[0].summoner_id}"    
+                            Rails.logger.info "#{cron_st}: won 1/1 for #{key_summoner[0].summoner_id}"    
                           else
                             Status.find(key_summoner[0].id).update(game_1: {
                               :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
@@ -730,26 +730,26 @@ end
                               :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
                               })
                             Status.find(key_summoner[0].id).update(win_value: 0)
-                            Rails.logger.info "updated win with wrong champion for #{key_summoner[0].summoner_id}"
+                            Rails.logger.info "#{cron_st}: updated win with wrong champion for #{key_summoner[0].summoner_id}"
                           end
                         else
-                          Rails.logger.info "updated else for #{key_summoner[0].summoner_id}"
+                          Rails.logger.info "#{cron_st}: updated else for #{key_summoner[0].summoner_id}"
                         end                        
                       else
-                        Rails.logger.info "wrong kind for #{key_summoner[0].summoner_id}"
+                        Rails.logger.info "#{cron_st}: wrong kind for #{key_summoner[0].summoner_id}"
                       end
                     end
-                    Rails.logger.info "Ran cycle num: #{times_run} for total mass of: #{mass_count}"
+                    Rails.logger.info "#{cron_st}: Ran cycle num: #{times_run} for total mass of: #{mass_count}"
                   end
 
                 end
 
               elsif response.timed_out?
-                Rails.logger.info "Hydra timeout on cycle num: #{times_run} for mass of: #{mass_count}"
+                Rails.logger.info "#{cron_st}: Hydra timeout on cycle num: #{times_run} for mass of: #{mass_count}"
               elsif response.code == 0
-                Rails.logger.info "Hydra issue (#{response.return_message}) on cycle num: #{times_run} for mass of: #{mass_count}"
+                Rails.logger.info "#{cron_st}: Hydra issue (#{response.return_message}) on cycle num: #{times_run} for mass of: #{mass_count}"
               else
-                Rails.logger.info "Hydra HTTP failed (#{response.code.to_s}) on cycle num: #{times_run} for mass of: #{mass_count}"
+                Rails.logger.info "#{cron_st}: Hydra HTTP failed (#{response.code.to_s}) on cycle num: #{times_run} for mass of: #{mass_count}"
               end
 
             end
@@ -761,7 +761,7 @@ end
           ct = Time.now.to_i
           hydra_food = []
           if (ct-cron_st) < times_run*11
-            Rails.logger.info "Throttle for #{times_run*11-(ct-cron_st)} seconds"
+            Rails.logger.info "#{cron_st}: Throttle for #{times_run*11-(ct-cron_st)} seconds"
             throttle_total += times_run*11-(ct-cron_st)
             sleep times_run*11-(ct-cron_st)
           end
@@ -778,9 +778,9 @@ end
       if (mass_count > 8 && mass_count%8 != 0) or (mass_count < 8 and mass_count !=0)
         times_run += 1
         api_call_count += hydra_food.count
-        Rails.logger.info "***hydra_food at start: #{hydra_food.count}"
+        Rails.logger.info "#{cron_st}: ***hydra_food at start: #{hydra_food.count}"
 
-        Rails.logger.info "ran hydra times_run is about to run for: #{times_run}"
+        Rails.logger.info "#{cron_st}: ran hydra times_run is about to run for: #{times_run}"
         hydra = Typhoeus::Hydra.new(:max_concurrency => 200)
         hst = Time.now
         hydra_food.each do |food|
@@ -793,7 +793,7 @@ end
               games_hash = JSON.parse(response.body)
 
               if games_hash["matches"].nil? #if API returns nil data
-                Rails.logger.info "games_hash matches are nil for someone!"
+                Rails.logger.info "#{cron_st}: games_hash matches are nil for someone!"
               else
 
                 key_summoner = []
@@ -805,9 +805,9 @@ end
                 end
 
                 if key_summoner == []
-                  Rails.logger.info "RIOT API ERROR: returning incorrect summonerid/name"
+                  Rails.logger.info "#{cron_st}: RIOT API ERROR: returning incorrect summonerid/name"
                 else 
-                  Rails.logger.info "****key summoner_id = #{key_summoner[0].summoner_id}, matched from #{games_hash["matches"][0]["participantIdentities"][0]["player"]["summonerId"]}"
+                  Rails.logger.info "#{cron_st}: ****key summoner_id = #{key_summoner[0].summoner_id}, matched from #{games_hash["matches"][0]["participantIdentities"][0]["player"]["summonerId"]}"
 
                   valid_games = []
                   i = 0
@@ -821,13 +821,13 @@ end
                   end
 
                   if valid_games[0].nil?
-                    Rails.logger.info "nil valid_games for #{key_summoner[0].summoner_id}"
+                    Rails.logger.info "#{cron_st}: nil valid_games for #{key_summoner[0].summoner_id}"
                   else
-                    Rails.logger.info "valid_games for #{key_summoner[0].summoner_id}: #{valid_games}"
-                    Rails.logger.info "win status: #{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}"
+                    Rails.logger.info "#{cron_st}: valid_games for #{key_summoner[0].summoner_id}: #{valid_games}"
+                    Rails.logger.info "#{cron_st}: win status: #{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}"
                     
                       if key_summoner[0].kind == 1
-                        Rails.logger.info "challenge kind 1 for #{key_summoner[0].summoner_id}"
+                        Rails.logger.info "#{cron_st}: challenge kind 1 for #{key_summoner[0].summoner_id}"
                         if !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
                           Status.find(key_summoner[0].id).update(game_1: {
                             :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
@@ -839,7 +839,7 @@ end
                             :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
                             })
                           Status.find(key_summoner[0].id).update(win_value: 0)
-                          Rails.logger.info "updated lost first for #{key_summoner[0].summoner_id}"
+                          Rails.logger.info "#{cron_st}: updated lost first for #{key_summoner[0].summoner_id}"
                         elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
                            Status.find(key_summoner[0].id).update(game_1: {
                             :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
@@ -853,12 +853,12 @@ end
                           Status.find(key_summoner[0].id).update(win_value: 2)
                           Score.find_by_user_id(key_summoner[0].user_id).update(week_5: Score.find_by_user_id(key_summoner[0].user_id).week_5 + key_summoner[0].points)
                           Score.find_by_summoner_id(key_summoner[0].summoner_id).update(week_5: Score.find_by_summoner_id(key_summoner[0].summoner_id).week_5 + key_summoner[0].points)
-                          Rails.logger.info "won 1/1 for #{key_summoner[0].summoner_id}"            
+                          Rails.logger.info "#{cron_st}: won 1/1 for #{key_summoner[0].summoner_id}"            
                         else
-                          Rails.logger.info "updated else for #{key_summoner[0].summoner_id}"
+                          Rails.logger.info "#{cron_st}: updated else for #{key_summoner[0].summoner_id}"
                         end  
                       elsif key_summoner[0].kind == 4
-                        Rails.logger.info "challenge kind 4 for #{key_summoner[0].summoner_id}"
+                        Rails.logger.info "#{cron_st}: challenge kind 4 for #{key_summoner[0].summoner_id}"
                         if !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
                           Status.find(key_summoner[0].id).update(game_1: {
                             :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
@@ -870,7 +870,7 @@ end
                             :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
                             })
                           Status.find(key_summoner[0].id).update(win_value: 0)
-                          Rails.logger.info "updated lost first for #{key_summoner[0].summoner_id}"
+                          Rails.logger.info "#{cron_st}: updated lost first for #{key_summoner[0].summoner_id}"
                         elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
                           if key_summoner[0].content[1...key_summoner[0].content.length-1].split.map(&:to_i).include?(games_hash["matches"][valid_games[0]]["participants"][0]["championId"])
                             Status.find(key_summoner[0].id).update(game_1: {
@@ -885,7 +885,7 @@ end
                             Status.find(key_summoner[0].id).update(win_value: 2)
                             Score.find_by_user_id(key_summoner[0].user_id).update(week_5: Score.find_by_user_id(key_summoner[0].user_id).week_5 + key_summoner[0].points)
                             Score.find_by_summoner_id(key_summoner[0].summoner_id).update(week_5: Score.find_by_summoner_id(key_summoner[0].summoner_id).week_5 + key_summoner[0].points)
-                            Rails.logger.info "won 1/1 for #{key_summoner[0].summoner_id}"    
+                            Rails.logger.info "#{cron_st}: won 1/1 for #{key_summoner[0].summoner_id}"    
                           else
                             Status.find(key_summoner[0].id).update(game_1: {
                               :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
@@ -897,26 +897,26 @@ end
                               :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
                               })
                             Status.find(key_summoner[0].id).update(win_value: 0)
-                            Rails.logger.info "updated win with wrong champion for #{key_summoner[0].summoner_id}"
+                            Rails.logger.info "#{cron_st}: updated win with wrong champion for #{key_summoner[0].summoner_id}"
                           end
                         else
-                          Rails.logger.info "updated else for #{key_summoner[0].summoner_id}"
+                          Rails.logger.info "#{cron_st}: updated else for #{key_summoner[0].summoner_id}"
                         end                       
                     else
-                      Rails.logger.info "wrong kind for #{key_summoner[0].summoner_id}"
+                      Rails.logger.info "#{cron_st}: wrong kind for #{key_summoner[0].summoner_id}"
                     end
                   end
-                  Rails.logger.info "Ran cycle num: #{times_run} for total mass of: #{mass_count}"
+                  Rails.logger.info "#{cron_st}: Ran cycle num: #{times_run} for total mass of: #{mass_count}"
                 end
 
               end
 
             elsif response.timed_out?
-              Rails.logger.info "Hydra timeout on cycle num: #{times_run} for mass of: #{mass_count}"
+              Rails.logger.info "#{cron_st}: Hydra timeout on cycle num: #{times_run} for mass of: #{mass_count}"
             elsif response.code == 0
-              Rails.logger.info "Hydra issue (#{response.return_message}) on cycle num: #{times_run} for mass of: #{mass_count}"
+              Rails.logger.info "#{cron_st}: Hydra issue (#{response.return_message}) on cycle num: #{times_run} for mass of: #{mass_count}"
             else
-              Rails.logger.info "Hydra HTTP failed (#{response.code.to_s}) on cycle num: #{times_run} for mass of: #{mass_count}"
+              Rails.logger.info "#{cron_st}: Hydra HTTP failed (#{response.code.to_s}) on cycle num: #{times_run} for mass of: #{mass_count}"
             end
 
           end
@@ -927,7 +927,7 @@ end
 
         ct = Time.now.to_i
         if (ct-cron_st) < times_run*11
-          Rails.logger.info "Throttle for #{times_run*11-(ct-cron_st)} seconds"
+          Rails.logger.info "#{cron_st}: Throttle for #{times_run*11-(ct-cron_st)} seconds"
           throttle_total += times_run*11-(ct-cron_st)
           sleep times_run*11-(ct-cron_st)
         end
@@ -935,8 +935,8 @@ end
       end
 
     #end status remainder
-    Rails.logger.info "completed challenges in #{Time.now.to_i - status_st} seconds!"
-    Rails.logger.info "#{Time.now.to_i} | Cron Duration: #{Time.now.to_i - cron_st} | Throttle: #{throttle_total} | API calls: #{val_count + api_call_count} | Total challenges: #{total_count} | API/second: #{(val_count + api_call_count)/(Time.now.to_i - cron_st).round(2)}/second | max @ #{(val_count + api_call_count*1.00)/(Time.now.to_i - cron_st - throttle_total)}/second | Timeouts: #{timeout_count} | Overloads #{api_overload_count}"
+    Rails.logger.info "#{cron_st}: completed challenges in #{Time.now.to_i - status_st} seconds!"
+    Rails.logger.info "#{cron_st}: | Cron Duration: #{Time.now.to_i - cron_st} | Throttle: #{throttle_total} | API calls: #{val_count + api_call_count} | Total challenges: #{total_count} | API/second: #{(val_count + api_call_count)/(Time.now.to_i - cron_st).round(2)}/second | max @ #{(val_count + api_call_count*1.00)/(Time.now.to_i - cron_st - throttle_total)}/second | Timeouts: #{timeout_count} | Overloads #{api_overload_count}"
     #puts "#{Time.now.to_i} | Cron Duration: #{Time.now.to_i - cron_st} | Throttle: #{throttle_total} | API calls: #{val_count + api_call_count} | Total challenges: #{total_count} | API/second: #{(val_count + api_call_count)/(Time.now.to_i - cron_st).round(2)}/second | max @ #{(val_count + api_call_count*1.00)/(Time.now.to_i - cron_st - throttle_total)}/second | Timeouts: #{timeout_count} | Overloads #{api_overload_count}"
 
   end #end of api_call_status
