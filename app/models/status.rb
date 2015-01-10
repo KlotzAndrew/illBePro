@@ -294,9 +294,9 @@ end
 def one_fox_one_gun
   if Status.all.where("user_id = ?", self.user_id).where(win_value: nil).count >= 1
     errors.add(:you_can, 'only have 1 challenge running at a time!')
-  elsif Status.all.where("user_id = ?", self.user_id).where("created_at > ?", Time.now - 22.hours).count >= 25
+  elsif Status.all.where("user_id = ?", self.user_id).where("created_at > ?", Time.now - 22.hours).count >= 5
     errors.add(:you_have, 'reached your challenge limit for the day! The limit refreshes every 22 hours')
-  elsif Status.all.where("created_at >= ?", Time.now - 60.seconds).count > 10
+  elsif Status.all.where("created_at >= ?", Time.now - 60.seconds).count > 20
     errors.add(:challenge_hamster, ' is overloaded with other challenges! Try back in 60 seconds')
   end
 end
@@ -305,7 +305,7 @@ def challenge_init
   if self.kind == 1
     self.update(challenge_description: "Win the next game")
     self.update(value: 3900)
-    self.update(points: 1)
+    self.update(points: 2)
   elsif self.kind == 2
     self.update(challenge_description: "Win the next 2 games in a row")
     self.update(value: 7200)
@@ -317,9 +317,9 @@ def challenge_init
   elsif self.kind == 4
     self.update(challenge_description: "Win with a random champion")
     self.update(value: 3900)
-    self.update(points: 2)
+    self.update(points: 4)
     champ_ids = []
-    Champion.all.where.not(champion:nil).sample(60).each {|x| champ_ids << x.id}
+    Champion.all.where.not(champion:nil).sample(16).each {|x| champ_ids << x.id}
     self.update(content: champ_ids.to_s)
   else
     self.update(challenge_description: "Something went wrong! Sorry!")

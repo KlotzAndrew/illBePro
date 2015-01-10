@@ -60,7 +60,7 @@ class StatusesController < ApplicationController
     else
       @status.update(trigger_timer: Time.now.to_i)
         respond_to do |format|
-          format.html { redirect_to statuses_url, notice: 'Updating your game results...' }
+          format.html { redirect_to statuses_url, notice: 'Checking game results...' }
           format.json { head :no_content }
         end
     end

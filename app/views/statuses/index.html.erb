@@ -62,7 +62,7 @@
       <div class="col-md-1">
         <div class="challenge-description">
 
-          <% if (Time.now.to_i - status.created_at.to_i) < 1200 %>
+          <% if (Time.now.to_i - status.created_at.to_i) < 1200 && status.kind == 4 %>
             <%= link_to "Surrender", status, method: :delete, data: { confirm: "Canceling before 20 minutes costs 1 point, are you sure?" } %>
           <% elsif %>
             <%= link_to "Cancel", status, method: :delete, data: { confirm: "No penalty for canceling, are you sure?" } %>
@@ -214,7 +214,7 @@
     <% if status.game_1.empty? %>
       <div class="panel panel-default">
         <div class="panel-body">
-          Choose one of these (60):
+          Choose one of these (16):
           <% @champion.find(status.content[1...status.content.length-1].split.map(&:to_i)).each do |x| %>
             <%= x.champion %>,
           <% end %>
@@ -243,7 +243,7 @@
   <h1 class="text-center"><strong>History</strong></h1>
 </div>
 
-<% @statuses.where("user_id = ?", current_user.id).where.not(win_value: nil).order(created_at: :desc).each do |status| %> 
+<% @statuses.where("user_id = ?", current_user.id).where.not(win_value: nil).order(created_at: :desc).limit(15).each do |status| %> 
 <% if status.win_value == 0 %>
   <div class="challenge-history-loss">
 <% elsif status.win_value == 3 %>
@@ -312,9 +312,17 @@
     <% if status.game_1.empty? %>
       <div class="panel panel-default">
         <div class="panel-heading">
-          <% @champion.find(status.content[1...status.content.length-1].split.map(&:to_i)).each do |x| %>
-            <%= x.champion %> |
-          <% end %>
+  
+  </br>
+               Chosen from:
+              <% @champion.find(status.content[1...status.content.length-1].split.map(&:to_i)).each do |x| %>
+                <% if status.game_1[:champion_id] == x.champion %>
+                <strong><%= x.champion %></strong> |
+                <% else %>
+                <%= x.champion %> |
+                <% end %>
+              <% end %>
+
         </div>
       </div>
     <% else %>
@@ -326,7 +334,9 @@
           <div class="panel-heading">
                1st game: <%= status.game_1[:champion_id] %>
                <%= status.game_1[:kills] %>/<%= status.game_1[:deaths] %>/<%= status.game_1[:assists] %> - <%= status.game_1[:matchDuration].to_i/60 %> Minutes
-            </br>
+
+             </br>
+
                Chosen from:
               <% @champion.find(status.content[1...status.content.length-1].split.map(&:to_i)).each do |x| %>
                 <% if status.game_1[:champion_id] == x.champion %>
@@ -335,6 +345,9 @@
                 <%= x.champion %> |
                 <% end %>
               <% end %>
+               
+   
+
           </div>
         </div>
     <% end %>
