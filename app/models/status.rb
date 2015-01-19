@@ -86,7 +86,7 @@ class Status < ActiveRecord::Base
             x.update(validation_string: nil)
             Rails.logger.info "#{x.summoner_name} validated"
             if Score.find_by_summoner_id(x.summoner_id).nil?
-              Score.create!(:summoner_id => x.summoner_id, :summoner_name => x.summoner_name, :week_5 => 0)
+              Score.create!(:summoner_id => x.summoner_id, :summoner_name => x.summoner_name, :week_6 => 0)
               Rails.logger.info "scorecard created for #{x.summoner_name}"
             else
               Rails.logger.info "scorecard already exists for #{x.summoner_name}"
@@ -160,8 +160,8 @@ class Status < ActiveRecord::Base
                  x.update(game_1: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[0]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"})
                 x.update(value: 0)
                 x.update(win_value: 2)
-                Score.find_by_user_id(x.user_id).update(week_5: Score.find_by_user_id(x.user_id).week_5 + x.points)
-                Score.find_by_summoner_id(x.summoner_id).update(week_5: Score.find_by_summoner_id(x.summoner_id).week_5 + x.points)
+                Score.find_by_user_id(x.user_id).update(week_6: Score.find_by_user_id(x.user_id).week_6 + x.points)
+                Score.find_by_summoner_id(x.summoner_id).update(week_6: Score.find_by_summoner_id(x.summoner_id).week_6 + x.points)
                 Rails.logger.info "won 1/1 for #{x.summoner_id}"            
               else
                 Rails.logger.info "updated else for #{x.summoner_id}"
@@ -196,8 +196,8 @@ class Status < ActiveRecord::Base
                   x.update(game_2: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[1]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[1]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[1]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["assists"]}"})
                   x.update(value: 0)
                   x.update(win_value: 2)
-                  Score.find_by_user_id(x.user_id).update(week_5: Score.find_by_user_id(x.user_id).week_5 + x.points)
-                  Score.find_by_summoner_id(x.summoner_id).update(week_5: Score.find_by_summoner_id(x.summoner_id).week_5 + x.points)
+                  Score.find_by_user_id(x.user_id).update(week_6: Score.find_by_user_id(x.user_id).week_6 + x.points)
+                  Score.find_by_summoner_id(x.summoner_id).update(week_6: Score.find_by_summoner_id(x.summoner_id).week_6 + x.points)
                   Rails.logger.info "updated won 2/2 for #{x.summoner_id}"
                 else
                   Rails.logger.info "updated else for #{x.summoner_id}"
@@ -254,8 +254,8 @@ class Status < ActiveRecord::Base
                   x.update(game_3: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[2]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[2]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[2]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[2]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[2]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[2]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[2]]["participants"][0]["stats"]["assists"]}"})
                   x.update(value: 0)
                   x.update(win_value: 2)
-                  Score.find_by_user_id(x.user_id).update(week_5: Score.find_by_user_id(x.user_id).week_5 + x.points)
-                  Score.find_by_summoner_id(x.summoner_id).update(week_5: Score.find_by_summoner_id(x.summoner_id).week_5 + x.points)
+                  Score.find_by_user_id(x.user_id).update(week_6: Score.find_by_user_id(x.user_id).week_6 + x.points)
+                  Score.find_by_summoner_id(x.summoner_id).update(week_6: Score.find_by_summoner_id(x.summoner_id).week_6 + x.points)
                   Rails.logger.info "updated won 3/3 for #{x.summoner_id}"
                 else
                   Rails.logger.info "updated else for #{x.summoner_id}"
@@ -684,8 +684,8 @@ end
                             :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
                             })
                           Status.find(key_summoner[0].id).update(win_value: 2)
-                          Score.find_by_user_id(key_summoner[0].user_id).update(week_5: Score.find_by_user_id(key_summoner[0].user_id).week_5 + key_summoner[0].points)
-                          Score.find_by_summoner_id(key_summoner[0].summoner_id).update(week_5: Score.find_by_summoner_id(key_summoner[0].summoner_id).week_5 + key_summoner[0].points)
+                          Score.find_by_user_id(key_summoner[0].user_id).update(week_6: Score.find_by_user_id(key_summoner[0].user_id).week_6 + key_summoner[0].points)
+                          Score.find_by_summoner_id(key_summoner[0].summoner_id).update(week_6: Score.find_by_summoner_id(key_summoner[0].summoner_id).week_6 + key_summoner[0].points)
                           Rails.logger.info "#{cron_st}: won 1/1 for #{key_summoner[0].summoner_id}"            
                         else
                           Rails.logger.info "#{cron_st}: updated else for #{key_summoner[0].summoner_id}"
@@ -716,8 +716,8 @@ end
                               :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
                               })
                             Status.find(key_summoner[0].id).update(win_value: 2)
-                            Score.find_by_user_id(key_summoner[0].user_id).update(week_5: Score.find_by_user_id(key_summoner[0].user_id).week_5 + key_summoner[0].points)
-                            Score.find_by_summoner_id(key_summoner[0].summoner_id).update(week_5: Score.find_by_summoner_id(key_summoner[0].summoner_id).week_5 + key_summoner[0].points)
+                            Score.find_by_user_id(key_summoner[0].user_id).update(week_6: Score.find_by_user_id(key_summoner[0].user_id).week_6 + key_summoner[0].points)
+                            Score.find_by_summoner_id(key_summoner[0].summoner_id).update(week_6: Score.find_by_summoner_id(key_summoner[0].summoner_id).week_6 + key_summoner[0].points)
                             Rails.logger.info "#{cron_st}: won 1/1 for #{key_summoner[0].summoner_id}"    
                           else
                             Status.find(key_summoner[0].id).update(game_1: {
@@ -851,8 +851,8 @@ end
                             :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
                             })
                           Status.find(key_summoner[0].id).update(win_value: 2)
-                          Score.find_by_user_id(key_summoner[0].user_id).update(week_5: Score.find_by_user_id(key_summoner[0].user_id).week_5 + key_summoner[0].points)
-                          Score.find_by_summoner_id(key_summoner[0].summoner_id).update(week_5: Score.find_by_summoner_id(key_summoner[0].summoner_id).week_5 + key_summoner[0].points)
+                          Score.find_by_user_id(key_summoner[0].user_id).update(week_6: Score.find_by_user_id(key_summoner[0].user_id).week_6 + key_summoner[0].points)
+                          Score.find_by_summoner_id(key_summoner[0].summoner_id).update(week_6: Score.find_by_summoner_id(key_summoner[0].summoner_id).week_6 + key_summoner[0].points)
                           Rails.logger.info "#{cron_st}: won 1/1 for #{key_summoner[0].summoner_id}"            
                         else
                           Rails.logger.info "#{cron_st}: updated else for #{key_summoner[0].summoner_id}"
@@ -883,8 +883,8 @@ end
                               :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
                               })
                             Status.find(key_summoner[0].id).update(win_value: 2)
-                            Score.find_by_user_id(key_summoner[0].user_id).update(week_5: Score.find_by_user_id(key_summoner[0].user_id).week_5 + key_summoner[0].points)
-                            Score.find_by_summoner_id(key_summoner[0].summoner_id).update(week_5: Score.find_by_summoner_id(key_summoner[0].summoner_id).week_5 + key_summoner[0].points)
+                            Score.find_by_user_id(key_summoner[0].user_id).update(week_6: Score.find_by_user_id(key_summoner[0].user_id).week_6 + key_summoner[0].points)
+                            Score.find_by_summoner_id(key_summoner[0].summoner_id).update(week_6: Score.find_by_summoner_id(key_summoner[0].summoner_id).week_6 + key_summoner[0].points)
                             Rails.logger.info "#{cron_st}: won 1/1 for #{key_summoner[0].summoner_id}"    
                           else
                             Status.find(key_summoner[0].id).update(game_1: {
