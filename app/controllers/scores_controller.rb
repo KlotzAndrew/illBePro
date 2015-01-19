@@ -9,8 +9,8 @@ class ScoresController < ApplicationController
     @top_profiles = Score.all.where.not(user_id: nil).where("week_5 > ?", 0).order(week_5: :desc).limit(5)
     @top_summoners = Score.all.where.not(summoner_id: nil).where("week_5 > ?", 0).order(week_5: :desc).limit(5)
 
-    @top_profiles_last = Score.all.where.not(user_id: nil).where("week_4 > ?", 0).order(week_4: :desc).limit(5)
-    @top_summoners_last = Score.all.where.not(summoner_id: nil).where("week_4 > ?", 0).order(week_4: :desc).limit(5)
+    @top_profiles_last = Score.all.where.not(user_id: nil).where("week_4 > ?", 0).order(week_4: :desc)
+    @top_summoners_last = Score.all.where.not(summoner_id: nil).where("week_4 > ?", 0).order(week_4: :desc)
   end
 
 
