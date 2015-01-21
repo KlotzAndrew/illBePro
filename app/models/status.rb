@@ -375,8 +375,8 @@ end
         if x.summoner_id.nil?
           Rails.logger.info "#{cron_st}: #{x.summoner_name} summoner.id is nill"
           mass_count += 1
-          if x.summoner_name_ref != x.summoner_name.downcase.gsub(' ', '')
-            x.update(summoner_name_ref: "#{x.summoner_name.downcase.gsub(' ', '')}")
+          if x.summoner_name_ref != x.summoner_name.mb_chars.downcase.gsub(' ', '').to_s
+            x.update(summoner_name_ref: "#{x.summoner_name.mb_chars.downcase.gsub(' ', '').to_s}")
           end
           Rails.logger.info "#{cron_st}: updating id for #{x.summoner_name}"
           if that_comma == 0
