@@ -517,7 +517,7 @@ end
     #remainder api call
     if (mass_count > 40 && mass_count%40 != 0) or (mass_count < 40 && mass_count != 0)
       Rails.logger.info "#{cron_st}: ran remainder count for masteries"
-
+      
       Rails.logger.info "#{cron_st}: time before ign call #{Time.now.to_i - val_st} seconds!"
       url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/#{mass_summoner}/masteries?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
       val_count += 1
