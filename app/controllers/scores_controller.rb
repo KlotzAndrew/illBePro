@@ -6,8 +6,8 @@ class ScoresController < ApplicationController
     @users = User.all
     @ignindex = Ignindex.all
     @status = Status.all
-    @top_profiles = Score.all.where.not(user_id: nil).where("week_6 > ?", 0).order(week_6: :desc)
-    @top_summoners = Score.all.where.not(summoner_id: nil).where("week_6 > ?", 0).order(week_6: :desc)
+    @top_profiles = Score.all.where.not(user_id: nil).where("week_6 > ?", 0).order(week_6: :desc).limit(5)
+    @top_summoners = Score.all.where.not(summoner_id: nil).where("week_6 > ?", 0).order(week_6: :desc).limit(5)
 
     @top_profiles_last = Score.all.where.not(user_id: nil).where("week_5 > ?", 0).order(week_5: :desc).limit(5)
     @top_summoners_last = Score.all.where.not(summoner_id: nil).where("week_5 > ?", 0).order(week_5: :desc).limit(5)
