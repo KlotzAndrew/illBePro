@@ -1,3 +1,13 @@
+<div data-id="<%= @ignindex.id %>" id="ign">
+</div>
+
+<script>
+
+
+
+</script>
+
+
 <div class="row">
   <div class="col-md-6">
     <div class="page-header">
@@ -11,11 +21,13 @@
   
   <div class="col-md-6">
     <div class="page-header">
-      <% if @ignindex.summoner_validated %>
-        <h1 class="validated"><strong>Validated!</strong></h1>
-      <% else %>
-        <h1 class="not-validated"><strong>Not validated!</strong></h1>
-      <% end %>
+      <div id="js_val">
+        <% if @ignindex.summoner_validated == true %>
+          <h1 class="validated"><strong>Validated!</strong></h1>
+        <% else %>
+          <h1 class="not-validated"><strong>Not validated!</strong></h1>
+        <% end %>
+      </div>
     </div>
   </div>
 </div>
@@ -75,13 +87,24 @@
             <h5>Current 1st page: <strong>  <%= @ignindex.mastery_1_name %></strong></h5>
           <% else %>
           <% end %>
-          <h4>Code valid for <%= ((300 - (Time.now.to_i - @ignindex.validation_timer))/60) %> more minutes!<h4>
-          <h6>(next check in ~<%= 60 - ((Time.now.to_i - @ignindex.updated_at.to_i) % 60) %> seconds)</h6>      
+          <h5>
+            Code valid for 
+              <span id="test_cd" data-timer="<%= @ignindex.validation_timer %>">
+                <%= ((300 - (Time.now.to_i - @ignindex.validation_timer))/60) %> more minutes!
+              </span>
+          </h5>
+          <h6>(next check in ~
+            <span id="check_loop" data-check="<%= @ignindex.updated_at.to_i %>">
+              <%= 60 - ((Time.now.to_i - @ignindex.updated_at.to_i) % 60) %>
+            </span> seconds)
+          </h6>      
       </div>
         <% end %>
     </div>
   </div>
 </div>
+
+
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :prizes
+
   resources :scores
 
   resources :ignindices

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150105181027) do
+ActiveRecord::Schema.define(version: 20150127232523) do
 
   create_table "champions", force: true do |t|
     t.string   "champion"
@@ -30,6 +30,23 @@ ActiveRecord::Schema.define(version: 20150105181027) do
     t.datetime "updated_at"
     t.string   "mastery_1_name"
     t.string   "summoner_name_ref"
+    t.integer  "prize_level",        default: 0
+    t.integer  "challenge_points_1", default: 0
+    t.integer  "challenge_points_2", default: 0
+    t.integer  "challenge_points_3", default: 0
+    t.integer  "last_prize_time",    default: 0
+  end
+
+  create_table "prizes", force: true do |t|
+    t.string   "description"
+    t.string   "tier"
+    t.string   "vendor"
+    t.integer  "code"
+    t.integer  "assignment"
+    t.integer  "user_id"
+    t.string   "summoner_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "scores", force: true do |t|

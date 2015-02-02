@@ -2,7 +2,13 @@ class IgnindicesController < ApplicationController
   before_action :set_ignindex, only: [:show, :edit, :update, :destroy]
 
   before_filter :authenticate_user!
+
+  respond_to :html, :xml, :json
   
+  def show
+      render json: Ignindex.find_by_user_id(current_user.id)
+  end
+
   def index
     @ignindex = Ignindex.find_by_user_id(current_user.id)
   end
