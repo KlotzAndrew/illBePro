@@ -321,6 +321,8 @@ def challenge_init
     champ_ids = []
     Champion.all.where.not(champion:nil).sample(16).each {|x| champ_ids << x.id}
     self.update(content: champ_ids.to_s)
+  elsif self.kind == 5
+    self.update(challenge_description: "#{self.user_id}")
   else
     self.update(challenge_description: "Something went wrong! Sorry!")
     self.update(value: 0)

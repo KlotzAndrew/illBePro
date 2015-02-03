@@ -36,5 +36,5 @@ window.onload = function(){
 };
 
 
-//window.onload = pollActivity
+window.onload = pollActivity
 window.onunload = function() {}; 
