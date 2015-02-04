@@ -294,10 +294,11 @@ end
 def one_fox_one_gun
   if Status.all.where("user_id = ?", self.user_id).where(win_value: nil).count >= 1
     errors.add(:you_can, 'only have 1 challenge running at a time!')
-  elsif Status.all.where("user_id = ?", self.user_id).where("created_at > ?", Time.now - 22.hours).count >= 5
-    errors.add(:you_have, 'reached your challenge limit for the day! The limit refreshes every 22 hours')
+  #elsif Status.all.where("user_id = ?", self.user_id).where("created_at > ?", Time.now - 22.hours).count >= 5
+    #errors.add(:you_have, 'reached your challenge limit for the day! The limit refreshes every 22 hours')
   elsif Status.all.where("created_at >= ?", Time.now - 60.seconds).count > 20
     errors.add(:challenge_hamster, ' is overloaded with other challenges! Try back in 60 seconds')
+  else
   end
 end
 
@@ -322,7 +323,48 @@ def challenge_init
     Champion.all.where.not(champion:nil).sample(16).each {|x| champ_ids << x.id}
     self.update(content: champ_ids.to_s)
   elsif self.kind == 5
-    self.update(challenge_description: "#{self.user_id}")
+    ign = Ignindex.find_by_user_id(self.user_id)
+
+    if ign.prize_level == 0 #playing for first 25% discount prize
+      if (ign.challenge_points_1 == 0) && (Prize.where(tier: 0).where(assignment: 0).count > 0)
+        Prize.where(tier: ign.prize_level).where(assignment: 0).last.update( {
+          :assignment => 1,
+          :user_id => self.user_id,
+          })
+        self.update(value: 3900)
+        self.update(points: 100)
+        self.update(challenge_description: "This game is prized! Win to win")
+        self.update(content: "#{Prize.where(assignment: 1).where(user_id: self.user_id).last.description}")
+      else 
+        self.update(value: 3900)
+        self.update(points: 1)
+        self.update(challenge_description: "Play a game to increase the chance your next challenge will be prized")
+      end
+    elsif ign.prize_level == 1 #playing for 2nd prize of 50% off
+      proc = rand(7..100)
+      if proc < ign.challenge_points_2 && (Time.now.to.i - 22.hours.to_i) > last_prize_time
+        #proc a pizza prize
+      else
+        self.update(value: 3900)
+        self.update(points: 1)
+        self.update(challenge_description: "Play a game to increase your proc chance (lvl 1)")
+      end
+    elsif ign.prize_level == 2 #playing for 3rd prize of 100% off
+        proc = rand(7..100)
+      if proc < ign.challenge_points_3 && (Time.now.to.i - 22.hours.to_i) > ign.last_prize_time
+        #proc a pizza prize
+      else
+        self.update(value: 3900)
+        self.update(points: 1)
+        self.update(challenge_description: "Play a game to increase your proc chance (lvl 2)")
+      end
+    elsif ign.prize_level == 3
+      self.update(value: 3900)
+      self.update(points: 1)
+      self.update(challenge_description: "Champion tier! More prizes coming soon!")
+    else
+      Rails.logger.info "Something went wrong with your prize level"
+    end
   else
     self.update(challenge_description: "Something went wrong! Sorry!")
     self.update(value: 0)

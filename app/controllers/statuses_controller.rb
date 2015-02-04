@@ -69,11 +69,13 @@ class StatusesController < ApplicationController
   # DELETE /statuses/1
   # DELETE /statuses/1.json
   def destroy
-    if (Time.now.to_i - @status.created_at.to_i) < 1200 && @status.kind == 4
+    if @status.kind == 5
       @status.update(value: 0)
       @status.update(win_value: 3)
-      Score.find_by_user_id(@status.user_id).update(week_5: Score.find_by_user_id(@status.user_id).week_5 - 1)
-      Score.find_by_summoner_id(@status.summoner_id).update(week_5: Score.find_by_summoner_id(@status.summoner_id).week_5 - 1)
+      Prize.where(assignment: 1).where(user_id: current_user.id).last.update( {
+        :assignment 0,
+        :user_id 0,
+        })
       respond_to do |format|
         format.html { redirect_to statuses_url, notice: 'Challenge was surrendered, 1 point lost' }
         format.json { head :no_content }
