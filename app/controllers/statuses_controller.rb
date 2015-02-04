@@ -73,8 +73,8 @@ class StatusesController < ApplicationController
       @status.update(value: 0)
       @status.update(win_value: 3)
       Prize.where(assignment: 1).where(user_id: current_user.id).last.update( {
-        :assignment 0,
-        :user_id 0,
+        :assignment => 0,
+        :user_id => 0,
         })
       respond_to do |format|
         format.html { redirect_to statuses_url, notice: 'Challenge was surrendered, 1 point lost' }
