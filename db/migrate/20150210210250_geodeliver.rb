@@ -1,6 +1,6 @@
 class Geodeliver < ActiveRecord::Migration
   def change
-    create_table :geotries do |t|
+    create_table :geodelivers do |t|
     	t.integer :user_id
     	t.string :ip_address
     	t.float :latitude

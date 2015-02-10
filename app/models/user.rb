@@ -21,5 +21,6 @@ class User < ActiveRecord::Base
   end
 
   has_many :statuses
+  has_one :geodeliver
 
 end
