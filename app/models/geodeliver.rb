@@ -3,11 +3,12 @@ class Geodeliver < ActiveRecord::Base
 
 def build_index #creates uniq geodeliver for all users
 raw = []
-det_ip = "65.95.161.221"
 User.all.includes(:geodeliver).each do |x|
 
 puts x
-if Geodeliver.all.where(user_id: x.id).count == 0
+if x.last_sign_in_ip.nil?
+	puts "not signed in yet"
+elsif Geodeliver.all.where(user_id: x.id).count == 0
 puts "create geodeliver index"
 
 country_index = 0
@@ -15,7 +16,7 @@ postal_index = 0
 country_code = ""
 postal_code = ""
 
-testip = Geocoder.search("#{det_ip}")
+testip = Geocoder.search("#{x.last_sign_in_ip}")
 testlock = Geocoder.search("#{testip[0].latitude}, #{testip[0].longitude}")
 raw << testlock
 country_index = testlock[0].address_components.index{ |x| x["types"][0]=="country"}
@@ -39,7 +40,8 @@ Geodeliver.create(
 	:longitude => testip[0].longitude,
 	:country_code => country_code,
 	:postal_code => postal_code)
-sleep 5
+puts "sleeping for 42s"
+sleep 42
 
 else
 puts "user already indexed"
