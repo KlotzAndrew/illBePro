@@ -43,7 +43,7 @@ User.all.includes(:geodeliver).each do |x|
 		Rails.logger.info "#{Geodeliver.last.postal_code}" 
 		Rails.logger.info "#{Geodeliver.last.id}" 
 		Rails.logger.info  "sleeping for 42s"
-		sleep 42
+		sleep 55
 
 	else
 	Rails.logger.info  "user already indexed"
