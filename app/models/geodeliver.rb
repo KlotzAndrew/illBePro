@@ -41,7 +41,7 @@ User.all.includes(:geodeliver).each do |x|
 			:country_code => country_code,
 			:postal_code => postal_code)
 		Rails.logger.info "#{Geodeliver.last.postal_code}" 
-		Geodeliver.last.postal_code "#{Geodeliver.last.id}" 
+		Rails.logger.info "#{Geodeliver.last.id}" 
 		Rails.logger.info  "sleeping for 42s"
 		sleep 42
 
