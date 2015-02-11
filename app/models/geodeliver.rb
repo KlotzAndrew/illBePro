@@ -16,9 +16,16 @@ User.all.includes(:geodeliver).each do |x|
 		country_code = ""
 		postal_code = ""
 
-		testip = Geocoder.search("#{x.last_sign_in_ip}")
-		testlock = Geocoder.search("#{testip[0].latitude}, #{testip[0].longitude}")
-		if !testlock == []
+		begin
+			testip = Geocoder.search("#{x.last_sign_in_ip}")
+	    rescue Timeout::Error
+	        Rails.logger.info "URI-TIMEOUT request for 1st part"
+	    rescue => e
+	        Rails.logger.info "uri error request for 1st parts"
+	    end
+
+	    begin
+			testlock = Geocoder.search("#{testip[0].latitude}, #{testip[0].longitude}")
 			raw << testlock
 			country_index = testlock[0].address_components.index{ |x| x["types"][0]=="country"}
 			if testlock[0].address_components[country_index]["short_name"] == "US"
@@ -43,11 +50,13 @@ User.all.includes(:geodeliver).each do |x|
 				:postal_code => postal_code)
 			Rails.logger.info "#{Geodeliver.last.postal_code}" 
 			Rails.logger.info "#{Geodeliver.last.id}" 
-			Rails.logger.info  "sleeping for 55s"
+			Rails.logger.info  "sleeping for 42s"
 			sleep 55
-		else
-			Rails.logger.info  "timeout recovery"
-		end
+		rescue Timeout::Error
+	        Rails.logger.info "URI-TIMEOUT request for 2nd part"
+	    rescue => e
+	        Rails.logger.info "uri error request for 2nd part"
+	    end
 
 	else
 	Rails.logger.info  "user already indexed"
