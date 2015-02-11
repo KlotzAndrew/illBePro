@@ -1,15 +1,15 @@
 class Geodeliver < ActiveRecord::Base
 	belongs_to :user
 
-def build_index #creates uniq geodeliver for all users
+def self.build_index #creates uniq geodeliver for all users
 raw = []
 User.all.includes(:geodeliver).each do |x|
 
-puts x
+Rails.logger.info "#{x}"
 if x.last_sign_in_ip.nil?
-	puts "not signed in yet"
+	Rails.logger.info  "not signed in yet"
 elsif Geodeliver.all.where(user_id: x.id).count == 0
-puts "create geodeliver index"
+Rails.logger.info  "create geodeliver index"
 
 country_index = 0
 postal_index = 0
@@ -40,11 +40,13 @@ Geodeliver.create(
 	:longitude => testip[0].longitude,
 	:country_code => country_code,
 	:postal_code => postal_code)
-puts "sleeping for 42s"
+Rails.logger.info "#{Geodeliver.last.postal_code}" 
+Geodeliver.last.postal_code "#{Geodeliver.last.id}" 
+Rails.logger.info  "sleeping for 42s"
 sleep 42
 
 else
-puts "user already indexed"
+Rails.logger.info  "user already indexed"
 end
 
 end

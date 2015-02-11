@@ -19,6 +19,7 @@ end
   #   puts "Running #{job}, at #{time}"
   # end
 
-  every(1.minute, 'api_caller.job') {Status.api_call}
+  #every(1.minute, 'api_caller.job') {Status.api_call}
+  every(1.day, 'index_builder.job') {Geodeliver.build_index}
 
 end
