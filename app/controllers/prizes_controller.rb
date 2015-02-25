@@ -4,6 +4,11 @@ class PrizesController < ApplicationController
 
   def index
     @prizes = Prize.all
+    if Geodeliver.find_by_user_id(current_user.id).blank?
+      Geodeliver.create(
+        :user_id => current_user.id)
+    end
+    @geodeliver = Geodeliver.find_by_user_id(current_user.id)
     respond_with(@prizes)
   end
 

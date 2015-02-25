@@ -1,0 +1,77 @@
+<div class="row">
+  <div class="col-md-6">
+    <% if @geodeliver.postal_code.nil? %>
+      <h1>Your Prizing Area: empty</h1>
+    <% else %>
+      <h1>Your Prizing Area: <%= @geodeliver.postal_code %></h1>
+    <% end %>
+    	<div class="well">
+		<% if @geodeliver.address == "0" %>
+			Active:
+		<% elsif @geodeliver.address == "1" %>
+			Inactive (Postal Code Not Valid):
+		<% elsif @geodeliver.address == "2" %>
+			Inactive (Country not supported):
+		<% end %>
+		<%= @geodeliver.city %>,
+		<%= @geodeliver.country_code %>
+	</div>
+  </div>
+
+  <div class="col-md-6">
+  <h1>Change area you win prizes for</h1>
+    	<div class="well">
+
+		<%= form_for @geodeliver do |t| %>
+			<%= t.text_field :postal_code, :placeholder => 'Zip/postal code' %>
+			<%= t.select :country_code,  ["US", "CA", "Other"] %>
+			<%= t.submit "Postal Code", class: "btn btn-large btn-primary" %>
+		<% end %>
+	</div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-md-6">
+ <h1>Sponsored by <i>League Pizza</i></h1>
+
+  <% if @prize.all.count == 0 %>
+    No prizes available for this zone
+  <% else %>
+    <% @prize.each do |x| %>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Tier <%= x.tier %> challenge - <%= x.vendor %></h3>
+        </div>
+        <div class="panel-body">
+         <%= x.description %>
+        </div>
+      </div>
+   <% end %>
+  <% end %>
+
+  </div>
+
+  <div class="col-md-6">
+
+    <h2>How do I get prizes?</h2>
+    <ul>
+      <li>Win a 'promo' game to unlock a prize tier</li>
+        <ul>
+      <li>T0 - 3 games played procs a 'promo' game</li>
+      <li>T1 - 1% chance per game, each non-promo game played (win/loss) increased your chance by 0.5% cumulatively</li>
+      <li>T2 - 1% chance per game, ach non-promo game played (win/loss) increased your chance by 0.5% cumulatively</li>
+        </ul>
+      <li>Claiming a prize resets you to T0</li>
+      <li>Not claiming a tiers prize lets you compete for a higher prize</li>
+    </ul>
+    <h3>What if I lose a prized challenge</h3>
+      <ul>
+        <li>Playing a new challenge within 3 hours of losing a 'promo' resets your base chance to 50% of what it was before (e.g. 15.5% will reset to 7.75%)</li>
+        <li>Otherwise your base chance is reset to 1%</li>
+      </ul>
+
+  </div>
+
+</div>

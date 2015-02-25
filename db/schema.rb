@@ -11,12 +11,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150127232523) do
+ActiveRecord::Schema.define(version: 20150220215743) do
 
   create_table "champions", force: true do |t|
     t.string   "champion"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "geodelivers", force: true do |t|
+    t.integer  "user_id"
+    t.string   "ip_address"
+    t.float    "latitude"
+    t.float    "longitude"
+    t.string   "country_code"
+    t.string   "postal_code"
+    t.string   "address"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "city"
   end
 
   create_table "ignindices", force: true do |t|
@@ -45,6 +58,20 @@ ActiveRecord::Schema.define(version: 20150127232523) do
     t.integer  "assignment"
     t.integer  "user_id"
     t.string   "summoner_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "geo"
+  end
+
+  create_table "regions", force: true do |t|
+    t.string   "postal_code"
+    t.string   "city"
+    t.float    "lat"
+    t.float    "long"
+    t.string   "country"
+    t.string   "province"
+    t.string   "active"
+    t.string   "vendor"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

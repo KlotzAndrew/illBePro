@@ -331,6 +331,7 @@ def challenge_init
           :assignment => 1,
           :user_id => self.user_id,
           })
+        self.update(kind: 6)
         self.update(value: 3900)
         self.update(points: 100)
         self.update(challenge_description: "This game is prized! Win to win")
@@ -649,6 +650,9 @@ end
         elsif Time.now.to_i - status.created_at.to_i - status.value > 0 #=> terminate timeouts
           Rails.logger.info "#{cron_st}: Status: #{status.summoner_name} has timed out"
           status.update(win_value: 1)
+          if status.kind == 6 #re-open lost prize
+            Prize.where(assignment: 1).where(user_id: status.user_id).update(assignment: 0) 
+          end
         elsif ((Time.now.to_i - status.created_at.to_i - status.value) > -119) or (status.trigger_timer > (Time.now.to_i - trigger_timer_bench)) 
 
           mass_count += 1
@@ -776,6 +780,44 @@ end
                             Status.find(key_summoner[0].id).update(win_value: 0)
                             Rails.logger.info "#{cron_st}: updated win with wrong champion for #{key_summoner[0].summoner_id}"
                           end
+                        else
+                          Rails.logger.info "#{cron_st}: updated else for #{key_summoner[0].summoner_id}"
+                        end                        
+                      elsif key_summoner[0].kind == 5 || key_summoner[0].kind == 6
+                        Rails.logger.info "#{cron_st}: challenge kind 1 for #{key_summoner[0].summoner_id}"
+                        if !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
+                          Status.find(key_summoner[0].id).update(game_1: {
+                            :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
+                            :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", 
+                            :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", 
+                            :matchDuration => "#{games_hash["matches"][valid_games[0]]["matchDuration"]}", 
+                            :kills => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["kills"]}", 
+                            :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", 
+                            :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
+                            })
+                          Status.find(key_summoner[0].id).update(win_value: 0)
+                          if key_summoner[0].kind == 6
+                            Prize.where(assignment: 1).where(user_id: key_summoner[0].user_id).update(assignment: 0) 
+                          end                          
+                          Rails.logger.info "#{cron_st}: updated lost first for #{key_summoner[0].summoner_id}"
+                        elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
+                           Status.find(key_summoner[0].id).update(game_1: {
+                            :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
+                            :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", 
+                            :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", 
+                            :matchDuration => "#{games_hash["matches"][valid_games[0]]["matchDuration"]}", 
+                            :kills => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["kills"]}", 
+                            :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", 
+                            :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
+                            })
+                          Status.find(key_summoner[0].id).update(win_value: 2)
+                          if key_summoner[0].kind == 6
+                            Prize.where(assignment: 1).where(user_id: key_summoner[0].user_id).update(assignment: 2) 
+                            Ignindex.find_by_user_id(key_summoner[0].user_id).update(challenge_points_1: Ignindex.find_by_user_id(key_summoner[0].user_id).challenge_points_1 + key_summoner[0].points)
+                          end                          
+                          #Score.find_by_user_id(key_summoner[0].user_id).update(week_6: Score.find_by_user_id(key_summoner[0].user_id).week_6 + key_summoner[0].points)
+                          #Score.find_by_summoner_id(key_summoner[0].summoner_id).update(week_6: Score.find_by_summoner_id(key_summoner[0].summoner_id).week_6 + key_summoner[0].points)
+                          Rails.logger.info "#{cron_st}: won 1/1 for #{key_summoner[0].summoner_id}"            
                         else
                           Rails.logger.info "#{cron_st}: updated else for #{key_summoner[0].summoner_id}"
                         end                        
@@ -946,6 +988,44 @@ end
                         else
                           Rails.logger.info "#{cron_st}: updated else for #{key_summoner[0].summoner_id}"
                         end                       
+                      elsif key_summoner[0].kind == 5 || key_summoner[0].kind == 6
+                        Rails.logger.info "#{cron_st}: challenge kind 1 for #{key_summoner[0].summoner_id}"
+                        if !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
+                          Status.find(key_summoner[0].id).update(game_1: {
+                            :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
+                            :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", 
+                            :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", 
+                            :matchDuration => "#{games_hash["matches"][valid_games[0]]["matchDuration"]}", 
+                            :kills => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["kills"]}", 
+                            :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", 
+                            :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
+                            })
+                          Status.find(key_summoner[0].id).update(win_value: 0)
+                          if key_summoner[0].kind == 6
+                            Prize.where(assignment: 1).where(user_id: key_summoner[0].user_id).update(assignment: 0) 
+                          end                          
+                          Rails.logger.info "#{cron_st}: updated lost first for #{key_summoner[0].summoner_id}"
+                        elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
+                           Status.find(key_summoner[0].id).update(game_1: {
+                            :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
+                            :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", 
+                            :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", 
+                            :matchDuration => "#{games_hash["matches"][valid_games[0]]["matchDuration"]}", 
+                            :kills => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["kills"]}", 
+                            :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", 
+                            :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
+                            })
+                          Status.find(key_summoner[0].id).update(win_value: 2)
+                          if key_summoner[0].kind == 6
+                            Prize.where(assignment: 1).where(user_id: key_summoner[0].user_id).update(assignment: 2) 
+                            Ignindex.find_by_user_id(key_summoner[0].user_id).update(challenge_points_1: Ignindex.find_by_user_id(key_summoner[0].user_id).challenge_points_1 + key_summoner[0].points)
+                          end                          
+                          #Score.find_by_user_id(key_summoner[0].user_id).update(week_6: Score.find_by_user_id(key_summoner[0].user_id).week_6 + key_summoner[0].points)
+                          #Score.find_by_summoner_id(key_summoner[0].summoner_id).update(week_6: Score.find_by_summoner_id(key_summoner[0].summoner_id).week_6 + key_summoner[0].points)
+                          Rails.logger.info "#{cron_st}: won 1/1 for #{key_summoner[0].summoner_id}"            
+                        else
+                          Rails.logger.info "#{cron_st}: updated else for #{key_summoner[0].summoner_id}"
+                        end                          
                     else
                       Rails.logger.info "#{cron_st}: wrong kind for #{key_summoner[0].summoner_id}"
                     end

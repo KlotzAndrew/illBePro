@@ -7,6 +7,8 @@ gem 'high_voltage', '~> 2.2.1'
 
 gem 'simple_form'
 
+gem 'unicorn'
+
 gem 'clockwork', :git => "https://github.com/tomykaira/clockwork.git"
 
 gem 'whenever', :require => false

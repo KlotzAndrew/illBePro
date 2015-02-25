@@ -69,7 +69,7 @@ class StatusesController < ApplicationController
   # DELETE /statuses/1
   # DELETE /statuses/1.json
   def destroy
-    if @status.kind == 5
+    if @status.kind == 5 || @status.kind == 6
       @status.update(value: 0)
       @status.update(win_value: 3)
       Prize.where(assignment: 1).where(user_id: current_user.id).last.update( {

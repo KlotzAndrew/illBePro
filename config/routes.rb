@@ -3,6 +3,8 @@ Rails.application.routes.draw do
 
   resources :scores
 
+  resources :geodelivers
+
   resources :ignindices
   get 'summoner', to: 'ignindices#index', as: :summoner
   get 'profiles/show'
