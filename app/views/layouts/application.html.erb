@@ -53,18 +53,22 @@
 						<% else %>
 							<li><a href="/summoner" style="color:red">1) Add Summoner</a></li>
 						<% end %>
+						<% if prize_onboarding == "0"  %>
+							<li><a href="/geodelivers">Your Prize Zone</a></li>
+						<% else %>
+							<li><a href="/geodelivers" style="color:red">2) Your Prize Zone</a></li>
+						<% end %>
 						<% if challenge_onboarding > 0 %>
 							<li><a href="/challenges">Challenges</a></li>							
 						<% else %>
-							<li><a href="/challenges" style="color:red">2) Start a challenge</a></li>
+							<li><a href="/challenges" style="color:red">3) Start a challenge</a></li>
 						<% end %>
+						<li><a href="/scores">Score</a></li>
 					<% else %>
 	                    <li><a href="/teaser_summoner">Summoner</a></li>
 	                    <li><a href="/teaser_challenges">Challenges</a></li>
+						<li><a href="#">Your Prize Zone</a></li>
 					<% end %>
-					<li><a href="/geodelivers">Your Prize Zone</a></li>
-					<li><a href="/prizes">Prizes</a></li>
-					<li><a href="/scores">Leaderboard</a></li>
 
 
 				</ul>
@@ -85,7 +89,8 @@
 
 
 
-
+<div class="nav-breaker">
+</div>
 
 <nav class="navbar navbar-default navbar-fixed-bottom" role="navigation"> 
   	<div class="container">

@@ -2,17 +2,42 @@ class ScoresController < ApplicationController
   before_action :set_score, only: [:show, :edit, :update, :destroy]
 
   def index
-    @scores = Score.all
-    @users = User.all
-    @ignindex = Ignindex.all
-    @status = Status.all
-    @top_profiles = Score.all.where.not(user_id: nil).where("week_6 > ?", 0).order(week_6: :desc).limit(5)
-    @top_summoners = Score.all.where.not(summoner_id: nil).where("week_6 > ?", 0).order(week_6: :desc).limit(5)
+    @score = Score.find_by_user_id(current_user.id)
+    @history = Prize.all.where("user_id = ?", current_user.id).where("assignment = ?", 2)
+    if @score.prize_id != nil
+      prize = Prize.find(@score.prize_id)
+      @prize_description = prize.description
+      @prize_vendor = prize.vendor
+      @prize_vode = prize.code
+    end
 
-    @top_profiles_last = Score.all.where.not(user_id: nil).where("week_5 > ?", 0).order(week_5: :desc).limit(5)
-    @top_summoners_last = Score.all.where.not(summoner_id: nil).where("week_5 > ?", 0).order(week_5: :desc).limit(5)
   end
 
+  def update
+    if @score.prize_id != nil
+      @score.assign_prize(params[:commit])
+      if params[:commit] == "Accept"
+        respond_to do |format|
+          format.html { redirect_to scores_url, notice: 'Prize accepted' }
+          format.json { head :no_content }
+        end
+      elsif params[:commit] == "Upgrade"
+        respond_to do |format|
+          format.html { redirect_to statuses_url, notice: 'Prize traded in, your chance to proc a prize is unchanged' }
+          format.json { head :no_content }
+        end
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to scores_url, notice: 'There is an issue with your prize :(' }
+        format.json { head :no_content }
+      end
+    end
+
+  end
+
+  def show
+  end
 
   private
     def set_score
@@ -20,6 +45,6 @@ class ScoresController < ApplicationController
     end
 
     def score_params
-      params.require(:score).permit(:summoner_name, :week_1, :week_2, :week_3, :week_4)
+      params.require(:score).permit()
     end
 end

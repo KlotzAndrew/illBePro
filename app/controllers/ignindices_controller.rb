@@ -6,7 +6,10 @@ class IgnindicesController < ApplicationController
   respond_to :html, :xml, :json
   
   def show
-      render json: Ignindex.find_by_user_id(current_user.id)
+    respond_to do |format|
+      format.html {render nothing: true}
+      format.json {render json: Ignindex.find_by_user_id(current_user.id)}
+    end
   end
 
   def index

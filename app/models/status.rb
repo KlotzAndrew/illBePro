@@ -323,46 +323,39 @@ def challenge_init
     Champion.all.where.not(champion:nil).sample(16).each {|x| champ_ids << x.id}
     self.update(content: champ_ids.to_s)
   elsif self.kind == 5
-    ign = Ignindex.find_by_user_id(self.user_id)
+    score = Score.find_by_user_id(self.user_id)
 
-    if ign.prize_level == 0 #playing for first 25% discount prize
-      if (ign.challenge_points_1 == 0) && (Prize.where(tier: 0).where(assignment: 0).count > 0)
-        Prize.where(tier: ign.prize_level).where(assignment: 0).last.update( {
-          :assignment => 1,
-          :user_id => self.user_id,
-          })
-        self.update(kind: 6)
-        self.update(value: 3900)
-        self.update(points: 100)
-        self.update(challenge_description: "This game is prized! Win to win")
-        self.update(content: "#{Prize.where(assignment: 1).where(user_id: self.user_id).last.description}")
-      else 
-        self.update(value: 3900)
-        self.update(points: 1)
-        self.update(challenge_description: "Play a game to increase the chance your next challenge will be prized")
+    if score.prize_level == 1 #playing for first 25% discount prize
+      proc = rand(0..2)
+      Rails.logger.info "Proc: #{proc}, CP: #{score.challenge_points}"
+      if score.challenge_points > proc #proc chance
+        geodeliver = Geodeliver.find_by_user_id(self.user_id)
+        region = Region.find(geodeliver.region_id)
+
+        if region.prize_id_tier1 == "[]" or region.prize_id_tier1 == nil
+          #stop json error
+        else
+          prize = Prize.find(JSON.parse(region.prize_id_tier1).sample(1)[0])
+       
+          prize.update(
+            :assignment => 1,
+            :user_id => self.user_id)
+          self.update(
+            :prize_id => prize.id,
+            :kind => 6,
+            :value => 3900,
+            :points => 100,
+            :challenge_description => "#{prize.description}",
+            :content => "#{prize.vendor}")
+
+        end
+      else #this game is not prized
+        self.update(
+          :value => 3900,
+          :points => 1,
+          :challenge_description => "Play a game to increase the chance your next challenge will be prized")
       end
-    elsif ign.prize_level == 1 #playing for 2nd prize of 50% off
-      proc = rand(7..100)
-      if proc < ign.challenge_points_2 && (Time.now.to.i - 22.hours.to_i) > last_prize_time
-        #proc a pizza prize
-      else
-        self.update(value: 3900)
-        self.update(points: 1)
-        self.update(challenge_description: "Play a game to increase your proc chance (lvl 1)")
-      end
-    elsif ign.prize_level == 2 #playing for 3rd prize of 100% off
-        proc = rand(7..100)
-      if proc < ign.challenge_points_3 && (Time.now.to.i - 22.hours.to_i) > ign.last_prize_time
-        #proc a pizza prize
-      else
-        self.update(value: 3900)
-        self.update(points: 1)
-        self.update(challenge_description: "Play a game to increase your proc chance (lvl 2)")
-      end
-    elsif ign.prize_level == 3
-      self.update(value: 3900)
-      self.update(points: 1)
-      self.update(challenge_description: "Champion tier! More prizes coming soon!")
+
     else
       Rails.logger.info "Something went wrong with your prize level"
     end
@@ -651,7 +644,9 @@ end
           Rails.logger.info "#{cron_st}: Status: #{status.summoner_name} has timed out"
           status.update(win_value: 1)
           if status.kind == 6 #re-open lost prize
-            Prize.where(assignment: 1).where(user_id: status.user_id).update(assignment: 0) 
+            Prize.find(status.prize_id).update(
+              :assignment => 0,
+              :user_id => nil) 
           end
         elsif ((Time.now.to_i - status.created_at.to_i - status.value) > -119) or (status.trigger_timer > (Time.now.to_i - trigger_timer_bench)) 
 
@@ -784,7 +779,7 @@ end
                           Rails.logger.info "#{cron_st}: updated else for #{key_summoner[0].summoner_id}"
                         end                        
                       elsif key_summoner[0].kind == 5 || key_summoner[0].kind == 6
-                        Rails.logger.info "#{cron_st}: challenge kind 1 for #{key_summoner[0].summoner_id}"
+                        Rails.logger.info "#{cron_st}: challenge kind #{key_summoner[0].kind} for #{key_summoner[0].summoner_id}"
                         if !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
                           Status.find(key_summoner[0].id).update(game_1: {
                             :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
@@ -797,7 +792,13 @@ end
                             })
                           Status.find(key_summoner[0].id).update(win_value: 0)
                           if key_summoner[0].kind == 6
-                            Prize.where(assignment: 1).where(user_id: key_summoner[0].user_id).update(assignment: 0) 
+                            Prize.find(key_summoner[0].prize_id).update(
+                              :assignment => 0,
+                              :user_id => nil)
+                            score = Score.find_by_user_id(key_summoner[0].user_id)
+                            score.update(
+                              :challenge_points => score.challenge_points*0.5)
+                          elsif key_summoner[0].kind == 5
                           end                          
                           Rails.logger.info "#{cron_st}: updated lost first for #{key_summoner[0].summoner_id}"
                         elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
@@ -811,17 +812,21 @@ end
                             :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
                             })
                           Status.find(key_summoner[0].id).update(win_value: 2)
+
+                          score = Score.find_by_user_id(key_summoner[0].user_id)
                           if key_summoner[0].kind == 6
-                            Prize.where(assignment: 1).where(user_id: key_summoner[0].user_id).update(assignment: 2) 
-                            Ignindex.find_by_user_id(key_summoner[0].user_id).update(challenge_points_1: Ignindex.find_by_user_id(key_summoner[0].user_id).challenge_points_1 + key_summoner[0].points)
+                            score.update(prize_id: key_summoner[0].prize_id)
+                          elsif key_summoner[0].kind == 5
+                            score.update(challenge_points: score.challenge_points + key_summoner[0].points)                                   
+                          else
                           end                          
                           #Score.find_by_user_id(key_summoner[0].user_id).update(week_6: Score.find_by_user_id(key_summoner[0].user_id).week_6 + key_summoner[0].points)
                           #Score.find_by_summoner_id(key_summoner[0].summoner_id).update(week_6: Score.find_by_summoner_id(key_summoner[0].summoner_id).week_6 + key_summoner[0].points)
                           Rails.logger.info "#{cron_st}: won 1/1 for #{key_summoner[0].summoner_id}"            
-                        else
+                        else 
                           Rails.logger.info "#{cron_st}: updated else for #{key_summoner[0].summoner_id}"
                         end                        
-                      else
+                      else # end of kind 5 or 6
                         Rails.logger.info "#{cron_st}: wrong kind for #{key_summoner[0].summoner_id}"
                       end
                     end
@@ -989,7 +994,7 @@ end
                           Rails.logger.info "#{cron_st}: updated else for #{key_summoner[0].summoner_id}"
                         end                       
                       elsif key_summoner[0].kind == 5 || key_summoner[0].kind == 6
-                        Rails.logger.info "#{cron_st}: challenge kind 1 for #{key_summoner[0].summoner_id}"
+                        Rails.logger.info "#{cron_st}: challenge kind 5 or 6 for #{key_summoner[0].summoner_id}"
                         if !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
                           Status.find(key_summoner[0].id).update(game_1: {
                             :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
@@ -1002,7 +1007,14 @@ end
                             })
                           Status.find(key_summoner[0].id).update(win_value: 0)
                           if key_summoner[0].kind == 6
-                            Prize.where(assignment: 1).where(user_id: key_summoner[0].user_id).update(assignment: 0) 
+                            Prize.find(key_summoner[0].prize_id).update(
+                              :assignment => 0,
+                              :user_id => nil)
+                            score = Score.find_by_user_id(key_summoner[0].user_id)
+                            score.update(
+                              :challenge_points => score.challenge_points*0.5)
+                          elsif key_summoner[0].kind == 5
+                            score.update(challenge_points: score.challenge_points + key_summoner[0].points) 
                           end                          
                           Rails.logger.info "#{cron_st}: updated lost first for #{key_summoner[0].summoner_id}"
                         elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
@@ -1016,9 +1028,13 @@ end
                             :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
                             })
                           Status.find(key_summoner[0].id).update(win_value: 2)
+
+                          score = Score.find_by_user_id(key_summoner[0].user_id)
                           if key_summoner[0].kind == 6
-                            Prize.where(assignment: 1).where(user_id: key_summoner[0].user_id).update(assignment: 2) 
-                            Ignindex.find_by_user_id(key_summoner[0].user_id).update(challenge_points_1: Ignindex.find_by_user_id(key_summoner[0].user_id).challenge_points_1 + key_summoner[0].points)
+                            score.update(prize_id: key_summoner[0].prize_id)
+                          elsif key_summoner[0].kind == 5
+                            score.update(challenge_points: score.challenge_points + key_summoner[0].points)                                   
+                          else
                           end                          
                           #Score.find_by_user_id(key_summoner[0].user_id).update(week_6: Score.find_by_user_id(key_summoner[0].user_id).week_6 + key_summoner[0].points)
                           #Score.find_by_summoner_id(key_summoner[0].summoner_id).update(week_6: Score.find_by_summoner_id(key_summoner[0].summoner_id).week_6 + key_summoner[0].points)
@@ -1026,12 +1042,12 @@ end
                         else
                           Rails.logger.info "#{cron_st}: updated else for #{key_summoner[0].summoner_id}"
                         end                          
-                    else
-                      Rails.logger.info "#{cron_st}: wrong kind for #{key_summoner[0].summoner_id}"
+                      else
+                        Rails.logger.info "#{cron_st}: wrong kind for #{key_summoner[0].summoner_id}"
+                      end # end of kind 5 or 6
                     end
+                    Rails.logger.info "#{cron_st}: Ran cycle num: #{times_run} for total mass of: #{mass_count}"
                   end
-                  Rails.logger.info "#{cron_st}: Ran cycle num: #{times_run} for total mass of: #{mass_count}"
-                end
 
               end
 

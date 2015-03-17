@@ -7,7 +7,7 @@ class Geodeliver < ActiveRecord::Base
 			if ((self.postal_code =~ /\d{5}/) == 0) && (self.postal_code.length == 5)
 				if Region.where("postal_code == ?", self.postal_code).count > 0
 					self.update(address: "0")
-					self.update(city: Region.where("postal_code == ?", self.postal_code).first.city)
+					self.update(region_id: Region.where("postal_code == ?", self.postal_code).first.id)
 				else
 					self.update(address: "2") #no service
 				end

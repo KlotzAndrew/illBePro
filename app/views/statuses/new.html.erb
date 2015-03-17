@@ -1,3 +1,4 @@
+
 <%= render 'form' %>
 
 <h4 class="text-center  ">Challenges are enabled for Solo/Duo NA Ranked 5v5 on Summoners Rift</h4>
@@ -8,34 +9,38 @@
     <div class="col-md-6">
       <div class="well">
 
-        <h4 class="text-center">Papa John's challenge tier</h4>
+        <% if @prize_vendor.length > 0 %>
+          <h4 class="text-center">Prizing by: <i><%= @prize_vendor %></i></h4>
+        <% else %>
+          <h4 class="text-center">No prizing in this tier challenge tier</h4>
+        <% end %>
 
-        <div class="row">
 
-
-
-
-            <div class="form-actions">
-              <div class="text-center">
-                <div>
-                  <%= simple_form_for(@status, html: {class: 'form-hoizontal'}) do |f| %>
-                    <%= f.hidden_field :kind, :value=>5 %>
-                    <%= f.button :submit, "Start Challenge", class: "btn btn-lg btn-success" %>
-                  <% end %>
-                </div>
-              </div>
+        <div class="form-actions">
+          <div class="text-center">
+            <div>
+              <%= simple_form_for(@status, html: {class: 'form-hoizontal'}) do |f| %>
+                <%= f.hidden_field :kind, :value=>5 %>
+                <%= f.button :submit, "Start Challenge", class: "btn btn-lg btn-success" %>
+              <% end %>
             </div>
-            <h4 class="text-center">Time limit: 65 Minutes<h4>
-
-
+          </div>
         </div>
+        <h4 class="text-center">Challenge Time limit: 65 Minutes<h4>
 
       </div>
     </div>
-    </div
+    <div class="col-md-6">
+      <ul>
+        <li>Each challenge has a % chance of being prized</li>
+        <li>Playing a Non-Prized challenge increases you chance by 1% cummulativly</li>
+        <li>Winning a prize tier gives you the option of redeeming the prize, or upgading to the next prize tier</li>
+      </ul>
+    </div>
   </div>
 
 </div>
+
 
 <div>
   <%= button_to "Back", challenges_path, :class => "btn btn-primary", :method => :get  %>

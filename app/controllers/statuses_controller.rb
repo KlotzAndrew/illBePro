@@ -7,9 +7,14 @@ class StatusesController < ApplicationController
   # GET /statuses.json
   def index
     @champion = Champion.all
-    @statuses = Status.all
+    @statuses = Status.where("user_id == ?", current_user.id).order(created_at: :desc).limit(15)
     @ignindex = Ignindex.find_by_user_id(current_user.id)
     @score = Score.find_by_user_id(current_user.id)
+    if @score.prize_id != nil
+      prize = Prize.find(@score.prize_id)
+      @prize_description = prize.description
+      @prize_vendor = prize.vendor
+    end
   end
 
   # GET /statuses/1
@@ -18,11 +23,15 @@ class StatusesController < ApplicationController
   # GET /statuses/new
   def new
     @status = Status.new
+
+    @prize_vendor = Region.find_by_postal_code(Geodeliver.find_by_user_id(current_user.id).postal_code).vendor
   end
 
   # POST /statuses
   # POST /statuses.json
   def create
+
+    
     @ignindex = Ignindex.find_by_user_id(current_user.id)
     @status = current_user.statuses.new(status_params)
     @status.summoner_id = @ignindex.summoner_id
@@ -42,6 +51,7 @@ class StatusesController < ApplicationController
   # PATCH/PUT /statuses/1
   # PATCH/PUT /statuses/1.json
   def update
+    
     if (Time.now.to_i - @status.created_at.to_i) < 1200
       if @status.pause_timer == 0
         @status.update(pause_timer: Time.now.to_i)
@@ -64,29 +74,38 @@ class StatusesController < ApplicationController
           format.json { head :no_content }
         end
     end
+    
   end
 
   # DELETE /statuses/1
   # DELETE /statuses/1.json
   def destroy
-    if @status.kind == 5 || @status.kind == 6
-      @status.update(value: 0)
-      @status.update(win_value: 3)
+    if @status.kind == 6
+      @status.update(
+        :value => 0,
+        :win_value => 0)
       Prize.where(assignment: 1).where(user_id: current_user.id).last.update( {
         :assignment => 0,
         :user_id => 0,
         })
       respond_to do |format|
-        format.html { redirect_to statuses_url, notice: 'Challenge was surrendered, 1 point lost' }
+        format.html { redirect_to statuses_url, notice: 'Prized challenge was canceled' }
         format.json { head :no_content }
       end
-    else 
+    elsif @status.kind == 5
       @status.update(value: 0)
       @status.update(win_value: 3)
       respond_to do |format|
-        format.html { redirect_to statuses_url, notice: 'Challenge was canceled' }
+        format.html { redirect_to statuses_url, notice: 'Non-Prized challenge was canceled' }
         format.json { head :no_content }
       end
+    else
+      @status.update(value: 0)
+      @status.update(win_value: 3)      
+      respond_to do |format|
+        format.html { redirect_to statuses_url, notice: 'Something went wrong with your challenge kind' }
+        format.json { head :no_content }
+      end      
     end
   end
 
@@ -98,7 +117,7 @@ class StatusesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def status_params
-      params.require(:status).permit(:name, :content, :value, :user_id, :kind, :points, :api_ping, :win_value, :queue_number, :challenge_description, game_1: [:champion_id, :matchCreation, :win_loss, :matchDuration, :kills, :deaths, :assists], game_2: [:champion_id, :matchCreation, :win_loss, :matchDuration, :kills, :deaths, :assists], game_3: [:champion_id, :matchCreation, :win_loss, :matchDuration, :kills, :deaths, :assists], game_4: [:champion_id, :matchCreation, :win_loss, :matchDuration, :kills, :deaths, :assists], game_5: [:champion_id, :matchCreation, :win_loss, :matchDuration, :kills, :deaths, :assists])
+      params.require(:status).permit(:kind)
     end
 end
 

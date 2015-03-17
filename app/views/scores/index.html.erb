@@ -1,83 +1,56 @@
+
+<% if @score.prize_id != nil %>
+
+
+  <h3 class="text-center">Current Prize</h3>
+    <div class="well">
+    <p class="text-center">
+       <%= @prize_vendor %>
+      </br> <%= @prize_description %>
+    </p>
+
+    <%= simple_form_for(@score, html: {class: 'form-hoizontal'}) do |f| %>
+      <%= f.button :submit, "Accept", class: "btn btn-lg btn-success" %>
+      <%= f.button :submit, "Upgrade", class: "btn btn-lg btn-danger" %>
+    <% end %>
+    </div>
+
+<% else %>  
+<% end %>
+
 <div class="page-header">
-  <h3 class="text-center">Win a Pizza for playing League!</h3>
-  <h5 class="text-center"><i>Highest score on Jan 25th 5pm EST gets a free pizza</i></h5>
+  <h1 class="text-center"><strong>Prize history</strong></h1>
 </div>
 
+<% @history.each do |x| %>
+  <div class="page-header">
+    <div class="row">
+      <div class="col-md-12">
+    
+        <div class="well">
+        
+    <div class="row">
+      <div class="col-md-6">      
+        <div class="prize-offer">
+          <h3 class="text-center">You just won: <%= x.description %></h3>
+          <h3 class="text-center">Prized by: <%= x.vendor %></h3>
+          <h3 class="text-center">reward code: <%= x.code %></h3>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="text-center">
+       <%= image_tag("kayle.jpg", size: "480x300") %>
+        </div>
+      </div>
+    </div>
 
 
-<div class="row">
-  <div class="col-md-6">
-    <table class="table table-striped">
-      <thead>
-        <h4 class="text-center">Last Competition Leaders</h4>
-        <tr>
-          <th></th>
-          <th>Profile</th>
-          <th>Score</th>
-          <th>Playing as</th>
-        </tr>
-      </thead>
-
-      <tbody> 
-        <% x = 0 %>
-        <% @top_profiles_last.each do |score| %>
-          <% x+=1 %>
-          <% if x == 1 %>
-          <tr class="success">
-          <% else %>
-          <tr>
-          <% end %>
-            <td><%= x.ordinalize %></td>
-            <td><%= @users.find(score.user_id).profile_name %></td>
-            <td><%= score.week_5 %></td>
-            <td><%= @ignindex.find_by_user_id(score.user_id).summoner_name %></td>
-
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+        </div>
+      </div>
+    </div>
   </div>
+<% end %>
 
-  <div class="col-md-6">
-    <table class="table table-striped">
-      <thead>
-         <h4 class="text-center">Current Competition Leaders</h4>
-        <tr>
-          <th></th>
-          <th>Profile</th>
-          <th>Score</th>
-          <th>Playing as</th>
-          <th></th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <% y = 0 %>
-        <% @top_profiles.each do |score| %>
-          <% y+=1 %>
-          <tr>
-            <td><%= y.ordinalize %></td>
-            <td><%= @users.find(score.user_id).profile_name %></td>
-            <td><%= score.week_6 %></td>
-            <td><%= @ignindex.find_by_user_id(score.user_id).summoner_name %></td>
-            <% if @status.where("user_id = ?", score.user_id).where("win_value IS ?", nil).count > 0 %>
-            <td>In challenge</td>
-            <% else %>
-            <td></td>
-            <% end %>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
-
-</div>
-
-<h6 class="text-center">Jan.18st FuzzyBootsTaric won with 36 points</h6>
-<h6 class="text-center">Dec.21st NA Daemonic won with 72 points</h6>
-<h6 class="text-center">Dec.7th mlyddy won with 35 points</h6>
-<h6 class="text-center">Nov.27th panoptic won with 13 points</h6>
-<h6 class="text-center">Nov.20th Laurent won with 6 points</h6>
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

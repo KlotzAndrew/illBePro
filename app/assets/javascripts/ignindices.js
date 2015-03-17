@@ -1,4 +1,4 @@
-
+/*
 var pollActivity = function() {
   $.ajax({
     url: "/ignindices/" + $("#ign").data("id"),
@@ -37,4 +37,4 @@ window.onload = function(){
 
 
 window.onload = pollActivity
-window.onunload = function() {}; 
+window.onunload = function() {}; */

@@ -1,5 +1,7 @@
 class Region < ActiveRecord::Base
 
+has_many :prizes
+
   def self.import_data
     zip.each do |x|
       Region.create(

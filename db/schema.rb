@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150220215743) do
+ActiveRecord::Schema.define(version: 20150305032411) do
 
   create_table "champions", force: true do |t|
     t.string   "champion"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(version: 20150220215743) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "city"
+    t.integer  "region_id"
   end
 
   create_table "ignindices", force: true do |t|
@@ -48,6 +49,7 @@ ActiveRecord::Schema.define(version: 20150220215743) do
     t.integer  "challenge_points_2", default: 0
     t.integer  "challenge_points_3", default: 0
     t.integer  "last_prize_time",    default: 0
+    t.integer  "prize_token"
   end
 
   create_table "prizes", force: true do |t|
@@ -61,6 +63,8 @@ ActiveRecord::Schema.define(version: 20150220215743) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "geo"
+    t.string   "region_id"
+    t.integer  "delivered_at"
   end
 
   create_table "regions", force: true do |t|
@@ -74,6 +78,10 @@ ActiveRecord::Schema.define(version: 20150220215743) do
     t.string   "vendor"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "prize_id_tier1"
+    t.string   "prize_id_tier2"
+    t.string   "prize_id_tier3"
+    t.string   "prize_id_tier4"
   end
 
   create_table "scores", force: true do |t|
@@ -86,13 +94,17 @@ ActiveRecord::Schema.define(version: 20150220215743) do
     t.integer  "week_4"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "week_5",        default: 0
-    t.integer  "week_6",        default: 0
-    t.integer  "week_7",        default: 0
-    t.integer  "week_8",        default: 0
-    t.integer  "week_9",        default: 0
-    t.integer  "week_10",       default: 0
-    t.integer  "week_11",       default: 0
+    t.integer  "week_5",           default: 0
+    t.integer  "week_6",           default: 0
+    t.integer  "week_7",           default: 0
+    t.integer  "week_8",           default: 0
+    t.integer  "week_9",           default: 0
+    t.integer  "week_10",          default: 0
+    t.integer  "week_11",          default: 0
+    t.integer  "prize_level",      default: 1
+    t.integer  "challenge_points", default: 0
+    t.integer  "last_prize_time",  default: 0
+    t.integer  "prize_id"
   end
 
   create_table "statuses", force: true do |t|
@@ -115,6 +127,7 @@ ActiveRecord::Schema.define(version: 20150220215743) do
     t.text     "game_5"
     t.integer  "pause_timer"
     t.integer  "trigger_timer"
+    t.integer  "prize_id"
   end
 
   add_index "statuses", ["user_id"], name: "index_statuses_on_user_id"
