@@ -50,7 +50,7 @@
   </div>
 
 
-  <% if @statuses.where(win_value: nil).find_by_user_id(current_user.id).nil? %>
+  <% if @statuses.where("win_value = ?", nil).find_by_user_id(current_user.id).nil? %>
     <div class="row">
       <div class="col-md-4 col-md-offset-2">
         <div class="btn-group">
@@ -59,7 +59,7 @@
       </div>
     </div>
   <% else %>
-     <% status = @statuses.where(win_value: nil).find_by_user_id(current_user.id) %>
+     <% status = @statuses.where("win_value = ?", nil).find_by_user_id(current_user.id) %>
   <div class="well">
     <div class="challenge-history-running">
       <div class="row" >
