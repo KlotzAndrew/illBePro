@@ -8,14 +8,14 @@
       <% if !@geodeliver.address.nil? %>
       	<div class="well">
       		<% if @geodeliver.address == "0" %>
-      			Active:
-      		<% elsif @geodeliver.address == "1" %>
-      			Inactive (Postal Code Not Valid):
-      		<% elsif @geodeliver.address == "2" %>
-      			Inactive (Country not supported):
-      		<% end %>
-      		<%= @region_city %>,
-      		<%= @region_country %>
+            Active:
+        		<%= @region_city %>,
+        		<%= @region_country %>
+          <% elsif @geodeliver.address == "1" %>
+            Inactive (Postal Code Not Valid):
+          <% elsif @geodeliver.address == "2" %>
+            Inactive (Country not supported):
+          <% end %>
     	 </div>
       <% end %>
   </div>
@@ -25,10 +25,11 @@
     	<div class="well">
 
 		<%= form_for @geodeliver do |t| %>
-			<%= t.text_field :postal_code, :placeholder => 'Zip/postal code' %>
+			<%= t.text_field :postal_code, :placeholder => 'Postal/Zip code' %>
 			<%= t.select :country_code,  ["US", "CA", "Other"] %>
-			<%= t.submit "Postal Code", class: "btn btn-large btn-primary" %>
+			<%= t.submit "Postal/Zip Code", class: "btn btn-large btn-primary" %>
 		<% end %>
+    <h6>*If you are in Canada, this form only accepts the first 3 digits of your postal code</h6>
 	</div>
   </div>
 </div>

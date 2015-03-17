@@ -3,9 +3,9 @@ class GeodeliversController < ApplicationController
 	
 	def update
 		@geodeliver = Geodeliver.find(params[:id])
-		if params[:commit] == "Postal Code"
+		if params[:commit] == "Postal/Zip Code"
 			@geodeliver.update(params[:geodeliver].permit(:postal_code, :country_code))
-			@geodeliver.valid_location
+			@geodeliver.valid_location2
 			redirect_to :action => :index
 			flash[:notice] = "Updated Your Prizing Zone!"
 		end

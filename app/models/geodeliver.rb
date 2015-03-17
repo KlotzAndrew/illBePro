@@ -1,6 +1,36 @@
 class Geodeliver < ActiveRecord::Base
 	belongs_to :user
 
+	def valid_location2
+		if self.country_code == "US"
+			if self.postal_code.length > 5
+				self.update(postal_code: self.postal_code[0..4])
+			end
+			valid_region = Region.where("country = ?", "US").where("postal_code = ?", self.postal_code)
+			if valid_region.count > 0
+				self.update(address: "0")
+				self.update(region_id: valid_region.first.id)
+			else
+				self.update(address: "2") #no service
+			end
+		elsif self.country_code == "CA"
+			if self.postal_code.length > 3
+				self.update(postal_code: self.postal_code[0..2])
+			end
+			self.update(postal_code: self.postal_code.upcase)
+			valid_region = Region.where("country = ?", "CA").where("postal_code = ?", self.postal_code)
+			if valid_region.count > 0
+				self.update(address: "0")
+				self.update(region_id: valid_region.first.id)
+			else
+				self.update(address: "2") #no service
+			end
+		else
+			self.update(address: "2")
+		end
+
+	end
+	
 
 	def valid_location
 		if self.country_code == "US"
