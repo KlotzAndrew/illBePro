@@ -25,10 +25,13 @@ class StatusesController < ApplicationController
   def new
     @status = Status.new
 
-    if Geodeliver.find_by_user_id(current_user.id).postal_code.nil?
-      @prize_vendor = ""
-    else
-      @prize_vendor = Region.find_by_postal_code(Geodeliver.find_by_user_id(current_user.id).postal_code).vendor
+    geo_user = Geodeliver.find_by_user_id(current_user.id)
+    @prize_vendor = ""
+    if !geo_user.postal_code.nil?
+      reg_user = Region.find_by_postal_code(geo_user.postal_code)
+      if !reg_user.vendor.nil?
+        @prize_vendor = reg_user.vendor
+      end
     end
   end
 

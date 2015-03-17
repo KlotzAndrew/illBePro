@@ -9,7 +9,7 @@
     <div class="col-md-6">
       <div class="well">
 
-        <% if @prize_vendor.length > 0 %>
+        <% if @prize_vendor != "" %>
           <h4 class="text-center">Prizing by: <i><%= @prize_vendor %></i></h4>
         <% else %>
           <h4 class="text-center">No prizing in this tier challenge tier</h4>

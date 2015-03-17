@@ -1,14 +1,17 @@
 class ScoresController < ApplicationController
   before_action :set_score, only: [:show, :edit, :update, :destroy]
 
+  before_filter :authenticate_user!
+
   def index
     @score = Score.find_by_user_id(current_user.id)
     @history = Prize.all.where("user_id = ?", current_user.id).where("assignment = ?", 2)
+    
     if @score.prize_id != nil
       prize = Prize.find(@score.prize_id)
       @prize_description = prize.description
       @prize_vendor = prize.vendor
-      @prize_vode = prize.code
+      @prize_code = prize.code
     end
 
   end
