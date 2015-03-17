@@ -1,21 +1,23 @@
 <div class="row">
   <div class="col-md-6">
-    <% if @geodeliver.postal_code.nil? %>
+    <% if @geodeliver.region_id.nil? %>
       <h1>Your Prizing Area: empty</h1>
     <% else %>
       <h1>Your Prizing Area: <%= @geodeliver.postal_code %></h1>
     <% end %>
-    	<div class="well">
-		<% if @geodeliver.address == "0" %>
-			Active:
-		<% elsif @geodeliver.address == "1" %>
-			Inactive (Postal Code Not Valid):
-		<% elsif @geodeliver.address == "2" %>
-			Inactive (Country not supported):
-		<% end %>
-		<%= @region_city %>,
-		<%= @region_country %>
-	</div>
+      <% if !@geodeliver.address.nil? %>
+      	<div class="well">
+      		<% if @geodeliver.address == "0" %>
+      			Active:
+      		<% elsif @geodeliver.address == "1" %>
+      			Inactive (Postal Code Not Valid):
+      		<% elsif @geodeliver.address == "2" %>
+      			Inactive (Country not supported):
+      		<% end %>
+      		<%= @region_city %>,
+      		<%= @region_country %>
+    	 </div>
+      <% end %>
   </div>
 
   <div class="col-md-6">
@@ -34,39 +36,41 @@
 
 <div class="row">
   <div class="col-md-6">
-  <% if @tier1_description == "" %>
-    <h1 class="not-prized">No prizes for this zone</i></h1>
-  <% else %>
-    <h1>Prizes from <i><%= @tier1_vendor %></i></h1>
-
-
-  <div class="panel panel-default">
-    <div class="panel-heading">
+  <% if !@geodeliver.region_id.nil? %>
     <% if @tier1_description == "" %>
-      <h3 class="panel-title">No prizes for tier 1 available for this zone</h3>
+      <h1 class="not-prized">No prizes for this zone</i></h1>
     <% else %>
-        <h3 class="panel-title">Prize type 1: <%= @tier1_vendor %></h3>
-          </div>
-        <div class="panel-body">
-      <%= @tier1_description %>
-    <% end %>
+      <h1>Prizes from <i><%= @tier1_vendor %></i></h1>
+
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+      <% if @tier1_description == "" %>
+        <h3 class="panel-title">No prizes for tier 1 available for this zone</h3>
+      <% else %>
+          <h3 class="panel-title">Prize type 1: <%= @tier1_vendor %></h3>
+            </div>
+          <div class="panel-body">
+        <%= @tier1_description %>
+      <% end %>
+      </div>
     </div>
-  </div>
 
-  <div class="panel panel-default">
-    <div class="panel-heading">
-    <% if @tier1_description == "" %>
-      <h3 class="panel-title">No prizes for tier 1 available for this zone</h3>
-    <% else %>
-        <h3 class="panel-title">Prize type 2:  <%= @tier2_vendor %></h3>
-          </div>
-        <div class="panel-body">
-      <%= @tier2_description %>
-    <% end %>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+      <% if @tier1_description == "" %>
+        <h3 class="panel-title">No prizes for tier 1 available for this zone</h3>
+      <% else %>
+          <h3 class="panel-title">Prize type 2:  <%= @tier2_vendor %></h3>
+            </div>
+          <div class="panel-body">
+        <%= @tier2_description %>
+      <% end %>
+      </div>
     </div>
-  </div>
 
 
+    <% end %>
   <% end %>
 
   </div>
