@@ -285,9 +285,10 @@ end
 
 def dr_who
   w = self.user_id
-  if Ignindex.find_by_user_id(w).summoner_validated == true
-  else
+  if Ignindex.find_by_user_id(w).summoner_validated != true
     errors.add(:you_need, ' a valid summoner name before you can start a challenge!')
+  elsif Geodeliver.find_by_user_id(self.user_id).nil?
+    errors.add(:you_need, ' to select a prize zone to start a challenge')
   end
 end
 
@@ -324,12 +325,12 @@ def challenge_init
     self.update(content: champ_ids.to_s)
   elsif self.kind == 5
     score = Score.find_by_user_id(self.user_id)
+    geodeliver = Geodeliver.find_by_user_id(self.user_id)
 
     if score.prize_level == 1 #playing for first 25% discount prize
       proc = rand(0..2)
       Rails.logger.info "Proc: #{proc}, CP: #{score.challenge_points}"
-      if score.challenge_points > proc #proc chance
-        geodeliver = Geodeliver.find_by_user_id(self.user_id)
+      if score.challenge_points > proc && geodeliver.region_id != nil#proc chance
         region = Region.find(geodeliver.region_id)
 
         if region.prize_id_tier1 == "[]" or region.prize_id_tier1 == nil

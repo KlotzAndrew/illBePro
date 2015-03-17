@@ -7,7 +7,8 @@ class StatusesController < ApplicationController
   # GET /statuses.json
   def index
     @champion = Champion.all
-    @statuses = Status.where("user_id == ?", current_user.id).order(created_at: :desc).limit(15)
+    @statuses = Status.where("user_id = ?", current_user.id).order(created_at: :desc).limit(15)
+    @current_game = Status.where("win_value IS ?", nil).find_by_user_id(current_user.id)
     @ignindex = Ignindex.find_by_user_id(current_user.id)
     @score = Score.find_by_user_id(current_user.id)
     if @score.prize_id != nil

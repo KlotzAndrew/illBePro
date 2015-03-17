@@ -1,4 +1,4 @@
-  <% if @score.prize_id != nil %>
+<% if @score.prize_id != nil %>
   <div class="page-header">
     <div class="row">
       <div class="col-md-12">
@@ -50,7 +50,7 @@
   </div>
 
 
-  <% if @statuses.where("win_value = ?", nil).find_by_user_id(current_user.id).nil? %>
+  <% if @current_game.nil? %>
     <div class="row">
       <div class="col-md-4 col-md-offset-2">
         <div class="btn-group">
@@ -59,15 +59,14 @@
       </div>
     </div>
   <% else %>
-     <% status = @statuses.where("win_value = ?", nil).find_by_user_id(current_user.id) %>
   <div class="well">
     <div class="challenge-history-running">
       <div class="row" >
         <div class="col-md-2">
-          <div class="challenge-summoner"><strong><p class="text-center"><%= status.summoner_name %></p> </strong></div>
+          <div class="challenge-summoner"><strong><p class="text-center"><%= @current_game.summoner_name %></p> </strong></div>
         </div>
         <div class="col-md-5">
-        <% if status.kind == 6 %>
+        <% if @current_game.kind == 6 %>
           <div class="challenge-description">Prized Game!</p></div>
         <% else %>
           <div class="challenge-description">Non-Prized Game</p></div>
@@ -78,31 +77,31 @@
         <div class="col-md-2">
             <div class="challenge-description">
               <p><strong>
-                Time left: <%= (status.value - (Time.now.to_i - status.created_at.to_i))/60 %> min
+                Time left: <%= (@current_game.value - (Time.now.to_i - @current_game.created_at.to_i))/60 %> min
               </strong></p>
             </div>
         </div>
 
         <div class="col-md-1">
           <div class="challenge-description">
-              <%= link_to "Cancel", status, method: :delete, data: { confirm: "Canceling reduces your chances of getting a prized challenge, are you sure?" } %>
+              <%= link_to "Cancel", @current_game, method: :delete, data: { confirm: "Canceling reduces your chances of getting a prized challenge, are you sure?" } %>
           </div>
         </div>
 
         <div class="col-md-2">
           <div class="challenge-description">
 
-            <% if (Time.now.to_i - status.created_at.to_i) < 1200 %>
-              <% if status.pause_timer == 0 %>
-                <%= link_to "Pause", status, method: :put %>
+            <% if (Time.now.to_i - @current_game.created_at.to_i) < 1200 %>
+              <% if @current_game.pause_timer == 0 %>
+                <%= link_to "Pause", @current_game, method: :put %>
               <% else %>
-                <%= link_to "Unpause", status, method: :put %>
+                <%= link_to "Unpause", @current_game, method: :put %>
               <% end %>
             <% else %>
-              <% if status.trigger_timer > (Time.now.to_i - 300) %>
+              <% if @current_game.trigger_timer > (Time.now.to_i - 300) %>
                Updating game data...
               <% else %>
-                <%= link_to "Finished", status, method: :put %>
+                <%= link_to "Finished", @current_game, method: :put %>
               <% end %>
             <% end %>
 
@@ -111,7 +110,7 @@
 
       </div>
  
-        <% if status.kind == 6 %>
+        <% if @current_game.kind == 6 %>
         <div class="panel panel-default">
           <div class="panel-body">
             
@@ -123,8 +122,8 @@
               </div>
               <div class="col-md-6">
                 <p>
-                  <%= status.challenge_description %> <br>
-                  From: <%= status.content %> 
+                  <%= @current_game.challenge_description %> <br>
+                  From: <%= @current_game.content %> 
                 </p>
               </div>
             </div>
