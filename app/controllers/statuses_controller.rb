@@ -25,7 +25,11 @@ class StatusesController < ApplicationController
   def new
     @status = Status.new
 
-    @prize_vendor = Region.find_by_postal_code(Geodeliver.find_by_user_id(current_user.id).postal_code).vendor
+    if Geodeliver.find_by_user_id(current_user.id).postal_code.nil?
+      @prize_vendor = ""
+    else
+      @prize_vendor = Region.find_by_postal_code(Geodeliver.find_by_user_id(current_user.id).postal_code).vendor
+    end
   end
 
   # POST /statuses
