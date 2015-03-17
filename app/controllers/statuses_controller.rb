@@ -27,8 +27,8 @@ class StatusesController < ApplicationController
 
     geo_user = Geodeliver.find_by_user_id(current_user.id)
     @prize_vendor = ""
-    if !geo_user.postal_code.nil?
-      reg_user = Region.find_by_postal_code(geo_user.postal_code)
+    if !geo_user.region_id.nil?
+      reg_user = Region.find(geo_user.region_id)
       if !reg_user.vendor.nil?
         @prize_vendor = reg_user.vendor
       end
