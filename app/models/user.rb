@@ -25,6 +25,7 @@ class User < ActiveRecord::Base
   end
 
   has_many :statuses
+
   has_one :geodelivers
   has_one :scores
   has_one :ignindices

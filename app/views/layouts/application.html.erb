@@ -6,7 +6,6 @@
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
   <%= favicon_link_tag 'favicon.ico' %>
-  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
 <body>
 	
@@ -54,7 +53,7 @@
 							<li><a href="/summoner" style="color:red">1) Add Summoner</a></li>
 						<% end %>
 						<% if prize_onboarding == "0"  %>
-							<li><a href="/geodelivers">Your Prize Zone</a></li>
+							<li><a href="/geodelivers">Prize Zone</a></li>
 						<% else %>
 							<li><a href="/geodelivers" style="color:red">2) Your Prize Zone</a></li>
 						<% end %>
@@ -63,11 +62,11 @@
 						<% else %>
 							<li><a href="/challenges" style="color:red">3) Start a challenge</a></li>
 						<% end %>
-						<li><a href="/scores">Score</a></li>
+						<li><a href="/scores">Prizes</a></li>
 					<% else %>
 	                    <li><a href="/teaser_summoner">Summoner</a></li>
 	                    <li><a href="/teaser_challenges">Challenges</a></li>
-						<li><a href="#">Your Prize Zone</a></li>
+						<li><a href="#">Prize Zone</a></li>
 					<% end %>
 
 

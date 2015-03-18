@@ -11,7 +11,7 @@ class Geodeliver < ActiveRecord::Base
 				self.update(address: "0")
 				self.update(region_id: valid_region.first.id)
 			else
-				self.update(address: "2") #no service
+				self.update(address: "1") #no service
 			end
 		elsif self.country_code == "CA"
 			if self.postal_code.length > 3
@@ -23,10 +23,10 @@ class Geodeliver < ActiveRecord::Base
 				self.update(address: "0")
 				self.update(region_id: valid_region.first.id)
 			else
-				self.update(address: "2") #no service
+				self.update(address: "1") #no service
 			end
 		else
-			self.update(address: "2")
+			self.update(address: "2") #no country
 		end
 
 	end

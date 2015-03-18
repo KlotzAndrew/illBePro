@@ -2,6 +2,8 @@ class Prize < ActiveRecord::Base
 
 has_many :regions
 
+has_one :user
+
 after_save :update_regions
 
 before_destroy :clean_region

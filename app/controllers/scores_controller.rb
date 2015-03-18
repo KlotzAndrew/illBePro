@@ -6,7 +6,7 @@ class ScoresController < ApplicationController
   def index
     @score = Score.find_by_user_id(current_user.id)
     @history = Prize.all.where("user_id = ?", current_user.id).where("assignment = ?", 2)
-    
+
     if @score.prize_id != nil
       prize = Prize.find(@score.prize_id)
       @prize_description = prize.description

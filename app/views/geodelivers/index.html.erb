@@ -1,89 +1,92 @@
 <div class="row">
   <div class="col-md-6">
-    <% if @geodeliver.region_id.nil? %>
-      <h1>Your Prizing Area: empty</h1>
-    <% else %>
-      <h1>Your Prizing Area: <%= @geodeliver.postal_code %></h1>
-    <% end %>
+      <% if @geodeliver.region_id.nil? %>
+        <h1 class="not-validated page-header">You need a valid prize zone </br> </h1>
+      <% else %>
+        <% if @tier1_description == "" %>
+
+          <h1 class="not-validated page-header">No prizes for this zone</i></h1>
+        <% else %>
+          <h1 class="text-center">Thiz zone is prized by: </br> </h1>
+            <h1 class="page-header text-center">
+              <strong><i><%= @tier1_vendor %></i></strong>
+            </h1>
+        <% end %>
+      <% end %>
+
+  </div>
+
+  <div class="col-md-6">
+
+    <div class="page-header">
       <% if !@geodeliver.address.nil? %>
-      	<div class="well">
-      		<% if @geodeliver.address == "0" %>
-            Active:
-        		<%= @region_city %>,
-        		<%= @region_country %>
+          <% if @geodeliver.address == "0" %>
+            <h1 class="validated"><strong>Valid: </strong><%= @region_city %>, <%= @region_country %></h1> 
           <% elsif @geodeliver.address == "1" %>
-            Inactive (Postal Code Not Valid):
+            <h1 class="not-validated"><strong>Invalid:</strong> (Postal Code not valid)</h1> 
           <% elsif @geodeliver.address == "2" %>
-            Inactive (Country not supported):
+            <h1 class="not-validated"><strong>Invalid: </strong>(Country not supported)</h1> 
           <% end %>
-    	 </div>
+      <% else %>
+        <h1 class="not-validated">Prizing Area: empty</h1>
       <% end %>
-  </div>
+    </div>
 
-  <div class="col-md-6">
-  <h1>Change area you win prizes for</h1>
-    	<div class="well">
+     <div class="well">
 
-		<%= form_for @geodeliver do |t| %>
-			<%= t.text_field :postal_code, :placeholder => 'Postal/Zip code' %>
-			<%= t.select :country_code,  ["US", "CA", "Other"] %>
-			<%= t.submit "Postal/Zip Code", class: "btn btn-large btn-primary" %>
-		<% end %>
-    <h6>*If you are in Canada, this form only accepts the first 3 digits of your postal code</h6>
-	</div>
+        <%= form_for @geodeliver do |t| %>
+          <%= t.text_field :postal_code, :placeholder => 'Update Postal/Zip Code' %>
+          <%= t.select :country_code,  ["US", "CA", "Other"] %>
+          <%= t.submit "Update Postal/Zip Code", class: "btn btn-large btn-primary" %>
+        <% end %>
+        <h6>*If you are in Canada, this form only uses the first 3 digits of your postal code</h6>
+      </div>
+
   </div>
 </div>
 
 
-<div class="row">
-  <div class="col-md-6">
-  <% if !@geodeliver.region_id.nil? %>
+<% if !@geodeliver.region_id.nil? %>
+  <div class="row">
+
     <% if @tier1_description == "" %>
-      <h1 class="not-prized">No prizes for this zone</i></h1>
     <% else %>
-      <h1>Prizes from <i><%= @tier1_vendor %></i></h1>
+      <div class="col-md-6"> 
+        <div class="well">
 
-
-    <div class="panel panel-default">
-      <div class="panel-heading">
-      <% if @tier1_description == "" %>
-        <h3 class="panel-title">No prizes for tier 1 available for this zone</h3>
-      <% else %>
-          <h3 class="panel-title">Prize type 1: <%= @tier1_vendor %></h3>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Prize 1</h3>
+                  </div>
+                <div class="panel-body text-center">
+              <%= @tier1_description %>
             </div>
-          <div class="panel-body">
-        <%= @tier1_description %>
-      <% end %>
+          </div>
+
+        </div>
       </div>
-    </div>
-
-    <div class="panel panel-default">
-      <div class="panel-heading">
-      <% if @tier1_description == "" %>
-        <h3 class="panel-title">No prizes for tier 1 available for this zone</h3>
-      <% else %>
-          <h3 class="panel-title">Prize type 2:  <%= @tier2_vendor %></h3>
-            </div>
-          <div class="panel-body">
-        <%= @tier2_description %>
-      <% end %>
-      </div>
-    </div>
-
-
     <% end %>
-  <% end %>
+
+    <% if @tier2_description == "" %>
+    <% else %>
+      <div class="col-md-6"> 
+        <div class="well">      
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Prize 2</h3>
+                </div>
+              <div class="panel-body text-center">
+              <%= @tier2_description %>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    <% end %>
 
   </div>
-
-  <div class="col-md-6">
-
-    <h2>How do I get prizes?</h2>
-
-
-  </div>
-
-</div>
+<% end %>
 
 
 
