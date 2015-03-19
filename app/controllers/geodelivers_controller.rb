@@ -24,11 +24,16 @@ class GeodeliversController < ApplicationController
 			@region_country = region.country
 			
 			#get country prizes
-			prize = Prize.all.where("country_zone = ?", region.country).where("assignment = ?", 0).first
-			if prize != nil
-				@all_prize_desc << prize.description
-				@all_prize_vendor << prize.vendor	
+			prize_1 = Prize.all.where("country_zone = ?", region.country).where("assignment = ?", 0).where("tier = ?", "1").first
+			prize_2 = Prize.all.where("country_zone = ?", region.country).where("assignment = ?", 0).where("tier = ?", "2").first
+			if prize_1 != nil
+				@all_prize_desc << prize_1.description
+				@all_prize_vendor << prize_1.vendor	
 			end			
+			if prize_2 != nil
+				@all_prize_desc << prize_2.description
+				@all_prize_vendor << prize_2.vendor	
+			end		
 
 			#get postal prizes
 			if region.prize_id_tier1 == nil or region.prize_id_tier1 == "[]"

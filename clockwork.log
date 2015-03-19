@@ -1344,3 +1344,6 @@ I, [2015-02-10T19:15:04.207557 #5328]  INFO -- : Starting clock for 1 events: [ 
 I, [2015-02-10T19:15:04.207676 #5328]  INFO -- : Triggering 'index_builder.job'
 I, [2015-02-10T19:17:03.554934 #5335]  INFO -- : Starting clock for 1 events: [ index_builder.job ]
 I, [2015-02-10T19:17:03.555164 #5335]  INFO -- : Triggering 'index_builder.job'
+I, [2015-03-19T17:20:07.918932 #3838]  INFO -- : Starting clock for 1 events: [ api_caller.job ]
+I, [2015-03-19T17:20:07.933974 #3838]  INFO -- : Triggering 'api_caller.job'
+I, [2015-03-19T17:21:07.993664 #3838]  INFO -- : Triggering 'api_caller.job'

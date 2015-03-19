@@ -29,8 +29,9 @@ class StatusesController < ApplicationController
     @prize_vendor = ""
     if !geo_user.region_id.nil?
       reg_user = Region.find(geo_user.region_id)
+      @prize_vendor = Prize.last.vendor
       if !reg_user.vendor.nil?
-        @prize_vendor = reg_user.vendor
+        #@prize_vendor = reg_user.vendor
       end
     end
   end
