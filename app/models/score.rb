@@ -1,7 +1,5 @@
 class Score < ActiveRecord::Base
 
-  after_create :build_scorecard
-
   def assign_prize(choice)
   	if choice == "Accept" or choice == "Upgrade"
 	prize = Prize.find(self.prize_id)
@@ -35,9 +33,5 @@ class Score < ActiveRecord::Base
 	end
   end
 
-
-  def build_scorecard
-  	self.update()
-  end
 
 end

@@ -17,7 +17,7 @@ class User < ActiveRecord::Base
     Score.create!(
       :user_id => self.id)
     Geodeliver.create(
-      :user_id => x.id)
+      :user_id => self.id)
   end
 
   def full_name
