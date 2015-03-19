@@ -34,7 +34,10 @@
               <h4 class="text-center">Prize from:</h4>
               <h3 class="text-center"><%= x.vendor %></h3>
               <h4 class="text-center"><%= x.description %></h4>
-              <h4 class="text-center">Code: <%= x.code %></h4>
+              <h4 class="text-center">Reward Code<%= x.reward_code %></h4>
+              <% if x.code != nil %>
+                <h4 class="text-center">PIN: <%= x.code %></h4>
+              <% end %>
             </div>
           </div>
           <div class="col-md-6">

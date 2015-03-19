@@ -67,6 +67,7 @@ ActiveRecord::Schema.define(version: 20150319144605) do
     t.integer  "delivered_at"
     t.string   "country_zone"
     t.string   "province_zone"
+    t.string   "reward_code"
   end
 
   create_table "regions", force: true do |t|

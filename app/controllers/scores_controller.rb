@@ -12,6 +12,7 @@ class ScoresController < ApplicationController
       @prize_description = prize.description
       @prize_vendor = prize.vendor
       @prize_code = prize.code
+      @prize_reward_code = prize.reward_code
     end
 
   end
