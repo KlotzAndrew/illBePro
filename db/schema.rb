@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150305032411) do
+ActiveRecord::Schema.define(version: 20150319144605) do
 
   create_table "champions", force: true do |t|
     t.string   "champion"
@@ -65,6 +65,8 @@ ActiveRecord::Schema.define(version: 20150305032411) do
     t.string   "geo"
     t.string   "region_id"
     t.integer  "delivered_at"
+    t.string   "country_zone"
+    t.string   "province_zone"
   end
 
   create_table "regions", force: true do |t|

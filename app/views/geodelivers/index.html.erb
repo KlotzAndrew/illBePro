@@ -3,14 +3,15 @@
       <% if @geodeliver.region_id.nil? %>
         <h1 class="not-validated page-header">You need a valid prize zone </br> </h1>
       <% else %>
-        <% if @tier1_description == "" %>
+        <% if @all_prize_desc.count == 0 %>
 
           <h1 class="not-validated page-header">No prizes for this zone</i></h1>
         <% else %>
-          <h1 class="text-center">Thiz zone is prized by: </br> </h1>
+          <h1 class="text-center">Thiz zone is prized by </br> </h1>
             <h1 class="page-header text-center">
-              <strong><i><%= @tier1_vendor %></i></strong>
+              <strong><i><%= @all_prize_vendor[0] %></i></strong>
             </h1>
+            <h2 class="text-center">Prizes open right now:</br> </h2>
         <% end %>
       <% end %>
 
@@ -49,17 +50,16 @@
 <% if !@geodeliver.region_id.nil? %>
   <div class="row">
 
-    <% if @tier1_description == "" %>
-    <% else %>
+    <% if @all_prize_desc.count > 0 %>
       <div class="col-md-6"> 
         <div class="well">
 
           <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Prize 1</h3>
+                <h3 class="panel-title">Prize A</h3>
                   </div>
                 <div class="panel-body text-center">
-              <%= @tier1_description %>
+              <%= @all_prize_desc[0] %>
             </div>
           </div>
 
@@ -67,17 +67,16 @@
       </div>
     <% end %>
 
-    <% if @tier2_description == "" %>
-    <% else %>
+    <% if @all_prize_desc.count > 1 %>
       <div class="col-md-6"> 
         <div class="well">      
 
           <div class="panel panel-default">
             <div class="panel-heading">
-              <h3 class="panel-title">Prize 2</h3>
+              <h3 class="panel-title">Prize B</h3>
                 </div>
               <div class="panel-body text-center">
-              <%= @tier2_description %>
+              <%= @all_prize_desc[1] %>
             </div>
           </div>
 

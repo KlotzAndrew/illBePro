@@ -9,4 +9,7 @@ class StaticpagesController < ApplicationController
 	def teaser_challenges
 	end
 
+	def teaser_prize_zone
+	end
+
 end

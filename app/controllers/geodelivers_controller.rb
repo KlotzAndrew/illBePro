@@ -15,42 +15,44 @@ class GeodeliversController < ApplicationController
 	def index
 		@geodeliver = Geodeliver.find_by_user_id(current_user.id)
 
-			@tier1_description = ""
-			@tier1_vendor = ""
-			
-			@tier2_description = ""
-			@tier2_vendor = ""
-		
-			@tier3_description = ""
-			@tier3_vendor = ""
-		
+		@all_prize_desc = []
+		@all_prize_vendor = []
+
 		if @geodeliver.region_id != nil
 			region = Region.find(@geodeliver.region_id)
 			@region_city = region.city
 			@region_country = region.country
 			
+			#get country prizes
+			prize = Prize.all.where("country_zone = ?", region.country).where("assignment = ?", 0).first
+			if prize != nil
+				@all_prize_desc << prize.description
+				@all_prize_vendor << prize.vendor	
+			end			
+
+			#get postal prizes
 			if region.prize_id_tier1 == nil or region.prize_id_tier1 == "[]"
 				#catch errors so json doens't derp
 			else
 				tier1 = Prize.find(JSON.parse(region.prize_id_tier1).first)
-				@tier1_description << tier1.description
-				@tier1_vendor << tier1.vendor
+				@all_prize_desc << tier1.description
+				@all_prize_vendor << tier1.vendor
 			end
 			
 			if region.prize_id_tier2 == nil or region.prize_id_tier2 == "[]"
 				#catch errors so json doens't derp
 			else
 				tier2 = Prize.find(JSON.parse(region.prize_id_tier2).first)
-				@tier2_description << tier2.description
-				@tier2_vendor << tier2.vendor
+				@all_prize_desc << tier2.description
+				@all_prize_vendor << tier2.vendor
 			end
 			
 			if region.prize_id_tier3 == nil or region.prize_id_tier3 == "[]"
 				#catch errors so json doens't derp
 			else
 				tier3 = Prize.find(JSON.parse(region.prize_id_tier3).first)
-				@tier3_description << tier3.description
-				@tier3_vendor << tier3.vendor
+				@all_prize_desc << tier3.description
+				@all_prize_vendor << tier3.vendor
 			end	
 		end
 

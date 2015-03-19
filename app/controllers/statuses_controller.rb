@@ -96,6 +96,8 @@ class StatusesController < ApplicationController
         :assignment => 0,
         :user_id => 0,
         })
+      score = Score.find_by_user_id(current_user.id)
+      score.update(challenge_points: score.challenge_points - 1) 
       respond_to do |format|
         format.html { redirect_to statuses_url, notice: 'Prized challenge was canceled' }
         format.json { head :no_content }
@@ -103,6 +105,8 @@ class StatusesController < ApplicationController
     elsif @status.kind == 5
       @status.update(value: 0)
       @status.update(win_value: 3)
+      score = Score.find_by_user_id(current_user.id)
+      score.update(challenge_points: score.challenge_points - 1) 
       respond_to do |format|
         format.html { redirect_to statuses_url, notice: 'Non-Prized challenge was canceled' }
         format.json { head :no_content }

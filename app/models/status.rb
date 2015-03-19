@@ -324,20 +324,45 @@ def challenge_init
     Champion.all.where.not(champion:nil).sample(16).each {|x| champ_ids << x.id}
     self.update(content: champ_ids.to_s)
   elsif self.kind == 5
+    #build baseline for kind 5 (this can be refractored)
+    self.update(
+      :value => 3900,
+      :points => 1,
+      :challenge_description => "Play a game to increase the chance your next challenge will be prized")
+
     score = Score.find_by_user_id(self.user_id)
     geodeliver = Geodeliver.find_by_user_id(self.user_id)
 
     if score.prize_level == 1 #playing for first 25% discount prize
-      proc = rand(0..2)
+      proc = rand(5..100)
       Rails.logger.info "Proc: #{proc}, CP: #{score.challenge_points}"
-      if (score.challenge_points) > proc && (Prize.where.not("delivered_at IS ?", nil).where("delivered_at > ?", (Time.now - 24.hours).to_i).count < 1) #proc chance
+      if (score.challenge_points) > proc && (Prize.where.not("delivered_at IS ?", nil).where("delivered_at > ?", (Time.now - 22.hours).to_i).count < 1) #proc chance
         region = Region.find(geodeliver.region_id)
 
+        #build pot with all global + tier1/tier2 prizes if applicable  
+        party_pot = [] 
+
+        Prize.all.where("country_zone = ?", region.country).where("assignment = ?", 0).each do |x|
+          party_pot << x.id
+        end
         if region.prize_id_tier1 == "[]" or region.prize_id_tier1 == nil
           #stop json error
         else
-          prize = Prize.find(JSON.parse(region.prize_id_tier1).sample(1)[0])
-       
+          JSON.parse(region.prize_id_tier1).each do |x|
+            party_pot << x
+          end
+        end
+        if region.prize_id_tier2 == "[]" or region.prize_id_tier2 == nil
+          #stop json error
+        else
+          JSON.parse(region.prize_id_tier2).each do |x|
+            party_pot << x
+          end
+        end
+        prize = Prize.find(party_pot.sample(1))[0]
+        #prize grabbed, if avilable - turn this into a prized game
+        
+        if prize != nil
           prize.update(
             :assignment => 1,
             :user_id => self.user_id)
@@ -348,13 +373,10 @@ def challenge_init
             :points => 100,
             :challenge_description => "#{prize.description}",
             :content => "#{prize.vendor}")
-
         end
+
       else #this game is not prized
-        self.update(
-          :value => 3900,
-          :points => 1,
-          :challenge_description => "Play a game to increase the chance your next challenge will be prized")
+
       end
 
     else
