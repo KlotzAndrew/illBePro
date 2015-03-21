@@ -1,6 +1,11 @@
 <div data-id="<%= @ignindex.id %>" id="ign">
 </div>
 
+<div data-pagespec="ignindex_index" id="page_name">
+</div>
+
+<a href="#" id="ckl">Click Me To Display Div</a>
+<div id="hidethis">Foo</div>​
 
 <div class="row">
   <div class="col-md-6">
@@ -59,6 +64,7 @@
     </div>
   </div>
     
+  <div id="ign_hide_1">
     <div class="col-md-2">
       <div class="gen-button">
         <div class="btn-group">
@@ -72,7 +78,6 @@
         </div>
       </div>
     </div>
-  <div>
     <div class="col-md-4">
         <% if !@ignindex.validation_timer.nil? %>
       <div class="well">   

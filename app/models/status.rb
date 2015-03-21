@@ -295,6 +295,8 @@ end
 def one_fox_one_gun
   if Status.all.where("user_id = ?", self.user_id).where(win_value: nil).count >= 1
     errors.add(:you_can, 'only have 1 challenge running at a time!')
+  elsif 2 > 1
+    errors.add(:challenge_engine, 'disabled for 24 hours')
   #elsif Status.all.where("user_id = ?", self.user_id).where("created_at > ?", Time.now - 22.hours).count >= 5
     #errors.add(:you_have, 'reached your challenge limit for the day! The limit refreshes every 22 hours')
   elsif Status.all.where("created_at >= ?", Time.now - 60.seconds).count > 20
@@ -498,9 +500,13 @@ end
       begin
         summoner_data = open(URI.encode(url),{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,:read_timeout=>3}).read
         summoner_hash = JSON.parse(summoner_data)
-
+          Rails.logger.info "#{cron_st}: summoner_hash: #{summoner_hash}"
         summoner_hash.each_pair do |x,y|
-          
+
+          Rails.logger.info "#{cron_st}: scorecard created for #{summoner_hash["#{x}"]["id"]}"
+
+          Rails.logger.info "#{cron_st}: find by: #{x}, update: #{summoner_hash["#{x}"]["id"]}"
+
           Ignindex.find_by_summoner_name_ref(x).update(summoner_id: summoner_hash["#{x}"]["id"])
 
             if Score.find_by_summoner_id(summoner_hash["#{x}"]["id"]).nil?
