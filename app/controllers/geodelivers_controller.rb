@@ -1,12 +1,13 @@
 class GeodeliversController < ApplicationController
 
+  respond_to :html, :xml, :json
 	
 	def update
 		@geodeliver = Geodeliver.find(params[:id])
-		if params[:commit] == "Update Postal/Zip Code"
+		if params[:commit] == "Update Postal/Zip Code" or params[:commit] == "Add Postal/Zip Code"
 			@geodeliver.update(params[:geodeliver].permit(:postal_code, :country_code))
 			@geodeliver.valid_location2
-			redirect_to :action => :index
+			redirect_to challenges_url :action => :index
 			flash[:notice] = "Updated Your Prizing Zone!"
 		end
 
@@ -18,10 +19,11 @@ class GeodeliversController < ApplicationController
 		@all_prize_desc = []
 		@all_prize_vendor = []
 
-		if @geodeliver.region_id != nil
+		if @geodeliver.region_id != nil #skip if there is no region
 			region = Region.find(@geodeliver.region_id)
 			@region_city = region.city
 			@region_country = region.country
+			@region_postal = region.postal_code
 			
 			#get country prizes
 			prize_1 = Prize.all.where("country_zone = ?", region.country).where("assignment = ?", 0).where("tier = ?", "1").first
@@ -59,7 +61,25 @@ class GeodeliversController < ApplicationController
 				@all_prize_desc << tier3.description
 				@all_prize_vendor << tier3.vendor
 			end	
-		end
+		else
+			@region_city = nil
+			@region_country = nil
+			@region_postal = nil
+		end #end prize pop logic
+
+		@json_geo = {:json_geodeliver => @geodeliver,
+				:json_region_city => @region_city,
+				:json_region_country => @region_country,
+				:json_postal_coe => @region_postal,
+				:json_all_prize_desc => @all_prize_desc,
+				:json_all_prize_vendor => @all_prize_vendor }
+		
+	    respond_to do |format|
+			
+	        format.html {}
+	        format.json { render json: @json_geo}
+	        format.js { }
+	    end
 
 
 	end	

@@ -1,0 +1,83 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-6">
+
+      <div id="geo_results" class="page-header">
+        <% if @geodeliver.address == "0" %>
+          <h3 class="validated"><strong>Valid: </strong><%= @region_city %>, <%= @region_country %></h3> 
+
+      </div>
+      <div id="geo_status" class="panel panel-success">
+        <% elsif @geodeliver.address.nil? %>
+          <h3 class="text-center">▼ Enter prize zone below</h3>
+
+      </div>
+      <div id="geo_status" class="panel panel-danger">          
+        <% else %>
+          <h3 class="not-validated">This Prize Zone is not valid</h3>
+      
+      </div>
+      <div id="geo_status" class="panel panel-danger">          
+        <% end %>
+
+
+        <div class="panel-heading">
+          <% if @geodeliver.region_id.nil? %>
+            <%= form_for @geodeliver, remote: true do |t| %>
+              <%= t.text_field :postal_code, :placeholder => 'Postal/Zip Code' %>
+              <%= t.select :country_code,  ["US", "CAN", "Other"] %>
+                <span id="geo_json_submit">
+              <%= t.submit "Add Postal/Zip Code", class: "btn btn-large btn-primary" %>
+                </span>
+            <% end %>
+          <% else %>
+            <%= form_for @geodeliver, remote: true do |t| %>
+              <%= t.text_field :postal_code, :placeholder => 'Postal/Zip Code' %>
+              <%= t.select :country_code,  ["US", "CAN", "Other"] %>
+              <span id="geo_json_submit">
+              <%= t.submit "Update Postal/Zip Code", class: "btn btn-large btn-primary" %>
+              </span>
+            <% end %>
+          <% end %>
+            <h6>*US uses first 5-digits</h6>
+            <h6>*CAN uses first 3-digits</h6>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-5 col-md-offset-1" style="margin-top: 20px;">
+      <div class=" well">
+        <h3>Local Prizes</h3>
+        <h5>Prize Zones help match you up with prizes local to you. e.g. Dominos pizza where Dominos can deliver and Extreme Pizza where Extreme Pizza can deliver<h5>
+      </div>
+      <div class="well">
+        <h3>Take a look</h3>
+        <h5>Enter a prize zone to see what is available around you. You can change your Prize Zone anytime.</h5>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+
+      <h3 id="prize_sponsor" class="text-center">
+        <% if @geodeliver.region_id.nil? %>
+          <div class="panel panel-danger">
+            <div class="panel-heading">
+          No prize zone selected
+            </div>
+          </div>
+        <% else %>
+          <% if @all_prize_desc.count == 0 %>
+
+            No prizes for this zone right now
+          <% else %>
+              Thiz zone is prized by </br> <strong><i><%= @all_prize_vendor[0] %></i></strong>
+          <% end %>
+        <% end %>
+      </h3>
+
+    </div>
+  </div>
+</div>

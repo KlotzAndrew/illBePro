@@ -8,31 +8,49 @@ class Geodeliver < ActiveRecord::Base
 			end
 			valid_region = Region.where("country = ?", "US").where("postal_code = ?", self.postal_code)
 			if valid_region.count > 0
-				self.update(address: "0")
-				self.update(region_id: valid_region.first.id)
+				self.update(
+					:address => "0",
+					:region_id => valid_region.first.id)
+
+				user = User.find(self.user_id)
+				if user.setup_progress == 1
+					user.update(setup_progress: 2) # move user setup from 0 to 1
+				end
 			else
-				self.update(address: "1") #no service
+				self.update(
+				:address => "1",
+				:region_id => nil) #not a valid postal code
 			end
-		elsif self.country_code == "CA"
+		elsif self.country_code == "CAN"
 			if self.postal_code.length > 3
 				self.update(postal_code: self.postal_code[0..2])
 			end
 			self.update(postal_code: self.postal_code.upcase)
 			valid_region = Region.where("country = ?", "CA").where("postal_code = ?", self.postal_code)
 			if valid_region.count > 0
-				self.update(address: "0")
-				self.update(region_id: valid_region.first.id)
+				self.update(
+					:address => "0",
+					:region_id => valid_region.first.id)
+				
+				user = User.find(self.user_id)
+				if user.setup_progress == 1
+					user.update(setup_progress: 2) # move user setup from 0 to 1
+				end
 			else
-				self.update(address: "1") #no service
+				self.update(
+				:address => "1",
+				:region_id => nil) #not a valid postal code
 			end
 		else
-			self.update(address: "2") #no country
+			self.update(
+				:address => "2",
+				:region_id => nil) #no country
 		end
 
 	end
 	
 
-	def valid_location
+	def valid_location # no longr in use
 		if self.country_code == "US"
 			if ((self.postal_code =~ /\d{5}/) == 0) && (self.postal_code.length == 5)
 				if Region.where("postal_code == ?", self.postal_code).count > 0

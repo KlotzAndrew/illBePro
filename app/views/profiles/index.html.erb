@@ -1,0 +1,152 @@
+<div class="container">
+  <div class="level"></div>
+  <div class="level purple"></div>
+  <div class="level"></div>
+</div>
+
+
+<div class="container-fluid">
+	<div class="setup-background">
+
+		<div class="row">
+
+			<h1 class="text-center">Welcome! Let's get you ready to win some RP and pizza</h1>
+			
+			<div class="col-md-6 col-md-offset-3">
+
+
+				<div id="setup_progress_bar">
+					<div class="breadcrumb-trail">
+						<div class="breadcrumbs">
+						    <div class="breadcrumb-cell first">
+						    	<% if @setup_progress == 0 %>
+								<div id="bread_1" class="breadcrumb active">				    	
+						    	<% else %>
+						   		<div id="bread_1" class="breadcrumb checked selectable">
+						    	<% end %>
+							    	<div class="breadcrumb-icon"></div>
+							    	<span class="breadcrumb-label">Summoner Name</span>
+						     	</div>
+						    </div>
+
+						    <div class="breadcrumb-cell">
+						    	<% if @setup_progress == 1 %>
+								<div id="bread_2" class="breadcrumb active">				    	
+						    	<% elsif @setup_progress > 1 %>
+						   		<div id="bread_2" class="breadcrumb checked selectable">
+						   		<% else %>
+						   		<div id="bread_2" class="breadcrumb">
+						    	<% end %>
+									<div class="breadcrumb-icon"></div>
+									<span class="breadcrumb-label">Prize Zone</span>
+								</div>
+						    </div>   
+
+						    <div class="breadcrumb-cell last">
+						    	<% if @setup_progress == 2 %>
+								<div id="bread_3" class="breadcrumb active">				    	
+						   		<% else %>
+						   		<div id="bread_3" class="breadcrumb">
+						    	<% end %>
+									<div class="breadcrumb-icon"></div>
+									<span class="breadcrumb-label">Play a game</span>
+								</div>
+						    </div>       
+
+					  </div>
+					</div>	
+				</div>			
+
+
+
+			</div>
+
+		</div>
+
+	</div>
+</div>
+
+<div class="container-fluid absolute-margin">
+	<div class="row">
+		<div class="col-md-12">
+			<% if @setup_progress == 0 %>
+				<div data-pagespec="ignindex_index" id="page_name">
+				</div>
+
+				<section id="setup_0" class="">
+					<h1>2. Summoner Name</h1>
+					<h5>Enter your summoner name and match your 1st mastery page name to the code</h5> 
+					<%= render 'ignindices/form' %>
+				</section>
+
+				<section id="setup_1" class="start-ghost">
+					<h1>3. Prize Zone</h1>
+					<h5>Select a prize zone by Zip/Postal code. Prize zones match you up with local prizes.</h5> 
+					<%= render 'geodelivers/form' %>
+				</section>		
+				
+				<section id="setup_2" class="start-ghost">
+					<h1>3) Play a game</h1>
+					<h5>Last step to finish configuration, press "Prize Me" and play a ranked game</h5> 
+					<%= render 'statuses/startchallenge' %>
+				</section>
+				
+			<% elsif @setup_progress == 1 %>
+				<div data-pagespec="geodelivers_index" id="page_name">
+				</div>
+
+				<section id="setup_0" class="start-ghost">
+					<h1>2. Summoner Name</h1>
+					<h5>Enter your summoner name and match your 1st mastery page name to the code</h5> 
+					<%= render 'ignindices/form' %>
+				</section>
+
+				<section id="setup_1" class="">
+					<h1>3. Prize Zone</h1>
+					<h5>Select a prize zone by Zip/Postal code. Prize zones match you up with local prizes.</h5> 
+					<%= render 'geodelivers/form' %>
+				</section>		
+				
+				<section id="setup_2" class="start-ghost">
+					<h1>3) Play a game</h1>
+					<h5>Last step to finish configuration, press "Prize Me" and play a ranked game</h5> 
+					<%= render 'statuses/startchallenge' %>
+				</section>
+			<% else @setup_progress == 2 %>
+				<div data-pagespec="status_index" id="page_name">
+				</div>
+
+				<section id="setup_0" class="start-ghost">
+					<h1>2. Summoner Name</h1>
+					<h5>Enter your summoner name and match your 1st mastery page name to the code</h5> 
+					<%= render 'ignindices/form' %>
+				</section>
+
+				<section id="setup_1" class="start-ghost">
+					<h1>3. Prize Zone</h1>
+					<h5>Select a prize zone by Zip/Postal code. Prize zones match you up with local prizes.</h5> 
+					<%= render 'geodelivers/form' %>
+				</section>		
+				
+				<section id="setup_2" class="">
+					<h1>3) Play a game</h1>
+					<h5>Last step to finish configuration, press "Prize Me" and play a ranked game</h5> 
+					<%= render 'statuses/startchallenge' %>
+				</section>
+			<% end %>
+		</div>
+	</div>
+</div>
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-57285202-1', 'auto');
+  ga('require', 'displayfeatures');
+  ga('send', 'pageview');
+
+</script>

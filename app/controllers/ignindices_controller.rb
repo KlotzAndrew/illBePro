@@ -18,24 +18,29 @@ class IgnindicesController < ApplicationController
 
   def update
     @ignindexes = Ignindex.all
-    @ignindex.update(ignindex_params)
-    if params[:commit] == "Update Summoner Name"
-      flash[:notice] = "Updated summoner name!"
+    if params[:commit] == "Update Summoner Name" or params[:commit] == "Add Summoner Name"
+      @ignindex.update(ignindex_params)
+      # flash[:notice] = "Updated summoner name!"
       @ignindex.refresh_summoner
-      redirect_to :action => :index
-    elsif params[:commit] == "New validation code"
-        if @ignindexes.where("validation_timer > ?", 0).count < 6
-          flash[:notice] = "New validation code!"
-          @ignindex.refresh_validation
-          redirect_to :action => :index
-        else
-          flash[:alert] = "The validation hamster is overloaded with other validations! Try back in a few minutes, he needs a little rest"
-          redirect_to :action => :index
-        end
+      @ignindex.refresh_validation
+    else #if params[:commit] == "New validation code"
+        # if @ignindexes.where("validation_timer > ?", 0).count < 6
+          # flash[:notice] = "New validation code!"
+        @ignindex.refresh_validation
+        # else
+        #   flash[:alert] = "The validation hamster is overloaded with other validations! Try back in a few minutes, he needs a little rest"
+        #   redirect_to :action => :index
+        # end
+    # else
+    #   flash[:alert] = "Something messed up. It was probably Ashe mid. Yolo."
+    end
+    
+    if current_user.setup_progress == 0
+      redirect_to :root
     else
-      flash[:alert] = "Something messed up. It was probably Ashe mid. Yolo."
       redirect_to :action => :index
     end
+
   end
 
   private

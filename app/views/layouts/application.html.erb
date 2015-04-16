@@ -1,86 +1,112 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>i'llBePro</title>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= csrf_meta_tags %>
-  <%= favicon_link_tag 'favicon.ico' %>
+	<title>i'llBePro</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+	<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+	<%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+	<%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+	<%= csrf_meta_tags %>
+	<%= favicon_link_tag 'favicon.ico' %>
 </head>
 <body>
 	
+	<% if user_signed_in? && defined?(@setup_progress) %>
 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<% else %>
+	<nav class="navbar navbar-ltheme navbar-fixed-top" role="navigation">
+	<% end %>
 		<div class="navbar-inner">
 			<div class="container">
 					
 				<a class="navbar-brand" href="/"><strong>i'llBePro</strong></a>
 		
+				<ul class="nav navbar-nav list-inline col-sm-8 col-sm-4 text-center ">
+					<% if user_signed_in? %>
 
-		<ul class="nav navbar-nav col-xs-auto col-sm-4 list-unstyled pull-right" >
+						<% if @setup_stage < 3 %>
+							<% if challenge_onboarding > 0 %>
+								<li id="challengeIntro" data-step="1" class="start-invis" data-intro='Click here to add prizing to all of your ranked games'><a href="/challenges">Challenges</a></li>							
+							<% else %>
+								<li id="challengeIntro" data-step="1" class="start-invis" data-intro='Click here to add prizing to all of your ranked games'><a href="/challenges" style="color:red">Challenges</a></li>
+							<% end %>
+							<li class="start-invis"><a href="/scores">History</a></li>
+						<% else %>
+							<% if challenge_onboarding > 0 %>
+								<li><a href="/challenges">Challenges</a></li>							
+							<% else %>
+								<li><a href="/challenges" style="color:red">Challenges</a></li>
+							<% end %>
+							<li><a href="/scores">History</a></li>
+						<% end %>						
+					<% else %>
+	                    
+	                    <li><a href="/teaser_challenges">Challenges</a></li>
+					<% end %>
+				</ul>
 
-			        <li class="dropdown">
-			          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">League of Legends<span class="caret"></span></a>
-			          <ul class="dropdown-menu" role="menu">
-			            <li><a href="#">League of Legends</a></li>
-			          </ul>
-			        </li>
-
-			<% if user_signed_in? %>
-				<li><%= link_to current_user.profile_name, summoner_path %></li>			
-				<li><%= button_to "Sign Out", logout_path, :class => "btn btn-danger navbar-btn", :method => :get  %></li>
-			<% else %>
-				
-				<li class="pull-right">
-			        <form action="/login" class="button_to" method="get">
-			            <div>
-			            	<input class="btn btn-info navbar-btn" type="submit" value="Sign in" />
-			            </div>
-			        </form>
-            	</li>
-
-            	<li class="pull-right"><a href="/register">Sign up</a></li>
-
-			<% end %>
-			</ul>	
-				<ul class="nav navbar-nav list-inline col-sm-12 col-sm-6 text-center">
-       
-
+				<ul class="nav navbar-nav list-inline col-sm-6 col-sm-12 text-center pull-right" >
 
 					<% if user_signed_in? %>
-						<% if summoner_onboarding %>
-							<li><a href="/summoner">Summoner</a></li>
+					
+						<% if @setup_stage < 1 %>
+							<li id="summonerIntro" data-step="2" class="start-invis" data-intro='Change your Summoner Name anytime by clicking here'><a href="/summoner"><%= @ignindex_summoner %></a></li>		
 						<% else %>
-							<li><a href="/summoner" style="color:red">1) Add Summoner</a></li>
+							<% if @ignindex_validated == nil %>
+								<li><a href="/summoner" style="color:red">Summoner</a></li>
+							<% elsif @ignindex_validated == true %>
+								<li><a href="/summoner"><%= @ignindex_summoner %></a></li>
+							<% else %>
+								<li><a href="/summoner" style="color:red"><%= @ignindex_summoner %></a></li>
+							<% end %>
 						<% end %>
-						<% if prize_onboarding == "0"  %>
-							<li><a href="/geodelivers">Prize Zone</a></li>
-						<% else %>
-							<li><a href="/geodelivers" style="color:red">2) Your Prize Zone</a></li>
-						<% end %>
-						<% if challenge_onboarding > 0 %>
-							<li><a href="/challenges">Challenges</a></li>							
-						<% else %>
-							<li><a href="/challenges" style="color:red">3) Start a challenge</a></li>
-						<% end %>
-						<li><a href="/scores">Prizes</a></li>
+
+					        <li class="dropdown">
+					          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">League of Legends<span class="caret"></span></a>
+					          <ul class="dropdown-menu" role="menu">
+					            <li><a href="#">League of Legends</a></li>
+					          </ul>
+					        </li>
+
+						<li><%= button_to "Log Out", logout_path, :class => "btn btn-danger navbar-btn col-sm-offset-6", :method => :get  %></li>
 					<% else %>
-	                    <li><a href="/teaser_summoner">Summoner</a></li>
-	                    <li><a href="/teaser_challenges">Challenges</a></li>
-						<li><a href="/teaser_prize_zone">Prize Zone</a></li>
+
+						<li><a href="/teaser_summoner">Summoner</a></li>
+
+						<li class="dropdown">
+				          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">League of Legends<span class="caret"></span></a>
+				          <ul class="dropdown-menu" role="menu">
+				            <li><a href="#">League of Legends</a></li>
+				          </ul>
+				        </li>
+
+		            	<li><a href="/register">Sign up</a></li>
+						
+						<li>
+					        <form action="/login" class="button_to" method="get">
+					            <div>
+					            	<input class="btn btn-lprimary navbar-btn" type="submit" value="Log in" />
+					            </div>
+					        </form>
+		            	</li>
+
+
 					<% end %>
-
-
 				</ul>
+
 			</div>
 		</div>
 	</nav>
 		
 	<div class="container">
-		<% flash.each do |type, message| %>
-			<div class="alert <%= flash_class type %> alert-dismissible" role="alert">
+		<% if user_signed_in? && @setup_stage < 3 %>
+		<% else %>
+			<% flash.each do |type, message| %>
+				<div class="alert <%= flash_class type %> alert-dismissible" role="alert">
 					<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 					<%= message %>
 				</div>
+			<% end %>
 		<% end %>
 
 		<%= yield %>
@@ -88,17 +114,18 @@
 
 
 
+
 <div class="nav-breaker">
 </div>
 
-<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation"> 
+<footer class="footer"> 
   	<div class="container">
 
-  			<ul class="nav navbar-nav list-inline col-xs-12 col-sm-6 text-center">		
-				<li class="custom-footer"><a href="/pages/about">About</a></li>
-				<li class="custom-footer"><a href="/pages/faq">FAQ</a></li>
-				<li class="custom-footer"><a href="/pages/contact">Contact</a></li>
-				<li class="custom-footer"><a href="/pages/privacy">Privacy</a></li>
+  			<ul class="nav navbar-nav list-inline col-xs-6 col-sm-6 text-center">		
+				<li class="custom-footer"><a href="/about">About</a></li>
+				<li class="custom-footer"><a href="/faq">FAQ</a></li>
+				<li class="custom-footer"><a href="/contact">Contact</a></li>
+				<li class="custom-footer"><a href="/privacy">Privacy</a></li>
 			</ul>
 			<ul class="nav navbar-nav col-xs-auto col-sm-3 list-unstyled pull-right">
 				<li><a href="https://twitter.com/illBeProRewards"><i class="fa fa-twitter fa-2x"></i></a></li>
@@ -107,7 +134,7 @@
 			</ul>
 
   	</div>
-</nav>
+</footer>
 
 </body>
 </html>

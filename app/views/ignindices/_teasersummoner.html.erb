@@ -1,0 +1,169 @@
+<div data-id="<%= @ignindex.id %>" id="ign">
+</div>
+
+<div class="container-fluid" style="margin-top:20px;">
+
+  <div class="row">
+    <div class="col-md-6">
+
+
+      <h3 id="summoner_name_text" class="page-header">
+        <% if @ignindex.summoner_name.nil?  or @ignindex.summoner_name == ""%>
+          <span id="js_name">
+            ▼ Enter your summmoner name below
+          </span>
+          <span id="js_val"></span>
+        <% else %>
+          <% if @ignindex.summoner_validated == true %>
+              <span id="js_name">
+                <%= @ignindex.summoner_name %>
+              </span>
+                <span id="js_val" class="validated">
+                   - Valid
+                </span>     
+
+          <% else %>
+              <span id="js_name">
+                <%= @ignindex.summoner_name %>
+              </span>
+                <span id="js_val" class="not-validated">
+                   - Not Valid
+                </span>    
+          <% end %>
+        <% end %>
+      </h3>
+          
+      <% if @ignindex.summoner_validated == true %>
+      <div id="summoner_panel" class="panel panel-success">
+      <% else %>
+      <div id="summoner_panel" class="panel panel-danger">
+      <% end %>
+      
+        <div class="panel-heading">
+        
+          <div class="row">
+            <div class="col-md-12">
+              <div class="">
+                <div class="btn-group">
+                  
+                  <div class="row">
+                    <div class="col-md-11 col-md-offset-1">
+                      <input type="text" id="input_teaser_summoner" placeholder="Summoner name"></input>
+                        
+                        </span>
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">NA<span class="caret"></span></a>
+                          <ul class="dropdown-menu" role="menu">
+                            <li><a href="#">North America</a></li>
+                          </ul>
+                        </span>
+
+                      <div id="button_teaser_summoner" class="btn btn-large btn-primary ">
+                        Add Summoner Name
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div> 
+        
+        </div>
+
+        <% if !@ignindex.summoner_validated && @ignindex.summoner_name != nil %>
+          <div id="summoner_valid_panel" class="panel-body">
+            <div id="ign_hide_1" class="row">
+              <div>
+                <div class="col-md-4">
+                  <div class="gen-button">
+                    <div class="btn-group">
+                      <div id="button_teaser_validation" class="btn btn-large btn-success">New validation code</div>
+                    </div>
+                  </div>
+                </div>
+                <div id="validation_code_div" class="col-md-7 col-md-offset-1">
+                  <% if !@ignindex.validation_timer.nil? %>
+                    <div class="well">   
+                      <h5>Validation code: <strong id="js_validation_string"><%= @ignindex.validation_string %></strong></h5>
+                      <% if !@ignindex.mastery_1_name.nil? %>
+                        <h5 id="mastery_page_div">Current 1st page: 
+                          <strong id="mastery_page_name"><%= @ignindex.mastery_1_name %></strong>
+                        </h5>
+                      <% else %>
+                        <h5 id="mastery_page_div" class="start-ghost">Current 1st page: 
+                          <strong id="mastery_page_name"></strong>
+                        </h5>
+                      <% end %>
+                      <h5>
+                        Code valid for 
+                          <span id="test_cd" data-timer="<%= @ignindex.validation_timer %>">
+                            <%= ((300 - (Time.now.to_i - @ignindex.validation_timer))/60) %> more minutes!
+                          </span>
+                      </h5>
+                      <h6>(next check in ~
+                        <span id="check_loop" data-check="<%= @ignindex.updated_at.to_i %>">
+                          <%= 60 - ((Time.now.to_i - @ignindex.updated_at.to_i) % 60) %>
+                        </span> seconds)
+                      </h6>      
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% else %>
+          <div id="summoner_valid_panel" class="panel-body start-ghost">
+            <div id="ign_hide_1" class="row">
+              <div>
+                <div class="col-md-4">
+                  <div class="gen-button">
+                    <div class="btn-group">
+                      <div id="button_teaser_validation" class="btn btn-large btn-success">New validation code</div>
+                    </div>
+                  </div>
+                </div>
+                <div id="validation_code_div" class="col-md-7 col-md-offset-1">
+                    <div class="well">   
+                      <h5>Validation code: <strong id="js_validation_string"></strong></h5>
+                      <h5 id="mastery_page_div" class="start-ghost">Current 1st page: 
+                        <strong id="mastery_page_name"></strong>
+                      </h5>
+
+                      <h5>
+                        Code valid for 
+                          <span id="test_cd" data-timer="">
+                          </span>
+                      </h5>
+                      <h6>(next check in ~
+                        <span id="check_loop" data-check="<%= @ignindex.updated_at.to_i %>">
+                        </span> seconds)
+                      </h6>      
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>        
+        <% end %>
+
+      </div>
+
+    </div>
+
+
+    <div class="col-md-5 lwell col-md-offset-1">
+      <h3>How to:</h3>
+      <ol>
+        <li>Rename your 1st masteries page to match the validation code</li>
+        <li>Press 'Save Masteries'</li>
+      </ol>
+
+      <div class="text-center" style="margin-top: 20px;margin-bottom: 20px;">
+        <%= image_tag("onetwo_final.jpg", size: "225x300") %>
+      </div>
+      Afterward you can rename your mastery page
+    </div>
+    
+
+  </div>
+
+</div>

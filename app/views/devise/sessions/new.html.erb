@@ -1,9 +1,9 @@
 <div class="row">
-	<div class="col-md-3">
+  <div class="col-md-4 col-md-offset-4">
 		<div class="devise-border-form">
 			<%= simple_form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: "well"}) do |f| %>
 				<fieldset>
-					<legend>Sign in</legend>
+					<legend class="text-center">Log in</legend>
 				 	<%= f.email_field :email, :autofocus => true, :placeholder => 'Email' %>
 				 	<%= f.password_field :password, :placeholder => 'Password' %>
 					<% if devise_mapping.rememberable? %>
@@ -11,31 +11,14 @@
 					   		<%= f.input :remember_me, as: :boolean, inline_label: 'Remember me', label: false %>
 					   	</div>
 					<% end %>
-				  <div><%= f.submit "Log in", :class=>"btn btn-primary" %></div>
+				  <div class="text-center"><%= f.submit "Log in", :class=>"btn btn-primary" %></div>
+			<%= render "devise/shared/links" %>
 				</fieldset>
 			<% end %>
 
-			<%= render "devise/shared/links" %>
 		</div>
 	</div>
 
-    <div class="col-md-9">
-      	<h3 class="text-center"><strong>Win a Pizza for playing League of Legends!*</strong></h3>
- 		<h5 class="text-center"><i>*Check out the <a href="/pages/faq">FAQ</a> for pizza details</i></h5>     	
-	      	<div class="teaser-context">
-	      	<div class="row">
-
-			    <div class="col-md-8 col-md-offset-2">
-				    <div class="loader-image">
-				        <%= image_tag("basic-gif.gif", :alt => "rss feed", height: '304', width: '516') %>
-				    </div>
-	   			</div>
-			</div>	
-	
-		</div>		  
-
-
-    </div>
 </div>
 
 <script>

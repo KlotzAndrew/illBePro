@@ -2,6 +2,8 @@ class Ignindex < ActiveRecord::Base
 
 belongs_to :user
 
+
+
 	def refresh_summoner
 		self.update(summoner_validated: false)
 		self.update(summoner_id: nil)

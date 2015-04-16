@@ -85,6 +85,15 @@ class Status < ActiveRecord::Base
             x.update(validation_timer: nil)
             x.update(validation_string: nil)
             Rails.logger.info "#{x.summoner_name} validated"
+
+            user = User.find(ign_for_mastery_hash.user_id)
+            if user.setup_progress == 0
+              user.update(setup_progress: 1)
+              Rails.logger.info "#{cron_st}: user #{ign_for_mastery_hash.id} onload from 0 to 1"
+            else 
+              Rails.logger.info "#{cron_st}: user #{ign_for_mastery_hash.id} not onloaded"
+            end          
+
             if Score.find_by_summoner_id(x.summoner_id).nil?
               Score.create!(:summoner_id => x.summoner_id, :summoner_name => x.summoner_name, :week_6 => 0)
               Rails.logger.info "scorecard created for #{x.summoner_name}"
@@ -293,10 +302,8 @@ def dr_who
 end
 
 def one_fox_one_gun
-  if Status.all.where("user_id = ?", self.user_id).where(win_value: nil).count >= 1
+  if Status.all.where("user_id = ?", self.user_id).where(win_value: nil).count >= 0
     errors.add(:you_can, 'only have 1 challenge running at a time!')
-  elsif 2 > 1
-    errors.add(:challenge_engine, 'disabled for 24 hours')
   #elsif Status.all.where("user_id = ?", self.user_id).where("created_at > ?", Time.now - 22.hours).count >= 5
     #errors.add(:you_have, 'reached your challenge limit for the day! The limit refreshes every 22 hours')
   elsif Status.all.where("created_at >= ?", Time.now - 60.seconds).count > 20
@@ -327,16 +334,17 @@ def challenge_init
     self.update(content: champ_ids.to_s)
   elsif self.kind == 5
     #build baseline for kind 5 (this can be refractored)
+    proc = rand(1..100)
     self.update(
       :value => 3900,
       :points => 1,
+      :proc_value => proc,
       :challenge_description => "Play a game to increase the chance your next challenge will be prized")
 
     score = Score.find_by_user_id(self.user_id)
     geodeliver = Geodeliver.find_by_user_id(self.user_id)
 
     if score.prize_level == 1 #playing for first 25% discount prize
-      proc = rand(5..100)
       Rails.logger.info "Proc: #{proc}, CP: #{score.challenge_points}"
       if (score.challenge_points) > proc && (Prize.where.not("delivered_at IS ?", nil).where("delivered_at > ?", (Time.now - 22.hours).to_i).count < 1) #proc chance
         region = Region.find(geodeliver.region_id)
@@ -561,10 +569,20 @@ end
                   Rails.logger.info "#{cron_st}: User #{ign.user_id} is no longer valid, duplicate summoner name"
                 end
               end
-              Ignindex.find_by_summoner_id(key).update(summoner_validated: true)
-              Ignindex.find_by_summoner_id(key).update(validation_timer: nil)
-              Ignindex.find_by_summoner_id(key).update(validation_string: nil)
+              ign_for_mastery_hash = Ignindex.find_by_summoner_id(key)
+              ign_for_mastery_hash.update(
+                :summoner_validated => true,
+                :validation_timer => nil,
+                :validation_string => nil)
               Rails.logger.info "#{cron_st}: key validated"
+
+              user = User.find(ign_for_mastery_hash.user_id)
+              if user.setup_progress == 0
+                user.update(setup_progress: 1)
+                Rails.logger.info "#{cron_st}: user #{ign_for_mastery_hash.id} onload from 0 to 1"
+              else 
+                Rails.logger.info "#{cron_st}: user #{ign_for_mastery_hash.id} not onloaded"
+              end
 
             else
               Rails.logger.info "#{cron_st}: key not validated"
@@ -606,10 +624,23 @@ end
                 Rails.logger.info "#{cron_st}: User #{ign.user_id} is no longer valid, duplicate summoner name"
               end
             end
-            Ignindex.find_by_summoner_id(key).update(summoner_validated: true)
-            Ignindex.find_by_summoner_id(key).update(validation_timer: nil)
-            Ignindex.find_by_summoner_id(key).update(validation_string: nil)
+            ign_for_mastery_hash = Ignindex.find_by_summoner_id(key)
+            ign_for_mastery_hash.update(
+              :summoner_validated => true,
+              :validation_timer => nil,
+              :validation_string => nil)
             Rails.logger.info "#{cron_st}: key validated"
+
+              Rails.logger.info "#{cron_st} ign_for_mastery_hash id: #{ign_for_mastery_hash.user_id}"
+              user = User.find(ign_for_mastery_hash.user_id)
+              Rails.logger.info "#{cron_st} user id: #{user.id}"
+              if user.setup_progress == 0
+                user.update(setup_progress: 1)
+                Rails.logger.info "#{cron_st}: user #{ign_for_mastery_hash.id} onload from 0 to 1"
+              else 
+                Rails.logger.info "#{cron_st}: user #{ign_for_mastery_hash.id} not onloaded"
+              end      
+
           else
 
             Rails.logger.info "#{cron_st}: key not validated"
@@ -813,7 +844,8 @@ end
                       elsif key_summoner[0].kind == 5 || key_summoner[0].kind == 6
                         Rails.logger.info "#{cron_st}: challenge kind #{key_summoner[0].kind} for #{key_summoner[0].summoner_id}"
                         if !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
-                          Status.find(key_summoner[0].id).update(game_1: {
+                          clock_active_status = Status.find(key_summoner[0].id)
+                          clock_active_status.update(game_1: {
                             :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
                             :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", 
                             :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", 
@@ -822,7 +854,7 @@ end
                             :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", 
                             :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
                             })
-                          Status.find(key_summoner[0].id).update(win_value: 0)
+                          clock_active_status.update(win_value: 0)
                           if key_summoner[0].kind == 6
                             Prize.find(key_summoner[0].prize_id).update(
                               :assignment => 0,
@@ -832,9 +864,19 @@ end
                               :challenge_points => score.challenge_points*0.5)
                           elsif key_summoner[0].kind == 5
                           end                          
+            
+                        user_onload = User.find(clock_active_status.user_id)
+                        if user_onload.setup_progress == 2
+                          user_onload.update(setup_progress: 3)
+                          Rails.logger.info "#{cron_st}: user onload from 2 to 3"
+                        else 
+                          Rails.logger.info "#{cron_st}: user not onloaded"
+                        end
+
                           Rails.logger.info "#{cron_st}: updated lost first for #{key_summoner[0].summoner_id}"
                         elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
-                           Status.find(key_summoner[0].id).update(game_1: {
+                          clock_active_status = Status.find(key_summoner[0].id)
+                          clock_active_status.update(game_1: {
                             :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
                             :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", 
                             :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", 
@@ -843,7 +885,7 @@ end
                             :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", 
                             :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
                             })
-                          Status.find(key_summoner[0].id).update(win_value: 2)
+                          clock_active_status.update(win_value: 2)
 
                           score = Score.find_by_user_id(key_summoner[0].user_id)
                           if key_summoner[0].kind == 6
@@ -851,7 +893,16 @@ end
                           elsif key_summoner[0].kind == 5
                             score.update(challenge_points: score.challenge_points + key_summoner[0].points)                                   
                           else
-                          end                          
+                          end 
+
+                          user_onload = User.find(clock_active_status.user_id)
+                          if user_onload.setup_progress == 2
+                            user_onload.update(setup_progress: 3)
+                            Rails.logger.info "#{cron_st}: user onload from 2 to 3"
+                          else 
+                            Rails.logger.info "#{cron_st}: user not onloaded"
+                          end
+                                                                             
                           #Score.find_by_user_id(key_summoner[0].user_id).update(week_6: Score.find_by_user_id(key_summoner[0].user_id).week_6 + key_summoner[0].points)
                           #Score.find_by_summoner_id(key_summoner[0].summoner_id).update(week_6: Score.find_by_summoner_id(key_summoner[0].summoner_id).week_6 + key_summoner[0].points)
                           Rails.logger.info "#{cron_st}: won 1/1 for #{key_summoner[0].summoner_id}"            

@@ -19,10 +19,10 @@
 <% end %>
 
 <div class="row">
-  <div class="col-md-6">
+  <div class="col-md-12">
     
     <div class="page-header">
-      <h1 class="text-center"><strong>Your Prize history</strong></h1>
+      <h1 class="text-center"><strong>Prize history</strong></h1>
     </div>
 
     <% @history.each do |x| %>       
@@ -31,10 +31,9 @@
         <div class="row">
           <div class="col-md-6">      
             <div class="">
-              <h4 class="text-center">Prize from:</h4>
-              <h3 class="text-center"><%= x.vendor %></h3>
-              <h4 class="text-center"><%= x.description %></h4>
-              <h4 class="text-center">Reward Code<%= x.reward_code %></h4>
+              <h4 class="text-center"><strong><%= x.description %></strong></h4>
+              <h4 class="text-center">From: <%= x.vendor %></h4>
+              <h4 class="text-center">Reward Code: <%= x.reward_code %></h4>
               <% if x.code != nil %>
                 <h4 class="text-center">PIN: <%= x.code %></h4>
               <% end %>
@@ -42,7 +41,13 @@
           </div>
           <div class="col-md-6">
             <div class="text-center">
-           <%= image_tag("kayle.jpg", size: "250x150") %>
+              <% if x.description == "$10 RP code" %>
+                <%= image_tag("10rp_image.jpg", size: "175x233") %>
+              <% elsif x.description == "Free Pizza from Domino's" %>
+                <%= image_tag("dominos_image.png", size: "414x292") %>
+              <% else %> 
+               <%= image_tag("kayle.jpg", size: "480x300") %>
+              <% end %>  
             </div>
           </div>
         </div>
@@ -52,15 +57,8 @@
   
   </div>
 
-  <div class="col-md-6">
-    
-    <div class="page-header">
-      <h1 class="text-center"><strong>All Prizes Won</strong></h1>
-    </div>
 
-    <h3 class="text-center">Coming soon!</h3>
-
-  </div>
+</div>
 
 
 

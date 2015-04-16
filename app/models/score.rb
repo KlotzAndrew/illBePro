@@ -1,7 +1,7 @@
 class Score < ActiveRecord::Base
 
   def assign_prize(choice)
-  	if choice == "Accept" or choice == "Upgrade"
+  	if choice == "Accept" or choice == "Keep Playing"
 	prize = Prize.find(self.prize_id)
 	    if self.user_id == prize.user_id #double check prize is assigned correctly
 
@@ -15,7 +15,7 @@ class Score < ActiveRecord::Base
 		      	:challenge_points => 0)
 		      	#:prize_level => 1)
 
-	      	elsif choice == "Upgrade"
+	      	elsif choice == "Keep Playing"
 		      prize.update(
 		      	:assignment => 0,
 		      	:user_id => nil)

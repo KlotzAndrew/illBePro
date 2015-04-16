@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150319144605) do
+ActiveRecord::Schema.define(version: 20150409012003) do
 
   create_table "champions", force: true do |t|
     t.string   "champion"
@@ -131,6 +131,8 @@ ActiveRecord::Schema.define(version: 20150319144605) do
     t.integer  "pause_timer"
     t.integer  "trigger_timer"
     t.integer  "prize_id"
+    t.integer  "proc_value",            default: 0
+    t.integer  "roll_status",           default: 0
   end
 
   add_index "statuses", ["user_id"], name: "index_statuses_on_user_id"
@@ -156,6 +158,7 @@ ActiveRecord::Schema.define(version: 20150319144605) do
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
+    t.integer  "setup_progress",         default: 0
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true

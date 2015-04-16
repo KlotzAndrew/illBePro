@@ -7,7 +7,8 @@ Rails.application.routes.draw do
 
   resources :ignindices
   get 'summoner', to: 'ignindices#index', as: :summoner
-  get 'profiles/show'
+  
+  resources :profiles
 
   devise_for :users
   
@@ -20,11 +21,29 @@ Rails.application.routes.draw do
 
   resources :statuses
   get 'challenges', to: 'statuses#index', as: :challenges
+  
+
+authenticated :user do
+  root to: 'statuses#index', as: :authenticated_root
+end
+
+unauthenticated do
   root to: "staticpages#homepage"
+  # root to: "main#index"
+end
+
 
   get 'teaser_summoner', to: "staticpages#teaser_summoner"
   get 'teaser_challenges', to: "staticpages#teaser_challenges"
   get 'teaser_prize_zone', to: "staticpages#teaser_prize_zone"
+  
+  get 'about', to: "staticpages#about"
+  get 'contact', to: "staticpages#contact"
+  get 'faq', to: "staticpages#faq"
+  # get 'home', to: "staticpages#home"
+  get 'privacy', to: "staticpages#privacy"
+  get 'terms_of_service', to: "staticpages#terms_of_service"
+
 
 
   # The priority is based upon order of creation: first created -> highest priority.

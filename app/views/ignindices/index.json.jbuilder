@@ -3,15 +3,15 @@ json.array!(@ignindices) do |ignindex|
   json.url ignindex_url(ignindex, format: :json)
 end
 
-var pollActivity = function() {
-  $.ajax({
-    url: Routes.ignindices_path ({format: 'json' }),
-    type: "GET",
-    dataType: "json",
-    success: function(data) {
-      console.log(data);
-    }
-  });
-}
+// var pollActivity = function() {
+//   $.ajax({
+//     url: Routes.ignindices_path ({format: 'json' }),
+//     type: "GET",
+//     dataType: "json",
+//     success: function(data) {
+//       console.log(data);
+//     }
+//   });
+// }
 
-setInterval( pollActivity, 500);
+// setInterval( pollActivity, 500);

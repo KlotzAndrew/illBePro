@@ -25,7 +25,7 @@ class ScoresController < ApplicationController
           format.html { redirect_to scores_url, notice: 'Prize accepted' }
           format.json { head :no_content }
         end
-      elsif params[:commit] == "Upgrade"
+      elsif params[:commit] == "Keep Playing"
         respond_to do |format|
           format.html { redirect_to statuses_url, notice: 'Prize traded in, your chance to proc a prize is unchanged' }
           format.json { head :no_content }

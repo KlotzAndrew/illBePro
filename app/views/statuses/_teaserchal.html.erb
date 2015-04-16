@@ -1,0 +1,294 @@
+
+<% if @current_game.challenge_description == @all_prize_desc[0] %>
+<div id="current_prize_desc" data-cpd="1">
+<% elsif @current_game.challenge_description == @all_prize_desc[1] %>
+<div id="current_prize_desc" data-cpd="2">
+<% else %>
+ <div id="current_prize_desc" data-cpd="0">
+<% end %>
+</div>  
+
+  <div class="new-challenge2" id="hide_chal">
+    <div class="row " id="cp_div" data-cp="<%= @score.challenge_points %>">
+
+
+      <div class="col-md-6 well">
+        <ul class="indent-list-1">
+          <h3>Prize Chance is: <%= @score.challenge_points %>%</h3>
+          <li><h4>Roll a % <strong>lower</strong>, game is prized</h4></li>
+          <li><h4>Roll a % <strong>higher</strong>, +1% future prize chance</h4></li>
+        </ul>
+      </div>
+
+
+    <% if @current_game.roll_status == 0 %>  
+      <div class="col-md-4 col-md-offset-1">
+        <div id="proc_div" data-proc="<%= @current_game.proc_value %>">
+
+        </div>
+        <div id="proc_button" class="btn btn-success roll-button">
+         Prize Me
+        </div>
+      </div>
+    <% else %>
+      <div class="col-md-6">
+        <div id="proc_div" data-proc="<%= @current_game.proc_value %>">
+          <span class="btn btn-primary roll-button"><%= @current_game.proc_value %></span>
+        </div>
+      </div>
+    <% end %>
+
+    </div>   
+
+    <% if @current_game.roll_status == 0 %>  
+      <div class="text-center" id="roll_prizes" class="" data-prize_kinds="<%= @all_prize_desc.count %>">
+
+        <div class="row well">
+          <div class="col-md-12">
+
+              <div class="col-md-3"> 
+                <div id="display_prize_0" class="panel dp-selector panel-default">
+                  
+                  <div class="panel-heading">
+                    <h5 class="panel-title text-center"><strong>+1% prize chance</strong></h5>
+                  </div>
+                  
+                  <div class="panel-body text-center">
+                      <%= image_tag("kayle.jpg", size: "212x146") %>
+                  </div>    
+
+                </div>
+              </div>     
+              
+            <% if @all_prize_desc.count > 0 %>
+              <div class="col-md-3"> 
+                <div id="display_prize_1" class="panel dp-selector panel-default">
+
+                  <div class="panel-heading">
+                    <h3 class="panel-title text-center"><strong><%= @all_prize_desc[0] %></strong></h3>
+                  </div>
+                  
+                  <div class="panel-body text-center">
+                    <% if @all_prize_desc[0] == "$10 RP code" %>
+                      <%= image_tag("10rp_image.jpg", size: "175x233") %>
+                    <% elsif @all_prize_desc[0] == 2323 %>
+                      <%= @all_prize_desc[0] %>
+                    <% else %> 
+                      <%= image_tag("dominos_image.jpg", size: "175x233") %>
+                    <% end %>
+                  </div>                                         
+
+                </div>
+              </div>
+            <% end %>
+
+            <% if @all_prize_desc.count > 1 %>
+              <div class="col-md-3"> 
+                <div id="display_prize_2" class="panel dp-selector panel-default">
+                  
+                  <div class="panel-heading">
+                    <h5 class="panel-title text-center"><strong><%= @all_prize_desc[1] %></strong></h5>
+                  </div>
+                  
+                  <div class="panel-body text-center">
+                    <% if @all_prize_desc[1] == "$10 RP code" %>
+                      <%= image_tag("10rp_image.jpg", size: "175x233") %>
+                    <% elsif @all_prize_desc[0] == 2323 %>
+                      <%= @all_prize_desc[1] %>
+                    <% else %> 
+                      <%= image_tag("dominos_image.png", size: "212x146") %>
+                    <% end %>
+                  </div>    
+
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @current_game.roll_status == 0 %>
+    <div id="show_chal" class="new-challenge start-ghost">
+  <% else %>
+    <div id="show_chal" class="new-challenge">
+  <% end %>
+
+    <div class="container-fluid">
+
+      <div class="row">
+
+        <div class="col-md-3" id="active_user_prize"> 
+          <div id="display_prize_n" class="panel panel-primary">
+            
+            <div class="panel-heading">
+              <% if @current_game.challenge_description == "$10 RP code" %>
+                  <h5 class="panel-title text-center"><strong><%= @current_game.challenge_description %></strong></h5>
+                </div>
+              
+                <div class="panel-body text-center">
+                  <%= image_tag("10rp_image.jpg", size: "175x233") %>
+                </div>
+                
+              <% elsif @current_game.challenge_description == "Free Pizza from Domino's" %>
+                  <h5 class="panel-title text-center"><strong><%= @current_game.challenge_description %></strong></h5>
+                </div>
+                
+                <div class="panel-body text-center">
+                  <%= image_tag("dominos_image.png", size: "212x146") %>
+                </div>
+               
+              <% else %>
+                  <h5 class="panel-title text-center"><strong>+1% prize chance</strong></h5>
+                </div>
+                
+                <div class="panel-body text-center">
+                    <%= image_tag("kayle.jpg", size: "212x146") %>
+                </div>             
+
+              <% end %>   
+
+
+          </div>
+        </div>
+
+        <div id="challenge_look" class="col-md-9 well challenge-history-running">
+          <div class="row new-challenge-head" >
+            <div class="col-md-2">
+              <div class=""><h4 class="text-center"><strong><%= @current_game.summoner_name %></strong></h4></div>
+            </div>
+            <div class="col-md-1">
+
+            </div>  
+
+
+            <div class="col-md-4">
+                <div id="cg_id" data-current_game_id="<%= @current_game.id %>" >
+                  <div id="cg-refresher" class="<%= @update_trigger %>"></div>
+                  <h4>
+                    Time left: 
+                    <span id="challenge_timer" data-chal_time_value="<%= (@current_game.value + @current_game.created_at.to_i) %>" >
+                    <%= (@current_game.value - (Time.now.to_i - @current_game.created_at.to_i))/60 %> min
+                    <span>
+                  </h4>
+                </div>
+            </div>
+
+            <div class="col-md-3 text-center">
+              <div class="">
+
+                <div id="current_created_at" data-current_created="<%= @current_game.created_at.to_i %>"> </div>
+                <% if (Time.now.to_i - @current_game.created_at.to_i) < 1200 %>
+
+                  <div id="before-20" class="">
+                    <% if @current_game.pause_timer == 0 %>
+                    <div id="hit-pause" class = "btn btn-default">
+                      Pause
+                    </div>
+                    <div id="hit-unpause" class = "start-ghost btn btn-warning">
+                      Unpause
+                    </div>
+                    <% else %>
+                    <div id="hit-pause" class = "start-ghost btn btn-default">
+                      Pause
+                    </div>
+                    <div id="hit-unpause" class = "btn btn-warning">
+                      Unpause
+                    </div>
+                    <% end %>
+                  </div>
+
+                  <div id="after-20" class="start-ghost">
+                    <% if @current_game.trigger_timer > (Time.now.to_i - 300) %>
+                      <div id="hit-unfinish" class="btn btn-warning">
+                        Updating game data...
+                      </div>
+
+                      <div id="hit-finish" class="start-ghost btn btn-default">
+                        Finished
+                      </div>
+
+                    <% else %>
+                      <div id="hit-unfinish" class="start-ghost btn btn-warning">
+                        Updating game data...
+                      </div>
+
+                      <div id="hit-finish" class="btn btn-default">
+                        Finished
+                      </div>
+                    <% end %>
+                  </div>
+
+
+                <% else %>
+
+                  <div id="after-20" class="">
+                    <% if @current_game.trigger_timer > (Time.now.to_i - 300) %>
+                      <div id="hit-unfinish" class="btn btn-warning">
+                        Updating game data...
+                      </div>
+
+                      <div id="hit-finish" class="start-ghost btn btn-default">
+                        Finished
+                      </div>
+
+                    <% else %>
+                      <div id="hit-unfinish" class="start-ghost btn btn-warning">
+                        Updating game data...
+                      </div>
+
+                      <div id="hit-finish" class="btn btn-default">
+                        Finished
+                      </div>
+                    <% end %>
+                  </div>
+
+                <% end %>
+
+              </div>
+            </div>
+
+            <div class="col-md-1">
+              <div class="btn btn-default">
+                  Concede
+              </div>
+            </div>
+
+          </div>
+     
+            <% if @current_game.kind == 6 %>
+
+            <div id="challenge_body_text" class="panel panel-default">
+              <div class="panel-body">
+                
+                <div class="row">
+                  <div class="col-md-6">
+                    <h3 id="challenge-notice" class="text-center">
+                      Win your next ranked game for:
+                    </h3>
+                  </div>
+                  <div class="col-md-6">
+                    <h4 id="challenge-notice-instructions">
+                      <%= @current_game.challenge_description %> <br>
+                      <%= @current_game.content %> 
+                    </h4>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <% else %>
+            <div id="challenge_body_text" class="panel panel-default">
+              <div class="panel-body">
+                <h3 id="challenge-notice">
+                  Finish a ranked game (win or lose)
+                </h3>
+              </div>
+            </div>
+            <% end %>
+        </div>
+
+    </div>
+  </div> 
+</div>

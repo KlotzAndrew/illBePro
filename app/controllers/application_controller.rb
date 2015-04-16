@@ -4,11 +4,30 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
  before_filter :configure_permitted_parameters, if: :devise_controller?
+ before_filter :set_variables
 
-helper_method :summoner_onboarding, :challenge_onboarding, :prize_onboarding
-def summoner_onboarding
-	@ignindex_validated = Ignindex.find_by_user_id(current_user.id).summoner_validated
+helper_method :challenge_onboarding, :prize_onboarding
+
+def set_variables
+  if user_signed_in?
+    ign = Ignindex.find_by_user_id(current_user.id)
+    @setup_stage = current_user.setup_progress
+    
+    if ign.summoner_validated != nil
+     @ignindex_validated = ign.summoner_validated
+    else 
+      @ignindex_validated = false
+    end
+
+    if ign.summoner_name != nil
+      @ignindex_summoner = ign.summoner_name
+    else
+      @ignindex_summoner = "Summoner"
+    end
+  end
 end
+
+
 
 def challenge_onboarding
 	@status_onboarding = Status.all.where("user_id = ?", current_user.id).count

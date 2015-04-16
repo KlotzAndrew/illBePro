@@ -1,0 +1,119 @@
+.home-button {
+  width: 450px;
+  height: 200px;
+  font-size: 40px;
+/*  background-color: #f1693c;
+  border-color: #C94727;*/
+}
+
+
+.unlock {
+  text-transform: uppercase;
+  font-size: 0.8em;
+  font-weight: bold;
+  background-color: #f1693c;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  font-size: 20px;
+  text-align: center;
+  height: 40px;
+  position: absolute;
+
+	left: 0;
+
+ 	width: 100%;
+
+ 	z-index: 1;
+ 	margin-top: 200px;
+
+}
+
+.teaser-body {
+	margin-top: 50px;
+}
+
+.box-select {
+  background: url("setup_bar.png") no-repeat scroll 0px 0px transparent; 
+  width: 22px;
+  height: 22px;
+}
+
+.box-check {
+  background: url("setup_bar.png") no-repeat scroll 0px -22px transparent;
+  width: 22px;
+  height: 22px; 
+}
+
+.box-uncheck {
+  background: url("setup_bar.png") no-repeat scroll 0px -44px transparent;
+  width: 22px;
+  height: 22px; 
+}
+
+.breadcrumb-trail {
+     color: #fff;
+    display: inline-block;
+    padding: 30px 11px 0;
+    width: 560px;
+}
+
+.breadcrumbs {
+      background: url("setup_bar.png") repeat-x scroll 0 -88px rgba(0, 0, 0, 0);
+    display: inline-table;
+    margin: 0;
+    position: relative;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.breadcrumb-cell {
+    display: table-cell;
+    height: 22px;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    width: 25%;
+}
+
+.breadcrumb {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    left: -11px;
+    list-style-type: none;
+    margin: 0;
+    overflow: visible;
+    padding: 0;
+    position: relative;
+    width: 22px;
+}
+
+.breadcrumb-label {
+    display: block;
+    left: -59px;
+    position: absolute;
+    text-align: center;
+    top: -30px;
+    white-space: nowrap;
+    width: 140px;
+}
+
+.breadcrumb-icon {
+    background: url("setup_bar.png") repeat scroll 0 -44px rgba(0, 0, 0, 0);
+    height: 22px;
+    width: 22px;
+}
+
+.last {
+    width: 0;
+}
+
+.breadcrumb.checked .breadcrumb-icon {
+    background: url("setup_bar.png") repeat scroll 0 -22px rgba(0, 0, 0, 0);
+}
+
+.breadcrumb.active .breadcrumb-icon {
+    background: url("setup_bar.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
+}
+
+.breadcrumb .active {
+    color: #e2e2e2;
+}
