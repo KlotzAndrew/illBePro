@@ -11,6 +11,7 @@ var teaser_summoner = function(){
     $('#js_name').html($('#input_teaser_summoner').val())
     
     $('#js_val').html('- Not Valid')
+    $('#js_val').addClass('not-validated')
     $('#summoner_valid_panel').slideDown(1000)
     $('#js_validation_string').html("illbepro")
     $('#mastery_page_name').html("AP mid")
