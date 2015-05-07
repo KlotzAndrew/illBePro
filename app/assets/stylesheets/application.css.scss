@@ -299,19 +299,19 @@ fieldset[disabled] .btn-lprimary.active {
 }
 
 .box-select {
-  background: url("setup_bar.png") no-repeat scroll 0px 0px transparent; 
+  background: asset_url("setup_bar.png") no-repeat scroll 0px 0px transparent; 
   width: 22px;
   height: 22px;
 }
 
 .box-check {
-  background: url("setup_bar.png") no-repeat scroll 0px -22px transparent;
+  background: asset_url("setup_bar.png") no-repeat scroll 0px -22px transparent;
   width: 22px;
   height: 22px; 
 }
 
 .box-uncheck {
-  background: url("setup_bar.png") no-repeat scroll 0px -44px transparent;
+  background: asset_url("setup_bar.png") no-repeat scroll 0px -44px transparent;
   width: 22px;
   height: 22px; 
 }
@@ -324,7 +324,7 @@ fieldset[disabled] .btn-lprimary.active {
 }
 
 .breadcrumbs {
-    background: url("setup_bar.png") repeat-x scroll 0 -88px rgba(0, 0, 0, 0);
+    background: asset_url("setup_bar.png") repeat-x scroll 0 -88px rgba(0, 0, 0, 0);
     display: inline-table;
     margin: 0;
     position: relative;
@@ -363,7 +363,7 @@ fieldset[disabled] .btn-lprimary.active {
 }
 
 .breadcrumb-icon {
-    background: url("setup_bar.png") repeat scroll 0 -44px rgba(0, 0, 0, 0);
+    background: asset_url("setup_bar.png") repeat scroll 0 -44px rgba(0, 0, 0, 0);
     height: 22px;
     width: 22px;
 }
@@ -373,11 +373,11 @@ fieldset[disabled] .btn-lprimary.active {
 }
 
 .breadcrumb.checked .breadcrumb-icon {
-    background: url("setup_bar.png") repeat scroll 0 -22px rgba(0, 0, 0, 0);
+    background: asset_url("setup_bar.png") repeat scroll 0 -22px rgba(0, 0, 0, 0);
 }
 
 .breadcrumb.active .breadcrumb-icon {
-    background: url("setup_bar.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
+    background: asset_url("setup_bar.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
 }
 
 .breadcrumb .active {
