@@ -5,6 +5,7 @@ var offline_alert = function() {
 }
 
 
+
 var proc_number = function(){
     var user_cp = $('#cp_div').data("cp") // update roll, then highlight prize
     // $('#proc_button').on("click", function() {
@@ -228,27 +229,40 @@ var finish_button = function(){
 
 var check_game = function(){
     $.ajax({
-        url: "/statuses/" + $("#cg_id").data("current_game_id"),
+        url: "/statuses/" + $("#cg_id").data("status_id"),
         type: "GET",
         dataType: "json",
         success: function(data) {
-            if (data.win_value !== null) {
-                $('#challenge_look').toggleClass("challenge-history-running")
+            console.log(data)
+            if (data.win_value == null) {
                 
-                if (data.win_value == 2) { // won game
-                    $('#challenge_look').toggleClass("challenge-history-win")
-                    $('#challenge-notice').html("Victory")
-                    $('#challenge-notice').toggleClass("validated")
-                } else { // loss or timeout
-                    $('#challenge_look').toggleClass("challenge-history-loss")
-                    $('#challenge-notice').html("Defeat")
-                    $('#challenge-notice').toggleClass("not-validated")
+                if (data.prize_id !== null) {
+                    document.location.reload(true);
+                } else {
+
+                    $('#v3_ingame').addClass("start-ghost")
+                    $('#v3_outgame').removeClass("start-ghost")                
+
+                    champ = data.game_1["champion_id"]
+                    kills = data.game_1["kills"]
+                    deaths = data.game_1["deaths"]
+                    assists = data.game_1["assists"]
+                    game_summary = "played as " + champ + " " + kills + "/" + deaths + "/" + assists
+
+
+                    if (data.win_value !== 2) { // won game
+                        $('#v3_prize_results').html("Won your game, but no prize this time")
+                        $('#v3_game_results').html(game_summary)
+                    } else { // loss or timeout
+                        $('#v3_prize_results').html("Lost your game")
+                        $('#v3_game_results').html(game_summary)
+                    }
+                    if ( $('#setup_progress_bar').length > 0 ) { // slide the setup over by 1
+                        setTimeout(function() {
+                            setup_2_3()
+                        }, 3000);
+                    } 
                 }
-                if ( $('#setup_progress_bar').length > 0 ) { // slide the setup over by 1
-                    setTimeout(function() {
-                        setup_2_3()
-                    }, 3000);
-                } 
                 clearInterval(checkint)
                 clearTimeout(statusTimer);      
             } else {
@@ -272,7 +286,7 @@ var challenge_timer = function(){
     if ( final_two < 120 ) {
         if ( $('#cg-refresher').hasClass("cg-update-true") ) {
         } else  {
-            $('#cg-refresher').toggleClass("cg-update-true") 
+            $('#cg-refresher').addClass("cg-update-true") 
             console.log("timer triggered check-game")
             // clearInterval(game_check_int)
             check_game()
@@ -291,9 +305,7 @@ var challenge_timer = function(){
   } else {
     pause_guess += 1
   }
-  if ( $('#challenge_look').hasClass("challenge-history-running") ) {
     var statusTimer = setTimeout( challenge_timer, 1000)
-  };
 };
 
 pause_guess = 0
@@ -304,28 +316,22 @@ $(document).ready(function(){
     if (typeof statusTimer !== 'undefined') {
        clearTimeout(statusTimer); 
     } 
-      if (current_page == "status_index") {
-          console.log("this is status_index")
-          challenge_timer()
-          pause_button()
-          finish_button()
-        if ( $('#page_name').hasClass("teaser-config") ) {
-            proc_number_press()
-        } else {
-          proc_number();
-          offline_alert();
-        }
+    if (current_page == "status_index") {
+        console.log("this is status_index")
+        challenge_timer()
+        pause_button()
+        finish_button()
 
-          if ( $('#cg-refresher').hasClass("cg-update-true") ) {
-            console.log("check game on doc ready")
-            // clearInterval(game_check_int)
-            check_game()
-          } else {
-            var checkint;
-          }
-        } else {
-          console.log("this is not status_index");
-        }  
+      if ( $('#cg-refresher').hasClass("cg-update-true") ) {
+        console.log("check game on doc ready")
+        // clearInterval(game_check_int)
+        check_game()
+      } else {
+        var checkint;
+      }
+    } else {
+      console.log("this is not status_index");
+    }  
 })
 
 $(document).on('page:load', function(){
@@ -338,13 +344,6 @@ $(document).on('page:load', function(){
       challenge_timer()
       pause_button()
       finish_button()
-
-        if ( $('#page_name').hasClass("teaser-config") ) {
-            proc_number_press()
-        } else {
-          proc_number()
-          offline_alert();
-        }
         
      if ( $('#cg-refresher').hasClass("cg-update-true") ) {
         // window.clearInterval(game_check_int)

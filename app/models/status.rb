@@ -1,8 +1,8 @@
 class Status < ActiveRecord::Base
 
-	belongs_to :user
+	# belongs_to :user
 	
-	validates :user_id, presence: true
+	# validates :user_id, presence: true
   validate :dr_who, :on => :create
   validate :one_fox_one_gun, :on => :create
 
@@ -15,388 +15,38 @@ class Status < ActiveRecord::Base
   serialize :game_5, Hash
 
 
-  def self.update_value
-    Rails.logger.info "*****Started cron at #{Time.now}*****"
-    d = Time.now.to_i
-    api_call_count = 0
-    val_count = 0
-    Ignindex.where("validation_timer > ?", 0 ).each do |x|
-      if Time.now.to_i - d > 55
-         Rails.logger.info "CRON OVERLOAD! Unable to validate #{x.summoner_name}!"
-      elsif api_call_count+val_count > 60
-        Rails.logger.info "API OVERLOAD! Unable to validate #{x.summoner_name}!"
-      else
-        if x.validation_timer < (Time.now.to_i - 300)
-          x.update(validation_timer: nil)
-          x.update(validation_string: nil)
-          Rails.logger.info "#{x.id} ran out of time"
-        else
-          Rails.logger.info "#{x.summoner_name} still has #{300 + x.validation_timer - Time.now.to_i} seconds!"
-          if x.summoner_id.nil?
-            Rails.logger.info "update id for #{x.summoner_name}"
-            g = Time.now.to_i
-            if (api_call_count + val_count)*(1/0.80) > g-d
-              puts "Throttle for #{(api_call_count + val_count)*(1/0.80) + d - g}"
-              sleep (api_call_count + val_count)*(1/0.80) + d - g
-            end
-            url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/#{x.summoner_name.gsub(' ', '%20')}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
-            val_count += 1
-              begin
-                summoner_data = open(URI.encode(url),{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,:read_timeout=>3}).read
-                summoner_hash = JSON.parse(summoner_data)
-                x.update(summoner_id: summoner_hash["#{x.summoner_name.downcase.gsub(' ', '')}"]["id"])
-              rescue Timeout::Error
-                Rails.logger.info "URI-TIMEOUT request for #{x.summoner_name} on name"
-              rescue => e
-                Rails.logger.info "uri error request for #{x.summoner_name} on name"
-              end
-          else
-            Rails.logger.info "no update id for #{x.summoner_name}"
-          end
-
-        g = Time.now.to_i
-        if (api_call_count + val_count)*(1/0.80) > g-d
-          puts "Throttle for #{(api_call_count + val_count)*(1/0.80) + d - g}"
-          sleep (api_call_count + val_count)*(1/0.80) + d - g
-        end
-        url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/#{x.summoner_id}/masteries?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
-        val_count += 1
-          begin
-            mastery_data = open(url,{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,:read_timeout=>3}).read
-            mastery_hash = JSON.parse(mastery_data)
-            name = mastery_hash["#{x.summoner_id}"]["pages"][0]["name"]
-            Rails.logger.info "1st page name: #{name}; should be: #{x.validation_string}"
-            x.update(mastery_1_name: "#{name}")
-          rescue Timeout::Error
-            Rails.logger.info "URI-TIMEOUT request for #{x.summoner_name} on masteries"
-          rescue => e
-            Rails.logger.info "uri error request for #{x.summoner_name} on masteries"
-          end
-
-
-          if name == x.validation_string
-            if Ignindex.where(summoner_id: x.summoner_id).where(summoner_validated: true).count > 1
-              Ignindex.where(summoner_id: x.summoner_id).where(summoner_validated: true).each do |ign|
-                ign.update(summoner_validated: false)
-                Rails.logger.info "User #{ign.user_id} is no longer valid, duplicate summoner name"
-              end
-            end
-            x.update(summoner_validated: true)
-            x.update(validation_timer: nil)
-            x.update(validation_string: nil)
-            Rails.logger.info "#{x.summoner_name} validated"
-
-            user = User.find(ign_for_mastery_hash.user_id)
-            if user.setup_progress == 0
-              user.update(setup_progress: 1)
-              Rails.logger.info "#{cron_st}: user #{ign_for_mastery_hash.id} onload from 0 to 1"
-            else 
-              Rails.logger.info "#{cron_st}: user #{ign_for_mastery_hash.id} not onloaded"
-            end          
-
-            if Score.find_by_summoner_id(x.summoner_id).nil?
-              Score.create!(:summoner_id => x.summoner_id, :summoner_name => x.summoner_name, :week_6 => 0)
-              Rails.logger.info "scorecard created for #{x.summoner_name}"
-            else
-              Rails.logger.info "scorecard already exists for #{x.summoner_name}"
-            end
-          else
-            Rails.logger.info "#{x.summoner_name} not validated"
-          end
-        end
-      end
-    end
-
-    Status.where("value > ?", 0).each do |x|
-      if x.kind == 1
-        time_holder = 3900
-      elsif x.kind == 2
-        time_holder = 7200
-      else
-        time_holder = 10800
-      end
-
-      if Time.now.to_i - d > 53
-         Rails.logger.info "CRON OVERLOAD! Unable to get matches for #{x.summoner_name}!"
-      elsif api_call_count+val_count > 60
-        Rails.logger.info "API OVERLOAD! Unable to get matches for #{x.summoner_name}!"
-      else
-        x.update(value: time_holder - (Time.now.to_i - x.created_at.to_i))
-        Rails.logger.info "start for #{x.summoner_id}"
-          if Time.now.to_i - x.created_at.to_i > time_holder
-            x.update(value: 0)
-            x.update(win_value: 1)
-          else
-            g = Time.now.to_i
-            if (api_call_count + val_count)*(1/0.80) > g-d
-              puts "Throttle for #{(api_call_count + val_count)*(1/0.80) + d - g}"
-              sleep (api_call_count + val_count)*(1/0.80) + d - g
-            end
-            url = "https://na.api.pvp.net/api/lol/na/v2.2/matchhistory/#{x.summoner_id}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
-            Rails.logger.info "api call for #{x.summoner_id}"
-            api_call_count += 1 
-              begin
-                remote4_data = open(url,{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,:read_timeout=>2}).read
-                games_hash = JSON.parse(remote4_data)
-                valid_games = []
-                i = 0
-                games_hash["matches"].each do |match|
-                  if match["queueType"] == "RANKED_SOLO_5x5" && (match["matchCreation"] - match["matchDuration"]) >= (x.created_at.to_i - 420)*1000
-                    valid_games << i
-                    i = i + 1
-                  else
-                    i = i + 1
-                  end
-                end
-              rescue Timeout::Error
-                 Rails.logger.info "URI-TIMEOUT request for #{x.summoner_name} on stats"
-              rescue => e
-                Rails.logger.info "uri error request for #{x.summoner_name} on stats"
-              end
-          if valid_games.nil?
-            Rails.logger.info "nil valid_games for #{x.summoner_id}"
-          else
-            if x.kind == 1
-              Rails.logger.info "challenge kind 1 for #{x.summoner_id}"
-              if valid_games.count == 0               
-                Rails.logger.info "updated zero games for #{x.summoner_id}" 
-              elsif !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
-                x.update(game_1: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[0]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"})
-                x.update(value: 0)
-                x.update(win_value: 0)
-                Rails.logger.info "updated lost first for #{x.summoner_id}"
-              elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
-                 x.update(game_1: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[0]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"})
-                x.update(value: 0)
-                x.update(win_value: 2)
-                Score.find_by_user_id(x.user_id).update(week_6: Score.find_by_user_id(x.user_id).week_6 + x.points)
-                Score.find_by_summoner_id(x.summoner_id).update(week_6: Score.find_by_summoner_id(x.summoner_id).week_6 + x.points)
-                Rails.logger.info "won 1/1 for #{x.summoner_id}"            
-              else
-                Rails.logger.info "updated else for #{x.summoner_id}"
-              end
-            elsif x.kind == 2
-              Rails.logger.info "challenge kind 2 for #{x.summoner_id}"
-              if valid_games.count == 0
-                Rails.logger.info "updated zero games for #{x.summoner_id}"
-              elsif valid_games.count == 1
-                Rails.logger.info "updated 1/2 games for #{x.summoner_id}"
-                if x.game_1.empty?
-                  x.update(game_1: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[0]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"})
-                  if !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
-                    x.update(value: 0)
-                    x.update(win_value: 0)
-                    Rails.logger.info "updated lost first for #{x.summoner_id}"
-                  end
-                else
-                  puts "game_1 info alreayd saved from previous call"
-                end
-              elsif valid_games.count == 2
-                Rails.logger.info "updated 2/2 games for #{x.summoner_id}"
-                if x.game_1.empty?
-                  x.update(game_1: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[0]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"})
-                end
-                if games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"] && !games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["winner"]
-                  x.update(game_2: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[1]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[1]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[1]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["assists"]}"})
-                  x.update(value: 0)
-                  x.update(win_value: 0)
-                  Rails.logger.info "updated lost second out of 2/2 for #{x.summoner_id}"
-                elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"] && games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["winner"]
-                  x.update(game_2: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[1]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[1]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[1]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["assists"]}"})
-                  x.update(value: 0)
-                  x.update(win_value: 2)
-                  Score.find_by_user_id(x.user_id).update(week_6: Score.find_by_user_id(x.user_id).week_6 + x.points)
-                  Score.find_by_summoner_id(x.summoner_id).update(week_6: Score.find_by_summoner_id(x.summoner_id).week_6 + x.points)
-                  Rails.logger.info "updated won 2/2 for #{x.summoner_id}"
-                else
-                  Rails.logger.info "updated else for #{x.summoner_id}"
-                end
-              else
-                Rails.logger.info "missing challenge kind for #{x.summoner_id}"
-              end
-            elsif x.kind == 3
-              Rails.logger.info "challenge kind 3 for #{x.summoner_id}"
-              if valid_games.count == 0
-                Rails.logger.info "updated zero games for #{x.summoner_id}"
-              elsif valid_games.count == 1
-                Rails.logger.info "updated 1/3 games for #{x.summoner_id}"
-                if x.game_1.empty?
-                  x.update(game_1: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[0]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"})
-                  if !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
-                    x.update(value: 0)
-                    x.update(win_value: 0)
-                    Rails.logger.info "updated lost first for #{x.summoner_id}"
-                  end
-                else
-                  puts "game_1 info already saved from previous call"
-                end
-              elsif valid_games.count == 2
-                Rails.logger.info "updated 2/3 games for #{x.summoner_id}"
-                if x.game_1.empty?
-                  x.update(game_1: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[0]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"})
-                end
-                if games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"] && !games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["winner"]
-                  x.update(game_2: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[1]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[1]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[1]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["assists"]}"})
-                  x.update(value: 0)
-                  x.update(win_value: 0)
-                  Rails.logger.info "updated lost second out of 2/3 for #{x.summoner_id}"
-                elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"] && games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["winner"]
-                  x.update(game_2: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[1]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[1]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[1]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["assists"]}"})
-                  Rails.logger.info "updated won 2/3 for #{x.summoner_id}"
-                else
-                  Rails.logger.info "updated else for #{x.summoner_id}"
-                end
-              elsif valid_games.count == 3
-                Rails.logger.info "updated 3/3 games for #{x.summoner_id}"
-                if x.game_1.empty?
-                  x.update(game_1: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[0]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"})
-                end
-                if x.game_2.empty?
-                  x.update(game_2: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[1]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[1]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[1]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["assists"]}"})
-                end
-                if games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"] && games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["winner"] && !games_hash["matches"][valid_games[2]]["participants"][0]["stats"]["winner"]
-                  x.update(game_3: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[2]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[2]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[2]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[2]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[2]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[2]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[2]]["participants"][0]["stats"]["assists"]}"})
-                  x.update(value: 0)
-                  x.update(win_value: 0)
-                  Rails.logger.info "updated lost third out of 3/3 for #{x.summoner_id}"
-                elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"] && games_hash["matches"][valid_games[1]]["participants"][0]["stats"]["winner"] && games_hash["matches"][valid_games[2]]["participants"][0]["stats"]["winner"]
-                  x.update(game_3: {:champion_id => "#{Champion.find(games_hash["matches"][valid_games[2]]["participants"][0]["championId"]).champion}", :matchCreation => "#{games_hash["matches"][valid_games[2]]["matchCreation"]}", :win_loss => "#{games_hash["matches"][valid_games[2]]["participants"][0]["stats"]["winner"]}", :matchDuration => "#{games_hash["matches"][valid_games[2]]["matchDuration"]}", :kills => "#{games_hash["matches"][valid_games[2]]["participants"][0]["stats"]["kills"]}", :deaths => "#{games_hash["matches"][valid_games[2]]["participants"][0]["stats"]["deaths"]}", :assists => "#{games_hash["matches"][valid_games[2]]["participants"][0]["stats"]["assists"]}"})
-                  x.update(value: 0)
-                  x.update(win_value: 2)
-                  Score.find_by_user_id(x.user_id).update(week_6: Score.find_by_user_id(x.user_id).week_6 + x.points)
-                  Score.find_by_summoner_id(x.summoner_id).update(week_6: Score.find_by_summoner_id(x.summoner_id).week_6 + x.points)
-                  Rails.logger.info "updated won 3/3 for #{x.summoner_id}"
-                else
-                  Rails.logger.info "updated else for #{x.summoner_id}"
-                end
-                
-              else
-                Rails.logger.info "missing challenge kind for #{x.summoner_id}"
-              end
-     
-            end
-          end
-        end
-      end
-    end
-    Rails.logger.info "Validation calls = #{val_count} | Challenge calls = #{api_call_count} | #{((val_count + api_call_count*1.00)/(Time.now.to_i - d)).round(2)}/Second"
-    Rails.logger.info "*****Finished cron in #{Time.now.to_i - d*1.00} seconds!*****"
-    Rails.logger.info "-----------------------------------"
-  end
-
-def self.update_value2
-  bf = []
-  while bf.count < 100
-    bf << bf.count+1
-  end
-  puts "outside loop #{bf}!"
-end
-
 def dr_who
-  w = self.user_id
-  if Ignindex.find_by_user_id(w).summoner_validated != true
+  w = Ignindex.find(self.ignindex_id)
+  if w.summoner_validated != true
     errors.add(:you_need, ' a valid summoner name before you can start a challenge!')
-  elsif Geodeliver.find_by_user_id(self.user_id).region_id.nil?
+  elsif w.region_id.nil?
     errors.add(:you_need, ' to select a prize zone to start a challenge')
   end
 end
 
 def one_fox_one_gun
-  if Status.all.where("user_id = ?", self.user_id).where(win_value: nil).count >= 0
+  if Status.all.where("ignindex_id = ?", self.ignindex_id).where(win_value: nil).count > 0
     errors.add(:you_can, 'only have 1 challenge running at a time!')
   #elsif Status.all.where("user_id = ?", self.user_id).where("created_at > ?", Time.now - 22.hours).count >= 5
     #errors.add(:you_have, 'reached your challenge limit for the day! The limit refreshes every 22 hours')
   elsif Status.all.where("created_at >= ?", Time.now - 60.seconds).count > 20
-    errors.add(:challenge_hamster, ' is overloaded with other challenges! Try back in 60 seconds')
+    errors.add(:start_queue, ' is full! Try back in 60 seconds')
   else
   end
 end
 
 def challenge_init
-  if self.kind == 1
-    self.update(challenge_description: "Win the next game")
-    self.update(value: 3900)
-    self.update(points: 2)
-  elsif self.kind == 2
-    self.update(challenge_description: "Win the next 2 games in a row")
-    self.update(value: 7200)
-    self.update(points: 0)
-  elsif self.kind == 3
-    self.update(challenge_description: "Win the next 3 games in a row")
-    self.update(value: 10800)
-    self.update(points: 0)
-  elsif self.kind == 4
-    self.update(challenge_description: "Win with a random champion")
-    self.update(value: 3900)
-    self.update(points: 4)
-    champ_ids = []
-    Champion.all.where.not(champion:nil).sample(16).each {|x| champ_ids << x.id}
-    self.update(content: champ_ids.to_s)
-  elsif self.kind == 5
-    #build baseline for kind 5 (this can be refractored)
-    proc = rand(1..100)
-    self.update(
-      :value => 3900,
-      :points => 1,
-      :proc_value => proc,
-      :challenge_description => "Play a game to increase the chance your next challenge will be prized")
 
-    score = Score.find_by_user_id(self.user_id)
-    geodeliver = Geodeliver.find_by_user_id(self.user_id)
-
-    if score.prize_level == 1 #playing for first 25% discount prize
-      Rails.logger.info "Proc: #{proc}, CP: #{score.challenge_points}"
-      if (score.challenge_points) > proc && (Prize.where.not("delivered_at IS ?", nil).where("delivered_at > ?", (Time.now - 22.hours).to_i).count < 1) #proc chance
-        region = Region.find(geodeliver.region_id)
-
-        #build pot with all global + tier1/tier2 prizes if applicable  
-        party_pot = [] 
-
-        Prize.all.where("country_zone = ?", region.country).where("assignment = ?", 0).each do |x|
-          party_pot << x.id
-        end
-        if region.prize_id_tier1 == "[]" or region.prize_id_tier1 == nil
-          #stop json error
-        else
-          JSON.parse(region.prize_id_tier1).each do |x|
-            party_pot << x
-          end
-        end
-        if region.prize_id_tier2 == "[]" or region.prize_id_tier2 == nil
-          #stop json error
-        else
-          JSON.parse(region.prize_id_tier2).each do |x|
-            party_pot << x
-          end
-        end
-        prize = Prize.find(party_pot.sample(1))[0]
-        #prize grabbed, if avilable - turn this into a prized game
-        
-        if prize != nil
-          prize.update(
-            :assignment => 1,
-            :user_id => self.user_id)
-          self.update(
-            :prize_id => prize.id,
-            :kind => 6,
-            :value => 3900,
-            :points => 100,
-            :challenge_description => "#{prize.description}",
-            :content => "#{prize.vendor}")
-        end
-
-      else #this game is not prized
-
-      end
-
-    else
-      Rails.logger.info "Something went wrong with your prize level"
-    end
-  else
-    self.update(challenge_description: "Something went wrong! Sorry!")
-    self.update(value: 0)
-    self.update(points: 0)
-  end
+  #build baseline for kind 5 (this can be refractored)
+  proc = rand(1..100)
+  self.update(
+    :value => 3900,
+    :points => 1,
+    :proc_value => proc,
+    :kind => 5,
+    :challenge_description => "Play a game to increase the chance your next challenge will be prized",
+    :pause_timer => 0,
+    :trigger_timer => 0)
 
   self.update(pause_timer: 0)
   self.update(trigger_timer: 0)
@@ -559,30 +209,49 @@ end
           
           mastery_hash.each_pair do |key,value|
 
-            Ignindex.find_by_summoner_id(key).update(mastery_1_name: "#{mastery_hash["#{key}"]["pages"][0]["name"]}")
+            ign_for_mastery_hash = Ignindex.find_by_summoner_id(key)
+            ign_for_mastery_hash.update(mastery_1_name: "#{mastery_hash["#{key}"]["pages"][0]["name"]}")
             Rails.logger.info "#{cron_st}: 1st page name: #{mastery_hash["#{key}"]["pages"][0]["name"]}"
 
-            if "#{mastery_hash["#{key}"]["pages"][0]["name"]}" == Ignindex.find_by_summoner_id(key).validation_string
-              if Ignindex.where(summoner_id: key).where(summoner_validated: true).count > 1
-                Ignindex.where(summoner_id: key).where(summoner_validated: true).each do |ign|
-                  ign.update(summoner_validated: false)
-                  Rails.logger.info "#{cron_st}: User #{ign.user_id} is no longer valid, duplicate summoner name"
-                end
-              end
-              ign_for_mastery_hash = Ignindex.find_by_summoner_id(key)
-              ign_for_mastery_hash.update(
-                :summoner_validated => true,
-                :validation_timer => nil,
-                :validation_string => nil)
-              Rails.logger.info "#{cron_st}: key validated"
+            if "#{mastery_hash["#{key}"]["pages"][0]["name"]}" == ign_for_mastery_hash.validation_string
+              # if ign_for_mastery_hash.where(summoner_validated: true).count > 1
+              #   ign_for_mastery_hash.where(summoner_validated: true).each do |ign|
+              #     ign.update(summoner_validated: false)
+              #     Rails.logger.info "#{cron_st}: User #{ign.user_id} is no longer valid, duplicate summoner name"
+              #   end
+              # end
 
-              user = User.find(ign_for_mastery_hash.user_id)
-              if user.setup_progress == 0
-                user.update(setup_progress: 1)
-                Rails.logger.info "#{cron_st}: user #{ign_for_mastery_hash.id} onload from 0 to 1"
-              else 
-                Rails.logger.info "#{cron_st}: user #{ign_for_mastery_hash.id} not onloaded"
-              end
+            Rails.logger.info "ign_for_mastery_hash.validation_timer: #{ign_for_mastery_hash.validation_timer}"
+            Rails.logger.info "User.find_by_summoner_id(ign_for_mastery_hash.validation_timer).nil?: #{User.find_by_summoner_id(ign_for_mastery_hash.validation_timer).nil?}"
+            if User.find_by_summoner_id(ign_for_mastery_hash.validation_timer).nil? #this block is broken
+              attach_user = nil
+            Rails.logger.info "attach_user 1: #{attach_user}"
+
+            else
+              attach_user = User.find_by_summoner_id(ign_for_mastery_hash.validation_timer).id
+              Rails.logger.info "attach_user 2: #{attach_user}"
+            end
+
+            Rails.logger.info "attach_user end: #{attach_user}"
+
+            ign_for_mastery_hash.update(
+              :last_validation => ign_for_mastery_hash.validation_timer)
+
+            ign_for_mastery_hash.update(
+              :summoner_validated => true,
+              :validation_timer => nil,
+              :validation_string => nil,
+              :user_id => attach_user,
+              :region_id => ign_for_mastery_hash.region_id_temp)
+            Rails.logger.info "#{cron_st}: key validated"
+
+              # user = User.find(ign_for_mastery_hash.user_id)
+              # if user.setup_progress == 0
+              #   user.update(setup_progress: 1)
+              #   Rails.logger.info "#{cron_st}: user #{ign_for_mastery_hash.id} onload from 0 to 1"
+              # else 
+              #   Rails.logger.info "#{cron_st}: user #{ign_for_mastery_hash.id} not onloaded"
+              # end
 
             else
               Rails.logger.info "#{cron_st}: key not validated"
@@ -614,35 +283,51 @@ end
         mastery_hash = JSON.parse(mastery_data)
         mastery_hash.each_pair do |key,value|
 
-          Ignindex.find_by_summoner_id(key).update(mastery_1_name: "#{mastery_hash["#{key}"]["pages"][0]["name"]}")
+          ign_for_mastery_hash = Ignindex.find_by_summoner_id(key)
+          ign_for_mastery_hash.update(mastery_1_name: "#{mastery_hash["#{key}"]["pages"][0]["name"]}")
           Rails.logger.info "#{cron_st}: 1st page name: #{mastery_hash["#{key}"]["pages"][0]["name"]}"
 
-          if "#{mastery_hash["#{key}"]["pages"][0]["name"]}" == Ignindex.find_by_summoner_id(key).validation_string
-            if Ignindex.where(summoner_id: key).where(summoner_validated: true).count > 1
-              Ignindex.where(summoner_id: key).where(summoner_validated: true).each do |ign|
-                ign.update(summoner_validated: false)
-                Rails.logger.info "#{cron_st}: User #{ign.user_id} is no longer valid, duplicate summoner name"
-              end
+          if "#{mastery_hash["#{key}"]["pages"][0]["name"]}" == ign_for_mastery_hash.validation_string
+            # if ign_for_mastery_hash.where(summoner_validated: true).count > 1
+            #   ign_for_mastery_hash.where(summoner_validated: true).each do |ign|
+            #     ign.update(summoner_validated: false)
+            #     Rails.logger.info "#{cron_st}: User #{ign.user_id} is no longer valid, duplicate summoner name"
+            #   end
+            # end
+
+            Rails.logger.info "ign_for_mastery_hash.validation_timer: #{ign_for_mastery_hash.validation_timer}"
+            Rails.logger.info "User.find_by_summoner_id(ign_for_mastery_hash.validation_timer).nil?: #{User.find_by_summoner_id(ign_for_mastery_hash.validation_timer).nil?}"
+            if User.find_by_summoner_id(ign_for_mastery_hash.validation_timer).nil? #this block is broken
+              attach_user = nil
+            Rails.logger.info "attach_user 1: #{attach_user}"
+
+            else
+              attach_user = User.find_by_summoner_id(ign_for_mastery_hash.validation_timer).id
+              Rails.logger.info "attach_user 2: #{attach_user}"
             end
-            ign_for_mastery_hash = Ignindex.find_by_summoner_id(key)
+
+            Rails.logger.info "attach_user end: #{attach_user}"
+
+            ign_for_mastery_hash.update(
+              :last_validation => ign_for_mastery_hash.validation_timer)
+
             ign_for_mastery_hash.update(
               :summoner_validated => true,
               :validation_timer => nil,
-              :validation_string => nil)
+              :validation_string => nil,
+              :user_id => attach_user,
+              :region_id => ign_for_mastery_hash.region_id_temp)
             Rails.logger.info "#{cron_st}: key validated"
 
-              Rails.logger.info "#{cron_st} ign_for_mastery_hash id: #{ign_for_mastery_hash.user_id}"
-              user = User.find(ign_for_mastery_hash.user_id)
-              Rails.logger.info "#{cron_st} user id: #{user.id}"
-              if user.setup_progress == 0
-                user.update(setup_progress: 1)
-                Rails.logger.info "#{cron_st}: user #{ign_for_mastery_hash.id} onload from 0 to 1"
-              else 
-                Rails.logger.info "#{cron_st}: user #{ign_for_mastery_hash.id} not onloaded"
-              end      
+            # user = User.find(ign_for_mastery_hash.user_id)
+            # if user.setup_progress == 0
+            #   user.update(setup_progress: 1)
+            #   Rails.logger.info "#{cron_st}: user #{ign_for_mastery_hash.id} onload from 0 to 1"
+            # else 
+            #   Rails.logger.info "#{cron_st}: user #{ign_for_mastery_hash.id} not onloaded"
+            # end
 
           else
-
             Rails.logger.info "#{cron_st}: key not validated"
           end
         end
@@ -855,23 +540,24 @@ end
                             :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
                             })
                           clock_active_status.update(win_value: 0)
-                          if key_summoner[0].kind == 6
-                            Prize.find(key_summoner[0].prize_id).update(
-                              :assignment => 0,
-                              :user_id => nil)
-                            score = Score.find_by_user_id(key_summoner[0].user_id)
-                            score.update(
-                              :challenge_points => score.challenge_points*0.5)
-                          elsif key_summoner[0].kind == 5
-                          end                          
+
+                          # if key_summoner[0].kind == 6
+                          #   Prize.find(key_summoner[0].prize_id).update(
+                          #     :assignment => 0,
+                          #     :user_id => nil)
+                          #   # score = Score.find_by_user_id(key_summoner[0].user_id)
+                          #   # score.update(
+                          #   #   :challenge_points => score.challenge_points*0.5)
+                          # elsif key_summoner[0].kind == 5
+                          # end                          
             
-                        user_onload = User.find(clock_active_status.user_id)
-                        if user_onload.setup_progress == 2
-                          user_onload.update(setup_progress: 3)
-                          Rails.logger.info "#{cron_st}: user onload from 2 to 3"
-                        else 
-                          Rails.logger.info "#{cron_st}: user not onloaded"
-                        end
+                        # user_onload = User.find(clock_active_status.user_id)
+                        # if user_onload.setup_progress == 2
+                        #   user_onload.update(setup_progress: 3)
+                        #   Rails.logger.info "#{cron_st}: user onload from 2 to 3"
+                        # else 
+                        #   Rails.logger.info "#{cron_st}: user not onloaded"
+                        # end
 
                           Rails.logger.info "#{cron_st}: updated lost first for #{key_summoner[0].summoner_id}"
                         elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
@@ -887,18 +573,50 @@ end
                             })
                           clock_active_status.update(win_value: 2)
 
-                          score = Score.find_by_user_id(key_summoner[0].user_id)
+                          ign_score = Ignindex.find(key_summoner[0].ignindex_id)
+
+                          proc = rand(100..100)
+                          Rails.logger.info "#{cron_st}: proc value is #{proc}"
+                          if (5 > proc) && (Prize.where.not("delivered_at IS ?", nil).where("delivered_at > ?", (Time.now - 22.hours).to_i).count < 1)
+                            region = Region.find(ign_score.region_id)
+
+                            if !region.prizes.where("assignment = ?", "1").first.nil? #use local prize
+                               prize = region.prizes.where("assignment = ?", "1").first
+                               prize.update(
+                                :ignindex_id => ign_score.id,
+                                :assignment => "1")
+                              ign_score.update(
+                                :prize_id => prize.id)
+                              clock_active_status.update(
+                                :prize_id => prize.id)
+          
+                            else #use global prize
+                              prize = Prize.all.where("country_zone = ?", region.country).where("assignment = ?", "1").where("tier = ?", "1").first
+                              if !prize.nil?
+                                prize.update(
+                                  :ignindex_id => ign_score.id,
+                                  :assignment => "1")
+                                ign_score.update(
+                                  :prize_id => prize.id)
+                                clock_active_status.update(
+                                :prize_id => prize.id)
+                              end
+                            end                            
+
+                          end
+
+
                           if key_summoner[0].kind == 6
-                            score.update(prize_id: key_summoner[0].prize_id)
+                            ign_score.update(prize_id: key_summoner[0].prize_id)
                           elsif key_summoner[0].kind == 5
-                            score.update(challenge_points: score.challenge_points + key_summoner[0].points)                                   
+                            # score.update(challenge_points: score.challenge_points + key_summoner[0].points)                                   
                           else
                           end 
 
                           user_onload = User.find(clock_active_status.user_id)
-                          if user_onload.setup_progress == 2
-                            user_onload.update(setup_progress: 3)
-                            Rails.logger.info "#{cron_st}: user onload from 2 to 3"
+                          if user_onload.setup_progress == 0
+                            user_onload.update(setup_progress: 1)
+                            Rails.logger.info "#{cron_st}: user onload from 0 to 1"
                           else 
                             Rails.logger.info "#{cron_st}: user not onloaded"
                           end

@@ -1,18 +1,30 @@
 class ScoresController < ApplicationController
   before_action :set_score, only: [:show, :edit, :update, :destroy]
 
-  before_filter :authenticate_user!
 
   def index
-    @score = Score.find_by_user_id(current_user.id)
-    @history = Prize.all.where("user_id = ?", current_user.id).where("assignment = ?", 2)
 
-    if @score.prize_id != nil
-      prize = Prize.find(@score.prize_id)
-      @prize_description = prize.description
-      @prize_vendor = prize.vendor
-      @prize_code = prize.code
-      @prize_reward_code = prize.reward_code
+    @prize_description = nil
+    
+    if session[:ignindex_id] != nil
+      ignindex = Ignindex.find(session[:ignindex_id])
+
+      if (ignindex.summoner_validated == true) && (ignindex.last_validation == session[:last_validation])
+        @uu_summoner_validated = true
+        @history = Prize.all.where("ignindex_id = ?", ignindex.id).where("assignment = ?", 2)
+
+        if ignindex.prize_id != nil #send me to a mehtod
+          prize = Prize.find(ignindex.prize_id)
+          @prize_description = prize.description
+          @prize_vendor = prize.vendor
+          @prize_code = prize.code
+          @prize_reward_code = prize.reward_code
+        end
+      else
+        @uu_summoner_validated = false
+      end      
+    else
+      #nothing here
     end
 
   end

@@ -1,6 +1,7 @@
 class Region < ActiveRecord::Base
 
-has_many :prizes
+has_many :prize_regions
+has_many :prizes, through: :prize_regions
 
   def self.import_data
     zip.each do |x|

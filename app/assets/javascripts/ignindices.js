@@ -1,3 +1,22 @@
+// var temp_user = function(){ // disabled
+//   $('#temp_geodeliver_button').on("click", function() {
+//     dataString = $('#temp_geodeliver_input').val()
+//       $.ajax({
+//         type: 'PUT',
+//         url:  '/ignindices/',
+//         data: dataString,
+//         dataType: "JSON",
+//         success: function(data) {
+//             console.log(data);
+//             console.log(dataString);
+//         }
+//       });
+
+//     // 
+//   })
+// }
+
+
 var auto_name_int;
 var auto_name = function(){
   var auto_name_int = window.setInterval(function(){
@@ -32,8 +51,8 @@ var ajax_button_validation_string = function() {
       dataType: "json",
       success: function(data) { 
         console.log(data)
-        $('#js_validation_string').html(data.validation_string)
-        $('#test_cd').data("timer", data.validation_timer)
+        $('#js_validation_string').html(data["ignindex"].validation_string)
+        $('#test_cd').data("timer", data["ignindex"].validation_timer)
       }
     })
   })
@@ -41,34 +60,35 @@ var ajax_button_validation_string = function() {
 
 var ajax_button_summoner_name = function() {
   $('#summoner_name_submit').bind('ajax:success', function(evt, data, status, xhr) {
-    $.ajax({
-      url: "/ignindices/" + $("#ign").data("id"),
-      type: "GET",
-      dataType: "json",
-      success: function(data) {
-        new_name = data.summoner_name
-        $('#summoner_panel').removeClass("panel-success panel-danger")
-        $('#summoner_panel').addClass("panel-danger")
-        $('#js_name').html(new_name)
-        $('#js_val').html('- Not Valid')
-        $('#js_val').removeClass('validated')
-        if ( !$('#js_val').hasClass("not-validated") ) {
-          $('#js_val').addClass('not-validated')
-        }
-        $('#summoner_valid_panel').slideDown(1000)
-        $('#js_validation_string').html(data.validation_string)
-        if ( data.mastery_1_name !== null ) {
-          $('#mastery_page_div').removeClass("start-ghost")
-          $('#mastery_page_name').html(data.mastery_1_name)
-        $('#test_cd').data("timer", data.validation_timer)
-        $('#check_loop').data("check", data.updated_at.to_i)
-        clearTimeout(ignTimer)
-        clearTimeout(ign_update_timeout)
-        ign_clocks()
-        ign_update()
-        }
-      }
-    })
+    document.location.reload(true)
+    // $.ajax({
+    //   url: "/ignindices/" + $("#ign").data("id"),
+    //   type: "GET",
+    //   dataType: "json",
+    //   success: function(data) {
+    //     new_name = data["ignindex"].summoner_name
+    //     $('#summoner_panel').removeClass("panel-success panel-danger")
+    //     $('#summoner_panel').addClass("panel-danger")
+    //     $('#js_name').html(new_name)
+    //     $('#js_val').html('- Not Valid')
+    //     $('#js_val').removeClass('validated')
+    //     if ( !$('#js_val').hasClass("not-validated") ) {
+    //       $('#js_val').addClass('not-validated')
+    //     }
+    //     $('#summoner_valid_panel').slideDown(1000)
+    //     $('#js_validation_string').html(data["ignindex"].validation_string)
+    //     if ( data["ignindex"].mastery_1_name !== null ) {
+    //       $('#mastery_page_div').removeClass("start-ghost")
+    //       $('#mastery_page_name').html(data["ignindex"].mastery_1_name)
+    //     $('#test_cd').data("timer", data["ignindex"].validation_timer)
+    //     $('#check_loop').data("check", data["ignindex"].updated_at.to_i)
+    //     clearTimeout(ignTimer)
+    //     clearTimeout(ign_update_timeout)
+    //     ign_clocks()
+    //     ign_update()
+    //     }
+    //   }
+    // })
   });
 };
 
@@ -83,7 +103,7 @@ var ign_update = function() {
       dataType: "json",
       success: function(data) {
         console.log("ign update ran")
-        mastery_1 = data.mastery_1_name
+        mastery_1 = data["ignindex"].mastery_1_name
         // check for null
         if (mastery_1 !== null) {
           if ( $('#mastery_page_div').hasClass("start-ghost") ) {
@@ -92,17 +112,20 @@ var ign_update = function() {
           $('#mastery_page_name').html(mastery_1)
         };
 
-        if (data.summoner_validated == true) {
+        if (data["valid"] == true) {
           var jsval = '- Valid';
           $('#js_val').removeClass('not-validated')
           $('#js_val').addClass('validated')
           $('#summoner_panel').removeClass("panel-danger")
           $('#summoner_panel').addClass("panel-success")
           $('#summoner_valid_panel').slideUp(3000) // get rid of clock
+
+          $('#how_to_going').addClass("start-ghost")
+          $('#how_to_finished').removeClass("start-ghost")
             
-            if ( $('#setup_progress_bar').length > 0 ) { // slide the setup over by 1
-              setup_0_1() 
-            }   
+            // if ( $('#setup_progress_bar').length > 0 ) { // slide the setup over by 1
+            //   setup_0_1() 
+            // }   
 
           } else {
 
@@ -144,6 +167,7 @@ var ign_clocks = function(){
   }
 };
 
+// can delete this, i think
 // $(window).load(function(){
 //   current_page = $('#page_name').data("pagespec")
 //   if (current_page == "ignindex_index") {

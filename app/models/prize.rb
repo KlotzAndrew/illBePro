@@ -1,12 +1,14 @@
 class Prize < ActiveRecord::Base
 
-has_many :regions
+has_many :prize_regions
+has_many :regions, through: :prize_regions
+
 
 has_one :user
 
-after_save :update_regions
+# after_save :update_regions
 
-before_destroy :clean_region
+# before_destroy :clean_region
 
 	def clean_region
 		puts "cleaning regions..."

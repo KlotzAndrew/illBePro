@@ -5,9 +5,8 @@
 
       <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: {class: "well"}) do |f| %>
         <%= devise_error_messages! %>
-          <fieldset>
-            <legend class="text-center">Sign up</legend>         
-            <%= f.input_field :profile_name, :placeholder => "Username" %>
+          <fieldset class="text-center">
+            <legend >Sign up</legend>         
             <%= f.email_field :email, :autofocus => true, :placeholder => 'Email' %>
             <%= f.password_field :password, :placeholder => 'Password (min 8 chars)' %>
             <%= f.password_field :password_confirmation, :placeholder => 'Password confirmation' %>

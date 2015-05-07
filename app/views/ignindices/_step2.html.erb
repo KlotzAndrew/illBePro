@@ -1,0 +1,18 @@
+<div class="container-fluid absolute-margin text-center">
+	<div class="col-md-8">
+
+		<% if @all_prize_desc.last == "$10 RP code" %>
+		<%= image_tag("10rp_image.jpg", size: "175x233") %>
+		<% elsif @all_prize_desc[0] == 2323 %>
+		<%= @all_prize_desc[1] %>
+		<% else %> 
+		<%= image_tag("dominos_image.png", size: "428x292") %>
+		<% end %>
+		<h1><%= @all_prize_desc.last %>!</h1>
+	</div>
+
+	<div class="col-md-2" style="margin-top: 150px;">
+		<%= button_to "Select", games_path, :class => "btn btn-lg btn-primary", :method => :get  %>
+	</div>
+
+</div>

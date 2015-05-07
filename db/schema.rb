@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150409012003) do
+ActiveRecord::Schema.define(version: 20150506173712) do
 
   create_table "champions", force: true do |t|
     t.string   "champion"
@@ -44,12 +44,26 @@ ActiveRecord::Schema.define(version: 20150409012003) do
     t.datetime "updated_at"
     t.string   "mastery_1_name"
     t.string   "summoner_name_ref"
-    t.integer  "prize_level",        default: 0
-    t.integer  "challenge_points_1", default: 0
-    t.integer  "challenge_points_2", default: 0
-    t.integer  "challenge_points_3", default: 0
-    t.integer  "last_prize_time",    default: 0
+    t.integer  "prize_level",          default: 0
+    t.integer  "challenge_points_1",   default: 0
+    t.integer  "challenge_points_2",   default: 0
+    t.integer  "challenge_points_3",   default: 0
+    t.integer  "last_prize_time",      default: 0
     t.integer  "prize_token"
+    t.integer  "region_id"
+    t.integer  "postal_code"
+    t.integer  "last_validation"
+    t.integer  "prize_id"
+    t.integer  "ign_prize_level",      default: 1
+    t.integer  "ign_challenge_points", default: 0
+    t.integer  "region_id_temp"
+  end
+
+  create_table "prize_regions", force: true do |t|
+    t.integer  "region_id",  null: false
+    t.integer  "prize_id",   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "prizes", force: true do |t|
@@ -68,6 +82,7 @@ ActiveRecord::Schema.define(version: 20150409012003) do
     t.string   "country_zone"
     t.string   "province_zone"
     t.string   "reward_code"
+    t.integer  "ignindex_id"
   end
 
   create_table "regions", force: true do |t|
@@ -133,6 +148,7 @@ ActiveRecord::Schema.define(version: 20150409012003) do
     t.integer  "prize_id"
     t.integer  "proc_value",            default: 0
     t.integer  "roll_status",           default: 0
+    t.integer  "ignindex_id"
   end
 
   add_index "statuses", ["user_id"], name: "index_statuses_on_user_id"
@@ -159,6 +175,7 @@ ActiveRecord::Schema.define(version: 20150409012003) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.integer  "setup_progress",         default: 0
+    t.integer  "ignindex_id"
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true

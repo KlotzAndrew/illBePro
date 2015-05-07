@@ -1,0 +1,18 @@
+<div class="container-fluid absolute-margin">
+
+	<h1>Enter your postal code - so we can match you up with a pizza brand that can deliver to you</h1>
+
+	<div class="panel-heading">
+	    <%= form_for @ignindex do |t| %>
+	      <%= t.text_field :postal_code, :placeholder => 'Postal/Zip Code' %>
+	        <span id="">
+	      <%= t.submit "Add Postal/Zip Code", class: "btn btn-large btn-primary" %>
+	        </span>
+	    <% end %>
+
+	    <h6>*US uses first 5-digits</h6>
+	    <h6>*CAN uses first 3-digits</h6>
+	</div>
+
+	**currently works for exact matches, no error handling
+</div>

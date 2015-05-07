@@ -1,53 +1,67 @@
-class StatusesController < ApplicationController
+ class StatusesController < ApplicationController
   before_action :set_status, only: [:show, :edit, :update, :destroy]
 
-  before_filter :authenticate_user!
+  # before_filter :authenticate_user!
 
   respond_to :html, :xml, :json
 
   # GET /statuses
   # GET /statuses.json
   def index
-    if current_user.setup_progress < 3
-      redirect_to profiles_url
+
+    if user_signed_in?
+      if Ignindex.find_by_user_id(current_user.id).nil?
+        redirect_to summoner_path, notice: "You need to validate your Summoner Name!"
+      else
+        active_ign_id = Ignindex.find_by_user_id(current_user.id).id
+      end
     else
-      @status = Status.new
-      # @champion = Champion.all
-      # @statuses = Status.where("user_id = ?", current_user.id).order(created_at: :desc).limit(15)
-      @current_game = Status.where("win_value IS ?", nil).find_by_user_id(current_user.id)
-      
-      if @current_game != nil
-        if ((Time.now.to_i - @current_game.created_at.to_i - @current_game.value) > -120)
-          @update_trigger = "cg-update-true"
-        else
-          if @current_game.trigger_timer.nil?
-            @update_trigger = ""
-          else
-            if ((Time.now.to_i - @current_game.trigger_timer) < 300)
-              @update_trigger = "cg-update-true"
-            else
-              @update_trigger = ""
-            end
-          end
-        end
+      active_ign_id = session[:ignindex_id]
+    end
+
+      if Status.where("win_value IS ?", nil).where("ignindex_id = ?", active_ign_id).count > 0
+        @status = Status.where("win_value IS ?", nil).where("ignindex_id = ?", active_ign_id).first
+        
+        # if ((Time.now.to_i - @status.created_at.to_i - @status.value) > -120)
+        #   @update_trigger = "cg-update-true"
+        # else
+
+        #   if @status.trigger_timer.nil?
+        #     @update_trigger = ""
+        #   else
+
+        #     if ((Time.now.to_i - @status.trigger_timer) < 300)
+        #       @update_trigger = "cg-update-true"
+        #     else
+        #       @update_trigger = ""
+        #     end
+        #   end
+        # end
+
+      else
+        redirect_to new_status_path
+        @status = Status.new(
+          :ignindex_id => active_ign_id)
       end
 
-      @ignindex = Ignindex.find_by_user_id(current_user.id)
-      @score = Score.find_by_user_id(current_user.id)
-      if @score.prize_id != nil
-        prize = Prize.find(@score.prize_id)
+      if user_signed_in?
+        @ignindex = Ignindex.find_by_user_id(current_user.id)
+      else
+        @ignindex = Ignindex.find(session[:ignindex_id])
+      end
+      
+      if @ignindex.prize_id != nil
+        prize = Prize.find(@ignindex.prize_id)
         @prize_description = prize.description
         @prize_vendor = prize.vendor
       end
 
       #prize region logic
-      @geodeliver = Geodeliver.find_by_user_id(current_user.id)
-
       @all_prize_desc = []
       @all_prize_vendor = []
 
-      if @geodeliver.region_id != nil #skip if there is no region
-        region = Region.find(@geodeliver.region_id)
+      if @ignindex.region_id != nil #skip if there is no region
+        region = Region.find(@ignindex.region_id)
         @region_city = region.city
         @region_country = region.country
         
@@ -89,7 +103,7 @@ class StatusesController < ApplicationController
         end 
       end #end prize pop logic
       #end prize region logic
-    end
+
   end
 
   # GET /statuses/1
@@ -98,35 +112,213 @@ class StatusesController < ApplicationController
   # GET /statuses/new
 
   def show
-    respond_to do |format|
-      format.html { render nothing: true}
-      format.json { render json: Status.where("user_id = ?", current_user.id).last }
-    end    
-  end
-
-  def new
-    @status = Status.new
-
-    geo_user = Geodeliver.find_by_user_id(current_user.id)
-    @prize_vendor = ""
-    if !geo_user.region_id.nil?
-      reg_user = Region.find(geo_user.region_id)
-      @prize_vendor = Prize.last.vendor
-      if !reg_user.vendor.nil?
-        #@prize_vendor = reg_user.vendor
-      end
+    if user_signed_in?
+      respond_to do |format|
+        format.html { render nothing: true}
+        format.json { render json: Status.where("ignindex_id = ?", Ignindex.find_by_user_id(current_user.id).id).last }
+      end    
+    else
+     respond_to do |format|
+        format.html { render nothing: true}
+        format.json { render json: Status.where("ignindex_id = ?", session[:ignindex_id]).last }
+      end 
     end
   end
+
+  def show_prizes_2(x) #prize region logic (duplicate in ignindeces/statuses controller)
+    @all_prize_desc = []
+    @all_prize_vendor = []
+
+    region = Region.find(x)
+
+    @region_city = region.city
+    @region_country = region.country
+        
+    if !region.prizes.last.nil? #use local prize
+      region.prizes.each do |y|
+        @all_prize_desc << y.description
+        @all_prize_vendor = y.vendor
+      end
+    else #use global prize
+      y = Prize.all.where("country_zone = ?", region.country).where("assignment = ? OR assignment = ?", 0,1).where("tier = ?", "1").first
+      if !y.nil?
+        @all_prize_desc << y.description
+        @all_prize_vendor = y.vendor
+      end
+    end
+  
+  end  
+
+  def new
+
+    Rails.logger.info "User sign-in status: #{user_signed_in?}"
+    if !user_signed_in? #unauthenticate partial sign-in
+
+      if session[:ignindex_id].nil? 
+        redirect_to new_ignindex_path
+
+      elsif Ignindex.find(session[:ignindex_id]).last_validation != session[:last_validation]
+        redirect_to new_ignindex_path, notice: "redirected you, summoner not validated"
+
+      else
+
+        if session[:last_game] > (Time.now.to_i - 90.minutes.ago.to_i)
+          @status_setup_display = false
+        else
+          @status_setup_display = true
+          @setup_progress = 4
+        end
+        last_game = Status.where("ignindex_id = ?", session[:ignindex_id]).last
+        if last_game.nil?
+          last_game_created = Time.now.to_i
+        else
+          last_game_created = last_game.created_at.to_i
+        end
+        
+        if Ignindex.find(session[:ignindex_id]).last_validation < 90.minutes.ago.to_i && last_game_created < 90.minutes.ago.to_i
+          Ignindex.find(session[:ignindex_id]).update(
+            :last_validation => nil)
+          redirect_to new_ignindex_path, notice: "Your validation timed out! Re-validate to keep playing."
+
+        else
+
+          #status object is new or existing?
+          if Status.where("win_value IS ?", nil).where("ignindex_id = ?", session[:ignindex_id]).count > 0
+            @status = Status.where("win_value IS ?", nil).where("ignindex_id = ?", session[:ignindex_id]).first
+            
+            if ((Time.now.to_i - @status.created_at.to_i - @status.value) > -120)
+              
+              @update_trigger = "cg-update-true"
+            else
+
+              if @status.trigger_timer.nil?
+                @update_trigger = ""
+              else
+
+                if ((Time.now.to_i - @status.trigger_timer) < 300)
+                  @update_trigger = "cg-update-true"
+                else
+                  @update_trigger = ""
+                end
+              end
+            end
+          else
+            @status = Status.new(
+              :ignindex_id => session[:ignindex_id])
+          end
+
+          #is a prize pending user accept? (can probably move to method)
+          @ignindex = Ignindex.find(session[:ignindex_id])
+          if @ignindex.prize_id != nil
+            prize = Prize.find(@ignindex.prize_id)
+            @prize_description = prize.description
+            @prize_vendor = prize.vendor
+          else 
+           show_prizes_2(@ignindex.region_id)
+          end
+
+        end
+
+      end
+    else #user signed-in; this can be refractored
+      if current_user.setup_progress != 0
+        @status_setup_display = false
+      else
+        @status_setup_display = true
+        @setup_progress = 4
+      end
+
+
+      if Ignindex.find_by_user_id(current_user.id).nil? 
+        redirect_to new_ignindex_path, notice: "Need to enter your summoner name before starting!"
+
+      elsif Ignindex.find_by_user_id(current_user.id).summoner_validated != true
+        redirect_to new_ignindex_path, notice: "redirected you, summoner not validated"
+
+      else
+
+
+
+      #status object is new or existing?
+      if Status.where("win_value IS ?", nil).where("ignindex_id = ?", session[:ignindex_id]).count > 0
+        @status = Status.where("win_value IS ?", nil).where("ignindex_id = ?", session[:ignindex_id]).first
+        
+        if ((Time.now.to_i - @status.created_at.to_i - @status.value) > -120)
+          
+          @update_trigger = "cg-update-true"
+        else
+
+          if @status.trigger_timer.nil?
+            @update_trigger = ""
+          else
+
+            if ((Time.now.to_i - @status.trigger_timer) < 300)
+              @update_trigger = "cg-update-true"
+            else
+              @update_trigger = ""
+            end
+          end
+        end
+      else
+        @status = Status.new(
+          :ignindex_id => session[:ignindex_id])
+      end
+
+      #is a prize pending user accept? (can probably move to method)
+      if user_signed_in? 
+        @ignindex = Ignindex.find_by_user_id(current_user.id)
+      else
+        @ignindex = Ignindex.find(session[:ignindex_id])
+      end
+
+      if @ignindex.prize_id != nil
+        prize = Prize.find(@ignindex.prize_id)
+        @prize_description = prize.description
+        @prize_vendor = prize.vendor
+      else 
+       show_prizes_2(@ignindex.region_id)
+      end
+
+      end      
+    end
+
+  end
+
+  def show_prizes(x)   
+      #prize region logic
+      region = Region.find(x)
+
+      @region_city = region.city
+      @region_country = region.country
+          
+      @all_prize_desc = []
+      @all_prize_vendor = []
+    
+      region.prizes.each do |y|
+        Rails.logger.info "id: #{y.id}, desc: #{y.description}, vendor: #{y.vendor}"
+        @all_prize_desc << y.description
+        @all_prize_vendor <<  y.vendor
+      end
+      Rails.logger.info "apd: #{@all_prize_desc}, apv: #{@all_prize_vendor}"
+      Rails.logger.info "apd: #{@all_prize_desc.class}, apv: #{@all_prize_vendor.class}"
+  
+  end
+
 
   # POST /statuses
   # POST /statuses.json
   def create
 
-    
-    @ignindex = Ignindex.find_by_user_id(current_user.id)
-    @status = current_user.statuses.new(status_params)
+    @status = Status.new
+    if user_signed_in?
+      @ignindex = Ignindex.find_by_user_id(current_user.id)
+    else
+      @ignindex = Ignindex.find(session[:ignindex_id])
+    end
+    # @status = current_user.statuses.new(status_params)
     @status.summoner_id = @ignindex.summoner_id
     @status.summoner_name = @ignindex.summoner_name
+    @status.ignindex_id = @ignindex.id
     
     respond_to do |format|
       if @status.save
@@ -189,6 +381,7 @@ class StatusesController < ApplicationController
 
   def destroy
     if @status.kind == 6
+       Rails.logger.info "destroy controller triggered, kind 6"
       @status.update(
         :value => 0,
         :win_value => 0)
@@ -196,30 +389,32 @@ class StatusesController < ApplicationController
         :assignment => 0,
         :user_id => 0,
         })
-      score = Score.find_by_user_id(current_user.id)
-      if score.challenge_points > 0
-        score.update(challenge_points: score.challenge_points - 1) 
-      end
+      # score = Score.find_by_user_id(current_user.id)
+      # if score.challenge_points > 0
+      #   score.update(challenge_points: score.challenge_points - 1) 
+      # end
       respond_to do |format|
-        format.html { redirect_to challenges_url, notice: 'Prized challenge was canceled' }
+        format.html { redirect_to new_status_path, notice: 'Prized challenge was canceled' }
         format.json { head :no_content }
       end
     elsif @status.kind == 5
+      Rails.logger.info "destroy controller triggered, kind 5"
       @status.update(value: 0)
       @status.update(win_value: 3)
-      score = Score.find_by_user_id(current_user.id)
-      if score.challenge_points > 0
-        score.update(challenge_points: score.challenge_points - 1) 
-      end
+      # score = Score.find_by_user_id(current_user.id)
+      # if score.challenge_points > 0
+      #   score.update(challenge_points: score.challenge_points - 1) 
+      # end
       respond_to do |format|
-        format.html { redirect_to challenges_url, notice: 'Non-Prized challenge was canceled' }
+        format.html { redirect_to new_status_path, notice: 'Prized game was canceled' }
         format.json { head :no_content }
       end
     else
+      Rails.logger.info "destroy controller triggered, type nil"
       @status.update(value: 0)
       @status.update(win_value: 3)      
       respond_to do |format|
-        format.html { redirect_to challenges_url, alert: 'Something went wrong with your challenge kind' }
+        format.html { redirect_to new_status_path, alert: 'Something went wrong with your challenge kind' }
         format.json { head :no_content }
       end      
     end

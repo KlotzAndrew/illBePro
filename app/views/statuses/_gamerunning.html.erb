@@ -1,0 +1,211 @@
+<% if @ignindex.prize_id != nil %>
+  <div class="page-header">
+    <div class="row">
+      <div class="col-md-12">
+    
+        <div class="well">
+        
+          <div class="row">
+            <div class="col-md-6">      
+              <div class="prize-offer">
+                <h3 class="text-center">You just won: <%= @prize_description %></h3>
+                <h3 class="text-center">From: <%= @prize_vendor %></h3>
+                </div>
+            </div>
+            <div class="col-md-6">
+              <div class="text-center">
+                <% if @all_prize_desc.first == "$10 RP code" %>
+                  <%= image_tag("10rp_image.jpg", size: "175x233") %>
+                <% elsif @all_prize_desc.first == "$11 RP code" %>
+                  <%= image_tag("10rp_image.jpg", size: "175x233") %>
+                <% elsif @prize_description == "Free Pizza from Domino's" %>
+                  <%= image_tag("dominos_image.png", size: "414x292") %>
+                <% else %> 
+                 <%= image_tag("kayle.jpg", size: "480x300") %>                
+                <% end %>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+              <%= simple_form_for(@ignindex, url: ignindex_path(@ignindex), html: {class: 'form-hoizontal'}) do |f| %>
+                <%= f.button :submit, "Accept", class: "btn btn-lg btn-success" %>
+                <%= f.button :submit, "Keep Playing", class: "btn btn-lg btn-danger", data: { confirm: "Your challenge points will remain unchanged, are you sure?" } %>
+              <% end %>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+<% else %>
+
+
+
+  <% if @status.challenge_description == @all_prize_desc[0] %>
+  <div id="current_prize_desc" data-cpd="1">
+  <% elsif @status.challenge_description == @all_prize_desc[1] %>
+  <div id="current_prize_desc" data-cpd="2">
+  <% else %>
+   <div id="current_prize_desc" data-cpd="0">
+  <% end %>
+  </div>  
+
+
+    <div id="show_chal" class="new-challenge">
+
+      <div class="container-fluid">
+
+        <div class="row">
+          <div class="col-md-4 text-center">
+
+            <div class="row">
+
+
+          <% if @all_prize_desc.first.nil? %>
+            <h3>
+              No prizes currently available for this postal code :(
+            </h3>
+          <% else %>
+            <h3>
+              5% chance to win <%= @all_prize_desc.last %>
+            </h3>
+          <% end %>
+
+              <div id="v3_ingame" class="">
+                <div class="col-md-4">
+                  <div class=""><h4 class="text-center"><strong><%= @status.summoner_name %></strong></h4></div>
+                </div>          
+                
+                <div class="col-md-8">
+                  <div id="cg_id" data-status_id="<%= @status.id %>" >
+                    <div id="cg-refresher" class="<%= @update_trigger %>"></div>
+                    <h4>
+                      Expires in:
+                      <span id="challenge_timer" data-chal_time_value="<%= (@status.value + @status.created_at.to_i) %>" >
+                      <%= (@status.value - (Time.now.to_i - @status.created_at.to_i))/60 %> min
+                      <span>
+                    </h4>
+                  </div>
+                </div>  
+
+                <div class="col-md-6 text-center">
+                  <div class="">
+
+                    <div id="current_created_at" data-current_created="<%= @status.created_at.to_i %>"> </div>
+                    <% if (Time.now.to_i - @status.created_at.to_i) < 1200 %>
+
+                      <div id="before-20" class="">
+                        <% if @status.pause_timer == 0 %>
+                        <div id="hit-pause" class = "">
+                          <%= button_to "Pause", @status, :html => {id: "pb1"}, remote: true, method: :put, class: "btn btn-default" %>
+                        </div>
+                        <div id="hit-unpause" class = "start-ghost">
+                          <%= button_to "Unpause", @status, :html => {id: "up1"}, remote: true, method: :put, class: "btn btn-warning" %>
+                        </div>
+                        <% else %>
+                        <div id="hit-pause" class = "start-ghost">
+                          <%= button_to "Pause", @status, :html => {id: "pb1"}, remote: true, method: :put, class: "btn btn-default" %>
+                        </div>
+                        <div id="hit-unpause" class = "">
+                          <%= button_to "Unpause", @status, :html => {id: "up1"}, remote: true, method: :put, class: "btn btn-warning" %>
+                        </div>
+                        <% end %>
+                      </div>
+
+                      <div id="after-20" class="start-ghost">
+                        <% if @status.trigger_timer > (Time.now.to_i - 300) %>
+                          <div id="hit-unfinish" class="btn btn-warning">
+                            Updating game data...
+                          </div>
+
+                          <div id="hit-finish" class="start-ghost">
+                            <%= button_to "Finished", @status, remote: true, method: :put, class: "btn btn-default" %>
+                          </div>
+
+                        <% else %>
+                          <div id="hit-unfinish" class="start-ghost btn btn-warning">
+                            Updating game data...
+                          </div>
+
+                          <div id="hit-finish" class="">
+                            <%= button_to "Finished", @status, remote: true, method: :put, class: "btn btn-default" %>
+                          </div>
+                        <% end %>
+                      </div>
+
+
+                    <% else %>
+
+                      <div id="after-20" class="">
+                        <% if @status.trigger_timer > (Time.now.to_i - 300) %>
+                          <div id="hit-unfinish" class="btn btn-warning">
+                            Updating game data...
+                          </div>
+
+                          <div id="hit-finish" class="start-ghost">
+                            <%= button_to "Finished", @status, remote: true, method: :put, class: "btn btn-default" %>
+                          </div>
+
+                        <% else %>
+                          <div id="hit-unfinish" class="start-ghost btn btn-warning">
+                            Updating game data...
+                          </div>
+
+                          <div id="hit-finish" class="">
+                            <%= button_to "Finished", @status, remote: true, method: :put, class: "btn btn-default" %>
+                          </div>
+                        <% end %>
+                      </div>
+
+                    <% end %>
+
+                  </div>
+                </div>
+
+                <div class="col-md-2">
+                  <div class="">
+                      <%= button_to "Cancel", @status, method: :delete, class: "btn btn-default" %>
+                  </div>
+                </div>
+              </div>
+
+              <div id="v3_outgame" class="start-ghost">
+                <h4 id="v3_prize_results"></h4>
+                <%= button_to "Play Again", new_status_path, class: "btn btn-default" %>
+                <h4 id="v3_game_results"></h4>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+         
+        
+            <div class="col-md-8 text-center">
+              <% if @all_prize_desc.first == "$10 RP code" %>
+                <%= image_tag("10rp_image.jpg", size: "175x233") %>
+              <% elsif @all_prize_desc.first == "$11 RP code" %>
+                <%= @all_prize_desc[1] %>
+              <% elsif @prize_description == "Free Pizza from Domino's" %>
+                <%= image_tag("dominos_image.png", size: "414x292") %>
+              <% else %> 
+               <%= image_tag("kayle.jpg", size: "480x300") %>                
+              <% end %>
+            </div>
+
+        </div>
+      </div>
+    </div>
+
+<h3 class="text-center">
+  *Enabled for 5v5 Summoners Rift on NA servers
+</h3>
+  </div> 
+
+
+<% end %>

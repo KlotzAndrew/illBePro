@@ -1,7 +1,7 @@
-<h1 class="text-center first-box">
-	<strong>Win a Pizza and RP for playing League of Legends!</strong>
+<h1 class="text-center ">
+	<strong>Welcome to i'llBePro</strong>
 	<h4 class="text-center ">
-		55% chance to get prized in your first 10 games
+		Win a free pizza by playing your favorite games through our portal
 	</h4>
 </h1>
       
@@ -11,9 +11,9 @@
 	    <div class="col-md-12">
 	    	<div class="text-center">
 		    	<% if user_signed_in? %>
-			    	<%= button_to "Get Started Now", challenges_path, :class => "btn btn-lprimary", :method => :get  %>
+			    	<%= button_to "Play", challenges_path, :class => "btn btn-lprimary home-button", :method => :get  %>
 		    	<% else %>
-			    	<%= button_to "Get Started Now", new_user_registration_path, :class => "btn btn-lprimary home-button", :method => :get  %>
+			    	<%= button_to "Play", new_ignindex_path, :class => "btn btn-lprimary home-button", :method => :get  %>
 		    	<% end %>
 	    	</div>
 	    </div>
@@ -21,24 +21,10 @@
 </div>
 
 
-<div class="row first-box">
-	<div class="col-md-6">
-	    <ul>
-	      	<h4  class="text-center"><strong>How it works</strong></h4>
-	      	<li><h5>Add a prize chance to each of your games</h5></li>
-	      	<li><h5>Win a Prized game to earn the prize</h5></li>
-	      	<li><h5>Play a non-Prized game and increase your future chances (like nasus stacks)</h5></li>
-	    </ul>
+<div class="row">
+	<div class="col-md-8 col-md-offset-2">
+		<h4 class="text-center first-box">Pizza companies give us free pizza to promote their brand. We do that by randomly awarding your games. Keep playing the games you love, and earn pizza.</h4>
 	</div>
-
-	<div class="col-md-6">
-		<ul class="teaser-context">
-	      	<h4 class="text-center"><strong>Getting started is easy</strong></h4>
-		        <li><h5>Add Summoner Name -> Choose Prize Zone -> Press 'Prize Me' -> Play</h5></li>
-		       	<li><h5>Currently supports Ranked 5v5 Summoners Rift on the NA server</h5></li>
-	    </ul>
-	</div>
-
 </div>
 
 <script>

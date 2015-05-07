@@ -1,64 +1,66 @@
 
-<% if @score.prize_id != nil %>
+<% if @uu_summoner_validated == true %>
+  <% if @prize_description != nil %>
 
 
-  <h3 class="text-center">Current Prize</h3>
-    <div class="well">
-    <p class="text-center">
-       <%= @prize_vendor %>
-      </br> <%= @prize_description %>
-    </p>
-
-    <%= simple_form_for(@score, html: {class: 'form-hoizontal'}) do |f| %>
-      <%= f.button :submit, "Accept", class: "btn btn-lg btn-success" %>
-      <%= f.button :submit, "Upgrade", class: "btn btn-lg btn-danger" %>
-    <% end %>
-    </div>
-
-<% else %>  
-<% end %>
-
-<div class="row">
-  <div class="col-md-12">
-    
-    <div class="page-header">
-      <h1 class="text-center"><strong>Prize history</strong></h1>
-    </div>
-
-    <% @history.each do |x| %>       
+    <h3 class="text-center">Current Prize</h3>
       <div class="well">
-      
-        <div class="row">
-          <div class="col-md-6">      
-            <div class="">
-              <h4 class="text-center"><strong><%= x.description %></strong></h4>
-              <h4 class="text-center">From: <%= x.vendor %></h4>
-              <h4 class="text-center">Reward Code: <%= x.reward_code %></h4>
-              <% if x.code != nil %>
-                <h4 class="text-center">PIN: <%= x.code %></h4>
-              <% end %>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="text-center">
-              <% if x.description == "$10 RP code" %>
-                <%= image_tag("10rp_image.jpg", size: "175x233") %>
-              <% elsif x.description == "Free Pizza from Domino's" %>
-                <%= image_tag("dominos_image.png", size: "414x292") %>
-              <% else %> 
-               <%= image_tag("kayle.jpg", size: "480x300") %>
-              <% end %>  
-            </div>
-          </div>
-        </div>
+      <p class="text-center">
+         <%= @prize_vendor %>
+        </br> <%= @prize_description %>
+      </p>
 
+      <%= simple_form_for(@score, html: {class: 'form-hoizontal'}) do |f| %>
+        <%= f.button :submit, "Accept", class: "btn btn-lg btn-success" %>
+        <%= f.button :submit, "Upgrade", class: "btn btn-lg btn-danger" %>
+      <% end %>
       </div>
-    <% end %>
-  
+
+  <% else %>  
+
+  <div class="row">
+    <div class="col-md-12">
+      
+      <div class="page-header">
+        <h1 class="text-center"><strong>Prize history</strong></h1>
+      </div>
+
+      <% @history.each do |x| %>       
+        <div class="well">
+        
+          <div class="row">
+            <div class="col-md-6">      
+              <div class="">
+                <h4 class="text-center"><strong><%= x.description %></strong></h4>
+                <h4 class="text-center">From: <%= x.vendor %></h4>
+                <h4 class="text-center">Reward Code: <%= x.reward_code %></h4>
+                <% if x.code != nil %>
+                  <h4 class="text-center">PIN: <%= x.code %></h4>
+                <% end %>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="text-center">
+                <% if x.description == "$10 RP code" %>
+                  <%= image_tag("10rp_image.jpg", size: "175x233") %>
+                <% elsif x.description == "Free Pizza from Domino's" %>
+                  <%= image_tag("dominos_image.png", size: "414x292") %>
+                <% else %> 
+                 <%= image_tag("kayle.jpg", size: "480x300") %>
+                <% end %>  
+              </div>
+            </div>
+          </div>
+
+        </div>
+      <% end %>
+    
+    </div>
   </div>
-
-
-</div>
+  <% end %>
+<% else %>
+<h1 class="text-center" style="margin-bottom: 200px;"><strong>Validated your Summoner Name to see history</strong></h1>
+<% end %>
 
 
 

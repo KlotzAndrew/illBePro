@@ -1,4 +1,4 @@
-<div data-id="<%= @ignindex.id %>" id="ign">
+<div id="ign" data-id="<%= @ignindex.id %>">
 </div>
 
 <div class="container-fluid" style="margin-top:20px;">
@@ -14,7 +14,7 @@
           </span>
           <span id="js_val"></span>
         <% else %>
-          <% if @ignindex.summoner_validated == true %>
+          <% if @uu_summoner_validated == true %>
               <span id="js_name">
                 <%= @ignindex.summoner_name %>
               </span>
@@ -33,7 +33,7 @@
         <% end %>
       </h3>
           
-      <% if @ignindex.summoner_validated == true %>
+      <% if @uu_summoner_validated == true %>
       <div id="summoner_panel" class="panel panel-success">
       <% else %>
       <div id="summoner_panel" class="panel panel-danger">
@@ -43,8 +43,9 @@
         
           <div class="row">
             <div class="col-md-12">
-              <div class="">
-                <div class="btn-group">
+              <div class="row">
+                
+                <div class="">
                   <%= form_for @ignindex, remote: true, :html => { :id => 'summoner_name_submit' } do |t| %>
                     <%= t.text_field :summoner_name, :placeholder => 'Summoner name', :id => "summoner_input" %>
                         
@@ -58,17 +59,18 @@
                     <% if @ignindex.summoner_name.nil? or @ignindex.summoner_name == ""%>
                       <%= t.submit "Add Summoner Name", class: "btn btn-large btn-primary" %>
                     <% else %>
-                      <%= t.submit "Update Summoner Name", data: { confirm: "Pressing 'ok' removes validation from any of your past summoner names!" }, class: "btn btn-large btn-primary" %>
+                      <%= t.submit "Update Summoner Name", class: "btn btn-large btn-primary" %>
                     <% end %>
                   <% end %>
                 </div>
+
               </div>
             </div>
           </div> 
         
         </div>
 
-        <% if !@ignindex.summoner_validated && @ignindex.summoner_name != nil %>
+        <% if !@uu_summoner_validated && @ignindex.summoner_name != nil %>
           <div id="summoner_valid_panel" class="panel-body">
             <div id="ign_hide_1" class="row">
               <div>
@@ -147,19 +149,29 @@
 
     </div>
 
+    <% if @uu_summoner_validated %> 
+      <div id="how_to_finished" class="col-md-4 lwell col-md-offset-1" style="margin-top: 90px;margin-bottom: 20px;">
+    <% else %>
+  
+    <div id="how_to_finished" class="col-md-4 lwell col-md-offset-1  start-ghost" style="margin-top: 90px;margin-bottom: 20px;">
+    <% end %>
 
-    <div class="col-md-4 lwell col-md-offset-1">
+        <%= button_to "Next", new_status_path, :class => "btn btn-lg btn-primary", :method => :get  %>
+
+    </div>
+
+    <div id="how_to_going" class="col-md-4 lwell col-md-offset-1 " style="margin-top: 20px;margin-bottom: 20px;">
       <h3>How to:</h3>
       <ol>
         <li>Rename your 1st masteries page to match the validation code</li>
         <li>Press 'Save Masteries'</li>
       </ol>
 
-      <div class="text-center" style="margin-top: 20px;margin-bottom: 20px;">
+      <div class="text-center" >
         <%= image_tag("onetwo_final.jpg", size: "225x300") %>
       </div>
-      Afterward you can rename your mastery page
-    </div>
+      (Afterward you can rename your mastery page)
+    </div>    
     
 
   </div>

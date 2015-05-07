@@ -4,12 +4,12 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :confirmable
 
-  validates :profile_name, presence: true,
-                    uniqueness: true,
-                    length: { in: 4..15 },
-                    format: { with: /\A[a-zA-Z]+\z/, message: "only allows letters" }
+  # validates :profile_name, presence: true,
+  #                   uniqueness: true,
+  #                   length: { in: 4..15 },
+  #                   format: { with: /\A[a-zA-Z]+\z/, message: "only allows letters" }
 
-  after_create :index_me
+  # after_create :index_me
 
   def index_me
     Ignindex.create!(
@@ -26,8 +26,8 @@ class User < ActiveRecord::Base
 
   has_many :statuses
 
-  has_one :geodelivers
-  has_one :scores
+  # has_one :geodelivers
+  # has_one :scores
   has_one :ignindices
 
 end

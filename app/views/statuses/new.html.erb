@@ -1,57 +1,193 @@
 <%= render 'form' %>
 
-<h4 class="text-center  ">Challenges are enabled for Solo/Duo NA Ranked 5v5 on Summoners Rift</h4>
+<% if @ignindex.prize_id != nil %>
+  <div class="page-header">
+    <div class="row">
+      <div class="col-md-12">
+    
+        <div class="well">
+        
+          <div class="row">
+            <div class="col-md-6">      
+              <div class="prize-offer">
+                <h3 class="text-center">You just won: <%= @prize_description %></h3>
+                </div>
+            </div>
+            <div class="col-md-6">
+              <div class="text-center">
+                <% if @prize_description == "$10 RP code" %>
+                  <%= image_tag("10rp_image.jpg", size: "175x233") %>
+                <% elsif @prize_description == "$11 RP code" %>
+                  <%= image_tag("10rp_image.jpg", size: "175x233") %>
+                <% elsif @prize_description == "Free Pizza from Domino's" %>
+                  <%= image_tag("dominos_image.png", size: "414x292") %>
+                <% else %> 
+                 <%= image_tag("kayle.jpg", size: "480x300") %>                
+                <% end %>
+              </div>
+            </div>
+          </div>
 
-<div class="new-challenge">
-
-  <div class="row">
-    <div class="col-md-6">
-      <div class="well">
-
-        <% if @prize_vendor != "" %>
-          <h4 class="text-center">Prizing by: <i><%= @prize_vendor %></i></h4>
-        <% else %>
-          <h4 class="text-center">No prizing in this tier challenge tier</h4>
-        <% end %>
-
-
-        <div class="form-actions">
-          <div class="text-center">
-            <div>
-              <%= simple_form_for(@status, html: {class: 'form-hoizontal'}) do |f| %>
-                <%= f.hidden_field :kind, :value=>5 %>
-                <%= f.button :submit, "Start Challenge", class: "btn btn-lg btn-success" %>
+          <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+              <%= simple_form_for(@ignindex, url: ignindex_path(@ignindex), html: {class: 'form-hoizontal'}) do |f| %>
+                <%= f.button :submit, "Accept", class: "btn btn-lg btn-success" %>
+                <%= f.button :submit, "Keep Playing", class: "btn btn-lg btn-danger", data: { confirm: "Your challenge points will remain unchanged, are you sure?" } %>
               <% end %>
             </div>
           </div>
+
         </div>
-        <h4 class="text-center">Play a ranked game<h4>
-        <h5 class="text-center">Challenge Time Limit: 65 Minutes<h5>
+      </div>
+    </div>
+  </div>
+<% else %>
+
+  <% if @status_setup_display == true %>
+    <div class="container-fluid">
+      <div class="setup-background">
+
+        <div class="row">
+
+          <h1 class="text-center">Welcome! Let's get you ready to win some pizza</h1>
+          
+          <div class="col-md-6 col-md-offset-3">
+
+
+            <div id="setup_progress_bar">
+              <div class="breadcrumb-trail">
+                <div class="breadcrumbs">
+                    <div class="breadcrumb-cell first">
+                      <% if @setup_progress == 0 %>
+                    <div id="bread_1" class="breadcrumb active">              
+                      <% else %>
+                      <div id="bread_1" class="breadcrumb checked selectable">
+                      <% end %>
+                        <div class="breadcrumb-icon"></div>
+                        <span class="breadcrumb-label">Postal Code</span>
+                      </div>
+                    </div>
+
+                    <div class="breadcrumb-cell">
+                      <% if @setup_progress == 1 %>
+                    <div id="bread_2" class="breadcrumb active">              
+                      <% elsif @setup_progress > 1 %>
+                      <div id="bread_2" class="breadcrumb checked selectable">
+                      <% else %>
+                      <div id="bread_2" class="breadcrumb">
+                      <% end %>
+                      <div class="breadcrumb-icon"></div>
+                      <span class="breadcrumb-label">Choose Prize</span>
+                    </div>
+                    </div> 
+
+                    <div class="breadcrumb-cell">
+                      <% if @setup_progress == 2 %>
+                    <div id="bread_2" class="breadcrumb active">              
+                      <% elsif @setup_progress > 2 %>
+                      <div id="bread_2" class="breadcrumb checked selectable">
+                      <% else %>
+                      <div id="bread_2" class="breadcrumb">
+                      <% end %>
+                      <div class="breadcrumb-icon"></div>
+                      <span class="breadcrumb-label">Choose Game</span>
+                    </div>
+                    </div>
+
+                    <div class="breadcrumb-cell">
+                      <% if @setup_progress == 3 %>
+                    <div id="bread_2" class="breadcrumb active">              
+                      <% elsif @setup_progress > 3 %>
+                      <div id="bread_2" class="breadcrumb checked selectable">
+                      <% else %>
+                      <div id="bread_2" class="breadcrumb">
+                      <% end %>
+                      <div class="breadcrumb-icon"></div>
+                      <span class="breadcrumb-label">Summoner Name</span>
+                    </div>
+                    </div>                                  
+
+                    <div class="breadcrumb-cell last">
+                      <% if @setup_progress == 4 %>
+                    <div id="bread_3" class="breadcrumb active">              
+                      <% else %>
+                      <div id="bread_3" class="breadcrumb">
+                      <% end %>
+                      <div class="breadcrumb-icon"></div>
+                      <span class="breadcrumb-label">Play</span>
+                    </div>
+                    </div>       
+
+                </div>
+              </div>  
+            </div>      
+
+
+
+          </div>
+
+        </div>
 
       </div>
     </div>
-    <div class="col-md-6">
-      <ul>
-        <li><h5>Each new challenge has a random % chance to be prized</h5></li>
-        <li><h5>No limit of challenges you can play per day</h5></li>
-        <li><h5><b>Non-Prized Challenges</b></h5></li>
-        <ul>
-          <li><h5>Playing games in the challenge (win or lose) increases your future prize chance cumulatively. Like Nasus stacks for prizing</h5></li> 
-          <li><h5>Canceling without playing, reduces your prize chance</h5></li>
-        </ul>
-        <li><h5><b>Prized Challenges</b></h5></li>
-        <ul>
-          <li><h5>Win your next game within the time limit and get a one of the prizes</h5></li>
-      </ul>
+
+
+    <div class="container-fluid"  style="margin-top: 50px;">
+
+    <div class="row absolute-margin">
+
+  <% else %>
+
+    <div class="container-fluid"  style="margin-top: 50px;">
+
+    <div class="row">
+  <% end %>
+        <div class="col-md-6 text-center"  style="margin-top: 0px;">
+
+          <% if @all_prize_desc.first.nil? %>
+            <h3>
+              No prizes currently available for this postal code :(
+            </h3>
+          <% else %>
+            <h3>
+              5% chance to win <%= @all_prize_desc.last %>
+            </h3>
+          <% end %>
+
+            <div class="form-actions">
+              <div class="text-center">
+                <div>
+                  <%= simple_form_for(@status, html: {class: 'form-hoizontal'}) do |f| %>
+                    <%= f.hidden_field :kind, :value=>5 %>
+                    <%= f.button :submit, "Play", class: "btn btn-lg btn-success", data: { confirm: "prizes are not yet available!" } %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+     
+          <h3>
+            When you finish a ranked game, come back here to see if you won
+          </h3>
+        </div>
+
+        <div class="col-md-6 text-center">
+          <% if @all_prize_desc.first == "$10 RP code" %>
+            <%= image_tag("10rp_image.jpg", size: "175x233") %>
+          <% elsif @all_prize_desc.first == "$11 RP code" %>
+            <%= @all_prize_desc[1] %>
+          <% elsif @prize_description == "Free Pizza from Domino's" %>
+            <%= image_tag("dominos_image.png", size: "414x292") %>
+          <% else %> 
+           <%= image_tag("kayle.jpg", size: "480x300") %>                
+          <% end %>
+        </div>
+
+
+      </div>
+
+    <h4 class="text-center" style="margin-top: 50px;">*Enabled for Solo/Duo Queue NA Ranked 5v5 on Summoners Rift</h4>
     </div>
-  </div>
-
-</div>
-
-
-<div>
-  <%= button_to "Back", challenges_path, :class => "btn btn-primary", :method => :get  %>
-</div>
+<% end %>
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

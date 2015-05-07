@@ -10,19 +10,43 @@ helper_method :challenge_onboarding, :prize_onboarding
 
 def set_variables
   if user_signed_in?
-    ign = Ignindex.find_by_user_id(current_user.id)
-    @setup_stage = current_user.setup_progress
-    
-    if ign.summoner_validated != nil
-     @ignindex_validated = ign.summoner_validated
-    else 
-      @ignindex_validated = false
+
+    @summoner_name_ref = session[:summoner_name_ref_temp]
+
+    if session[:region_id_temp] != nil
+      @has_settings = true
+    else
+      @has_settings = false
     end
 
-    if ign.summoner_name != nil
-      @ignindex_summoner = ign.summoner_name
+    
+
+    if Ignindex.find_by_user_id(current_user.id).nil?
+      @ign_id = nil
     else
-      @ignindex_summoner = "Summoner"
+      @ign_id_full = Ignindex.find_by_user_id(current_user.id)
+    end
+
+
+  else #not signed in
+    @summoner_name_ref = session[:summoner_name_ref_temp]
+
+    if session[:region_id_temp] != nil
+      @has_settings = true
+    else
+      @has_settings = false
+    end
+
+    ign_id_all = Ignindex.where("summoner_name_ref = ?", @summoner_name_ref)
+    if ign_id_all.first.nil?
+      @ign_id = "n/a"
+    else
+      @ign_id = Ignindex.where("summoner_name_ref = ?", @summoner_name_ref).first.id
+      if session[:last_validation] == ign_id_all.first.last_validation
+        @val_stat = "T"
+      else
+        @val_stat = session[:last_validation]
+      end
     end
   end
 end

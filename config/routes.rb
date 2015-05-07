@@ -7,6 +7,9 @@ Rails.application.routes.draw do
 
   resources :ignindices
   get 'summoner', to: 'ignindices#index', as: :summoner
+  get 'get_started', to: 'ignindices#get_started', as: :get_started
+  get 'games', to: 'ignindices#games', as: :games
+  get 'setup', to: "ignindices#get_setup", as: :setup
   
   resources :profiles
 
@@ -23,16 +26,18 @@ Rails.application.routes.draw do
   get 'challenges', to: 'statuses#index', as: :challenges
   
 
-authenticated :user do
-  root to: 'statuses#index', as: :authenticated_root
-end
+# authenticated :user do
+#   root to: 'statuses#index', as: :authenticated_root
+# end
 
-unauthenticated do
+# unauthenticated do
   root to: "staticpages#homepage"
   # root to: "main#index"
-end
+# end
 
 
+
+#static_page routes. so many.
   get 'teaser_summoner', to: "staticpages#teaser_summoner"
   get 'teaser_challenges', to: "staticpages#teaser_challenges"
   get 'teaser_prize_zone', to: "staticpages#teaser_prize_zone"
