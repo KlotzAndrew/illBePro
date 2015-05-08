@@ -52,14 +52,15 @@
         :ignindex_id => active_ign_id)
     end
     
-    if @ignindex.prize_id != nil
-      prize = Prize.find(@ignindex.prize_id)
-      @prize_description = prize.description
-      @prize_vendor = prize.vendor
-    else
-      show_prizes_2(@ignindex.region_id)
+    if @ignindex != nil
+      if @ignindex.prize_id != nil
+        prize = Prize.find(@ignindex.prize_id)
+        @prize_description = prize.description
+        @prize_vendor = prize.vendor
+      else
+        show_prizes_2(@ignindex.region_id)
+      end
     end
-
 
   end
 
