@@ -106,8 +106,8 @@ class IgnindicesController < ApplicationController
   def index #step 5
     @setup_progress = 3
 
-    using_ign = Ignindex.find_by_user_id(current_user.id)
-    if user_signed_in? && !using_ign.nil?
+    if user_signed_in? && !Ignindex.find_by_user_id(current_user.id).nil?
+      using_ign = Ignindex.find_by_user_id(current_user.id)
     
       if using_ign.nil?
         session[:region_id_temp] ||= nil
