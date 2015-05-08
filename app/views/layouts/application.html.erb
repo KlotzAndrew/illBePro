@@ -34,10 +34,10 @@
 					<% end %>
 				</ul>
 
-				<ul class="nav navbar-nav list-inline col-sm-6 col-sm-8 text-center navbar-right" >
 
 					<% if user_signed_in? %>
-				
+						<ul class="nav navbar-nav list-inline col-md-5  navbar-right" >
+
 							<% if @ign_id_full.nil? %>
 								<li><a href="/summoner">Summoner Name</a></li>
 							<% elsif @ign_id_full.summoner_validated != true %>
@@ -56,6 +56,7 @@
 
 						<li><%= button_to "Log Out", logout_path, :class => "btn btn-danger navbar-btn col-sm-offset-0", :method => :get  %></li>
 					<% else %>
+					<ul class="nav navbar-nav list-inline col-md-3 col-md-4 navbar-right" >
 
 						<% if @has_settings == true %>
 						<li><a href="/ignindices/new">Reset Settings</a></li>
@@ -86,7 +87,6 @@
 				<%= message %>
 			</div>
 		<% end %>
-
 
 		<%= yield %>
 	</div>

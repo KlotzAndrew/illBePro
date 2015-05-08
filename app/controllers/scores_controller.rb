@@ -11,7 +11,7 @@ class ScoresController < ApplicationController
 
       if (ignindex.summoner_validated == true) && (ignindex.last_validation == session[:last_validation])
         @uu_summoner_validated = true
-        @history = Prize.all.where("ignindex_id = ?", ignindex.id).where("assignment = ?", 2)
+        @history = Prize.all.where("ignindex_id = ?", ignindex.id).where("assignment = ?", 2).order(created_at: :desc)
 
         if ignindex.prize_id != nil #send me to a mehtod
           prize = Prize.find(ignindex.prize_id)

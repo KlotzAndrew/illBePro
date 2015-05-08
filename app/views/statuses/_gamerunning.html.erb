@@ -14,9 +14,9 @@
             </div>
             <div class="col-md-6">
               <div class="text-center">
-                <% if @all_prize_desc.first == "$10 RP code" %>
+                <% if @prize_description == "$10 RP code" %>
                   <%= image_tag("10rp_image.jpg", size: "175x233") %>
-                <% elsif @all_prize_desc.first == "$11 RP code" %>
+                <% elsif @prize_description == "$11 RP code" %>
                   <%= image_tag("10rp_image.jpg", size: "175x233") %>
                 <% elsif @prize_description == "Free Pizza from Domino's" %>
                   <%= image_tag("dominos_image.png", size: "414x292") %>
@@ -31,7 +31,7 @@
             <div class="col-md-4 col-md-offset-4">
               <%= simple_form_for(@ignindex, url: ignindex_path(@ignindex), html: {class: 'form-hoizontal'}) do |f| %>
                 <%= f.button :submit, "Accept", class: "btn btn-lg btn-success" %>
-                <%= f.button :submit, "Keep Playing", class: "btn btn-lg btn-danger", data: { confirm: "There are no prizes to upgrade to, this will return the prize you won. Are you sure?" } %>
+                <%= f.button :submit, "Keep Playing", class: "btn btn-lg btn-danger", data: { confirm: "There are no prizes to upgrade to, this will reject the prize you won. Are you sure?" } %>
               <% end %>
             </div>
           </div>
@@ -174,7 +174,7 @@
 
               <div id="v3_outgame" class="start-ghost">
                 <h4 id="v3_prize_results"></h4>
-                <%= button_to "Play Again", new_status_path, class: "btn btn-success" %>
+                <%= button_to "Play Again", new_status_path, class: "btn btn-success", :method => :get %>
                 <h4 id="v3_game_results"></h4>
               </div>
 
@@ -189,7 +189,7 @@
               <% if @all_prize_desc.first == "$10 RP code" %>
                 <%= image_tag("10rp_image.jpg", size: "175x233") %>
               <% elsif @all_prize_desc.first == "$11 RP code" %>
-                <%= @all_prize_desc[1] %>
+                <%= image_tag("10rp_image.jpg", size: "175x233") %>
               <% elsif @all_prize_desc.first == "Free Pizza from Domino's" %>
                 <%= image_tag("dominos_image.png", size: "414x292") %>
               <% else %> 

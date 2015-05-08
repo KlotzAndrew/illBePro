@@ -57,10 +57,10 @@ class Ignindex < ActiveRecord::Base
 
 
   def assign_prize(choice)
-  	if choice == "Accept" or choice == "Keep Playing"
-	prize = Prize.find(self.prize_id)
-	Rails.logger.info "Prize choice was #{choice}"
-	Rails.logger.info "self.prize_id: #{self.prize_id}, prize.ignindex_id: #{prize.ignindex_id}"
+  	if choice == "Accept" or choice == "Upgrade"
+		prize = Prize.find(self.prize_id)
+		Rails.logger.info "Prize choice was #{choice}"
+		Rails.logger.info "self.prize_id: #{self.prize_id}, prize.ignindex_id: #{prize.ignindex_id}"
 	    if self.id == prize.ignindex_id #double check prize is assigned correctly
 
 	    	if choice == "Accept"
@@ -73,7 +73,7 @@ class Ignindex < ActiveRecord::Base
 		      	:last_prize_time => Time.now.to_i)
 		      	#:prize_level => 1)
 
-	      	elsif choice == "Keep Playing"
+	      	elsif choice == "Upgrade"
 
 	    		Rails.logger.info "choice is confirm accept"
 		      prize.update(

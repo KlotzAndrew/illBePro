@@ -43,6 +43,8 @@
               <div class="text-center">
                 <% if x.description == "$10 RP code" %>
                   <%= image_tag("10rp_image.jpg", size: "175x233") %>
+                <% elsif x.description == "$11 RP code" %>
+                  <%= image_tag("10rp_image.jpg", size: "175x233") %>                  
                 <% elsif x.description == "Free Pizza from Domino's" %>
                   <%= image_tag("dominos_image.png", size: "414x292") %>
                 <% else %> 

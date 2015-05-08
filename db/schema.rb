@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150506173712) do
+ActiveRecord::Schema.define(version: 20150508192514) do
 
   create_table "champions", force: true do |t|
     t.string   "champion"
@@ -51,12 +51,12 @@ ActiveRecord::Schema.define(version: 20150506173712) do
     t.integer  "last_prize_time",      default: 0
     t.integer  "prize_token"
     t.integer  "region_id"
-    t.integer  "postal_code"
     t.integer  "last_validation"
     t.integer  "prize_id"
     t.integer  "ign_prize_level",      default: 1
     t.integer  "ign_challenge_points", default: 0
     t.integer  "region_id_temp"
+    t.string   "postal_code"
   end
 
   create_table "prize_regions", force: true do |t|

@@ -613,12 +613,14 @@ end
                           else
                           end 
 
-                          user_onload = User.find(clock_active_status.user_id)
-                          if user_onload.setup_progress == 0
-                            user_onload.update(setup_progress: 1)
-                            Rails.logger.info "#{cron_st}: user onload from 0 to 1"
-                          else 
-                            Rails.logger.info "#{cron_st}: user not onloaded"
+                          if !clock_active_status.user_id.nil?
+                            user_onload = User.find(clock_active_status.user_id)
+                            if user_onload.setup_progress == 0
+                              user_onload.update(setup_progress: 1)
+                              Rails.logger.info "#{cron_st}: user onload from 0 to 1"
+                            else 
+                              Rails.logger.info "#{cron_st}: user not onloaded"
+                            end
                           end
                                                                              
                           #Score.find_by_user_id(key_summoner[0].user_id).update(week_6: Score.find_by_user_id(key_summoner[0].user_id).week_6 + key_summoner[0].points)
@@ -795,9 +797,10 @@ end
                           Rails.logger.info "#{cron_st}: updated else for #{key_summoner[0].summoner_id}"
                         end                       
                       elsif key_summoner[0].kind == 5 || key_summoner[0].kind == 6
-                        Rails.logger.info "#{cron_st}: challenge kind 5 or 6 for #{key_summoner[0].summoner_id}"
+                        Rails.logger.info "#{cron_st}: challenge kind #{key_summoner[0].kind} for #{key_summoner[0].summoner_id}"
                         if !games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
-                          Status.find(key_summoner[0].id).update(game_1: {
+                          clock_active_status = Status.find(key_summoner[0].id)
+                          clock_active_status.update(game_1: {
                             :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
                             :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", 
                             :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", 
@@ -806,20 +809,30 @@ end
                             :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", 
                             :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
                             })
-                          Status.find(key_summoner[0].id).update(win_value: 0)
-                          if key_summoner[0].kind == 6
-                            Prize.find(key_summoner[0].prize_id).update(
-                              :assignment => 0,
-                              :user_id => nil)
-                            score = Score.find_by_user_id(key_summoner[0].user_id)
-                            score.update(
-                              :challenge_points => score.challenge_points*0.5)
-                          elsif key_summoner[0].kind == 5
-                            score.update(challenge_points: score.challenge_points + key_summoner[0].points) 
-                          end                          
+                          clock_active_status.update(win_value: 0)
+
+                          # if key_summoner[0].kind == 6
+                          #   Prize.find(key_summoner[0].prize_id).update(
+                          #     :assignment => 0,
+                          #     :user_id => nil)
+                          #   # score = Score.find_by_user_id(key_summoner[0].user_id)
+                          #   # score.update(
+                          #   #   :challenge_points => score.challenge_points*0.5)
+                          # elsif key_summoner[0].kind == 5
+                          # end                          
+            
+                        # user_onload = User.find(clock_active_status.user_id)
+                        # if user_onload.setup_progress == 2
+                        #   user_onload.update(setup_progress: 3)
+                        #   Rails.logger.info "#{cron_st}: user onload from 2 to 3"
+                        # else 
+                        #   Rails.logger.info "#{cron_st}: user not onloaded"
+                        # end
+
                           Rails.logger.info "#{cron_st}: updated lost first for #{key_summoner[0].summoner_id}"
                         elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
-                           Status.find(key_summoner[0].id).update(game_1: {
+                          clock_active_status = Status.find(key_summoner[0].id)
+                          clock_active_status.update(game_1: {
                             :champion_id => "#{Champion.find(games_hash["matches"][valid_games[0]]["participants"][0]["championId"]).champion}", 
                             :matchCreation => "#{games_hash["matches"][valid_games[0]]["matchCreation"]}", 
                             :win_loss => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]}", 
@@ -828,22 +841,69 @@ end
                             :deaths => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["deaths"]}", 
                             :assists => "#{games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["assists"]}"
                             })
-                          Status.find(key_summoner[0].id).update(win_value: 2)
+                          clock_active_status.update(win_value: 2)
 
-                          score = Score.find_by_user_id(key_summoner[0].user_id)
+                          ign_score = Ignindex.find(key_summoner[0].ignindex_id)
+
+                          proc = rand(1..1)
+                          Rails.logger.info "#{cron_st}: proc value is #{proc}"
+                          if (5 > proc) && (Prize.where.not("delivered_at IS ?", nil).where("delivered_at > ?", (Time.now - 22.hours).to_i).count < 10)
+                            region = Region.find(ign_score.region_id)
+                            Rails.logger.info "#{cron_st}: region used for prizing is #{region.id}"
+
+                            if !region.prizes.where("assignment = ?", "0").first.nil? #use local prize
+                               prize = region.prizes.where("assignment = ?", "0").first
+                               Rails.logger.info "#{cron_st}: local prize being uses is #{prize.id}"
+                               prize.update(
+                                :ignindex_id => ign_score.id,
+                                :assignment => "1")
+                              ign_score.update(
+                                :prize_id => prize.id)
+                              clock_active_status.update(
+                                :prize_id => prize.id)
+          
+                            else #use global prize
+                              prize = Prize.all.where("country_zone = ?", region.country).where("assignment = ?", "0").where("tier = ?", "1").first
+                              Rails.logger.info "#{cron_st}: using global prize, is it nil? (#{prize.nil?})"
+                              if !prize.nil?
+                                Rails.logger.info "#{cron_st}: global prize being used is #{prize.id}"
+                                prize.update(
+                                  :ignindex_id => ign_score.id,
+                                  :assignment => "1")
+                                ign_score.update(
+                                  :prize_id => prize.id)
+                                clock_active_status.update(
+                                :prize_id => prize.id)
+                              end
+                            end                            
+
+                          end
+
+
                           if key_summoner[0].kind == 6
-                            score.update(prize_id: key_summoner[0].prize_id)
+                            ign_score.update(prize_id: key_summoner[0].prize_id)
                           elsif key_summoner[0].kind == 5
-                            score.update(challenge_points: score.challenge_points + key_summoner[0].points)                                   
+                            # score.update(challenge_points: score.challenge_points + key_summoner[0].points)                                   
                           else
-                          end                          
+                          end 
+
+                          if !clock_active_status.user_id.nil?
+                            user_onload = User.find(clock_active_status.user_id)
+                            if user_onload.setup_progress == 0
+                              user_onload.update(setup_progress: 1)
+                              Rails.logger.info "#{cron_st}: user onload from 0 to 1"
+                            else 
+                              Rails.logger.info "#{cron_st}: user not onloaded"
+                            end
+                          end
+                                                                             
                           #Score.find_by_user_id(key_summoner[0].user_id).update(week_6: Score.find_by_user_id(key_summoner[0].user_id).week_6 + key_summoner[0].points)
                           #Score.find_by_summoner_id(key_summoner[0].summoner_id).update(week_6: Score.find_by_summoner_id(key_summoner[0].summoner_id).week_6 + key_summoner[0].points)
                           Rails.logger.info "#{cron_st}: won 1/1 for #{key_summoner[0].summoner_id}"            
-                        else
+                        else 
                           Rails.logger.info "#{cron_st}: updated else for #{key_summoner[0].summoner_id}"
-                        end                          
-                      else
+                        end                        
+                      else # end of kind 5 or 6
                         Rails.logger.info "#{cron_st}: wrong kind for #{key_summoner[0].summoner_id}"
                       end # end of kind 5 or 6
                     end

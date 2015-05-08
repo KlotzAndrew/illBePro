@@ -8,10 +8,12 @@ class IgnindicesController < ApplicationController
   respond_to :html, :xml, :json
   
   def show #for ajax requests only
-    if user_signed_in?
+    if user_signed_in? && !Ignindex.find_by_user_id(current_user.id).nil?
       respond_to do |format|
         format.html {render nothing: true}
-        format.json {render json: Ignindex.find_by_user_id(current_user.id)}
+        format.json {render json: {
+          :ignindex => Ignindex.find_by_user_id(current_user.id),
+          :valid => Ignindex.find_by_user_id(current_user.id).summoner_validated }}
       end
     else
       ign = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
@@ -104,36 +106,64 @@ class IgnindicesController < ApplicationController
   def index #step 5
     @setup_progress = 3
 
-    session[:region_id_temp] ||= nil
-    if session[:region_id_temp].blank?
-      redirect_to new_ignindex_path
-    end
-
-    #new @ignindex or existing entry
-    if !session[:summoner_name_ref_temp].blank? && !Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first.nil?
-      @ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
-      session[:ignindex_id] = @ignindex.id
-      #dont load in the full object -_-; fix me later
-    else
-      @ignindex = Ignindex.new(
-        :region_id => session[:region_id_temp])
-    end
-
-    if user_signed_in?
-      if Ignindex.find_by_user_id(current_user.id).nil?
-        @uu_summoner_validated == false
-      elsif Ignindex.find_by_user_id(current_user.id).summoner_validated != true
-        @uu_summoner_validated == false
+    using_ign = Ignindex.find_by_user_id(current_user.id)
+    if user_signed_in? && !using_ign.nil?
+    
+      if using_ign.nil?
+        session[:region_id_temp] ||= nil
+        if session[:region_id_temp].blank?
+          redirect_to new_ignindex_path
+        end
       else
-        @uu_summoner_validated == true
+        #can existing ignindex have nil region id?
+        session[:region_id_temp] ||= nil
+        if session[:region_id_temp].blank?
+          redirect_to new_ignindex_path
+        end        
       end
-    else
+
+      #new @ignindex or existing entry
+      if !using_ign.nil? 
+        @ignindex = using_ign
+        session[:ignindex_id] = @ignindex.id
+        #dont load in the full object -_-; fix me later
+      else
+        @ignindex = Ignindex.new(
+          :region_id => session[:region_id_temp])
+      end
+
+      if using_ign.nil?
+        @uu_summoner_validated = false
+      elsif using_ign.summoner_validated != true
+        @uu_summoner_validated = false
+      else
+        @uu_summoner_validated = true
+      end
+
+    else #user not signed in
+      session[:region_id_temp] ||= nil
+      if session[:region_id_temp].blank?
+        redirect_to new_ignindex_path
+      end
+
+      #new @ignindex or existing entry
+      if !session[:summoner_name_ref_temp].blank? && !Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first.nil?
+        @ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
+        session[:ignindex_id] = @ignindex.id
+        #dont load in the full object -_-; fix me later
+      else
+        @ignindex = Ignindex.new(
+          :region_id => session[:region_id_temp])
+      end
+
       if (@ignindex.summoner_validated == true) && (@ignindex.last_validation == session[:last_validation])
         @uu_summoner_validated = true
       else
         @uu_summoner_validated = false
       end
-    end
+
+    end #end of user in/out block
+
   end
 
   def update # used on step 2 and 4 (if using @ignindex.where("...").first.not.nil?)
@@ -171,6 +201,10 @@ class IgnindicesController < ApplicationController
       if user_signed_in?
         User.find(current_user.id).update(
           :summoner_id => @ignindex.validation_timer)
+        Ignindex.where("user_id = ?", 10).each do |x| 
+          x.update(
+            :user_id => nil)
+        end
       end
     elsif params["commit"] == "Add Postal/Zip Code"
       @ignindex.update(
@@ -180,14 +214,16 @@ class IgnindicesController < ApplicationController
       if user_signed_in?
         if current_user.id == @ignindex.user_id && @ignindex.summoner_validated == true
           @ignindex.update(
-            :region_id => @ignindex.region_id_temp)
+            :region_id => @ignindex.region_id_temp,
+            :postal_code => Region.find(@ignindex.region_id_temp).postal_code)
         end
       end
         respond_to do |format|
           format.html { redirect_to new_status_path, notice: 'Prizing zone changed' }
           format.json { head :no_content }
         end
-    elsif params[:commit] == "Accept" || params[:commit] == "Keep Playing"
+    elsif params[:commit] == "Accept" || params[:commit] == "Upgrade"
+      Rails.logger.info "Doing stuff with prize: #{params[:commit]}"
       if user_signed_in?
         if @ignindex.prize_id != nil
           @ignindex.assign_prize(params[:commit])
@@ -196,7 +232,7 @@ class IgnindicesController < ApplicationController
               format.html { redirect_to new_status_path, notice: 'Prize accepted' }
               format.json { head :no_content }
             end
-          elsif params[:commit] == "Keep Playing"
+          elsif params[:commit] == "Upgrade"
             respond_to do |format|
               format.html { redirect_to new_status_path, notice: 'Prize not accepted! Keep playing for other prizes' }
               format.json { head :no_content }
@@ -204,14 +240,14 @@ class IgnindicesController < ApplicationController
           end
         else
           respond_to do |format|
-            format.html { redirect_to challenges_url, notice: 'There is an issue with your prize :(' }
+            format.html { redirect_to challenges_url, alert: 'There is an issue with your prize :(' }
             format.json { head :no_content }
           end
         end
       
       else
         respond_to do |format|
-          format.html { redirect_to challenges_url, notice: 'You need to be signed in to recieve your prize' }
+          format.html { redirect_to challenges_url, alert: 'You need to be signed in to recieve your prize' }
           format.json { head :no_content }
         end
 
@@ -251,37 +287,44 @@ class IgnindicesController < ApplicationController
       # redirect_to get_started_path
     else # save action for ign
 
-      session[:summoner_name_temp] = params["ignindex"]["summoner_name"]
-      session[:summoner_name_ref_temp] = params["ignindex"]["summoner_name"].mb_chars.downcase.gsub(' ', '')
- 
-      if !session[:summoner_name_ref_temp].blank? && !Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first.nil?
-        @ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
-        session[:ignindex_id] = @ignindex.id
-        #dont load in the full object -_-; fix me later
-
-        @ignindex.update(
-          :region_id_temp => session[:region_id_temp])
-
+      if params["ignindex"]["summoner_name"].length < 1
+        Rails.logger.info "name entered was nil"
+        Rails.logger.info "params.legth: #{params["ignindex"]["summoner_name"].length}"
       else
+      
+        session[:summoner_name_temp] = params["ignindex"]["summoner_name"]
+        session[:summoner_name_ref_temp] = params["ignindex"]["summoner_name"].mb_chars.downcase.gsub(' ', '')
 
-        @ignindex = Ignindex.new(
-          :region_id => session[:region_id_temp],
-          :region_id_temp => session[:region_id_temp],          
-          :summoner_name => session[:summoner_name_temp],
-          :summoner_name_ref => session[:summoner_name_ref_temp])
+        if !session[:summoner_name_ref_temp].blank? && !Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first.nil?
+          @ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
+          session[:ignindex_id] = @ignindex.id
+          Rails.logger.info "using this ignindex.id: #{@ignindex.id}"
+          #dont load in the full object -_-; fix me later
 
-        @ignindex.save
-        session[:ignindex_id] = @ignindex.id
+          @ignindex.update(
+            :region_id_temp => session[:region_id_temp])
+
+        else
+          Rails.logger.info "using a new ignindex"
+          @ignindex = Ignindex.new(
+            :region_id => session[:region_id_temp],
+            :region_id_temp => session[:region_id_temp],          
+            :summoner_name => session[:summoner_name_temp],
+            :summoner_name_ref => session[:summoner_name_ref_temp])
+
+          @ignindex.save
+          session[:ignindex_id] = @ignindex.id
+        end
+        @ignindex.refresh_validation
+        session[:last_validation] = @ignindex.validation_timer
+
+        if user_signed_in?
+          User.find(current_user.id).update(
+            :summoner_id => @ignindex.validation_timer)
+        end
+
+        redirect_to summoner_path
       end
-      @ignindex.refresh_validation
-      session[:last_validation] = @ignindex.validation_timer
-
-      if user_signed_in?
-        User.find(current_user.id).update(
-          :summoner_id => @ignindex.validation_timer)
-      end
-
-      redirect_to summoner_path
 
     end
 

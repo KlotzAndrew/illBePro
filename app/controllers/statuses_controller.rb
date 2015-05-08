@@ -14,95 +14,46 @@
         redirect_to summoner_path, notice: "You need to validate your Summoner Name!"
       else
         active_ign_id = Ignindex.find_by_user_id(current_user.id).id
+        @ignindex = Ignindex.find_by_user_id(current_user.id)
       end
     else
       active_ign_id = session[:ignindex_id]
+      @ignindex = Ignindex.find(session[:ignindex_id])
     end
 
-      if Status.where("win_value IS ?", nil).where("ignindex_id = ?", active_ign_id).count > 0
-        @status = Status.where("win_value IS ?", nil).where("ignindex_id = ?", active_ign_id).first
-        
-        # if ((Time.now.to_i - @status.created_at.to_i - @status.value) > -120)
-        #   @update_trigger = "cg-update-true"
-        # else
-
-        #   if @status.trigger_timer.nil?
-        #     @update_trigger = ""
-        #   else
-
-        #     if ((Time.now.to_i - @status.trigger_timer) < 300)
-        #       @update_trigger = "cg-update-true"
-        #     else
-        #       @update_trigger = ""
-        #     end
-        #   end
-        # end
-
-      else
-        redirect_to new_status_path
-        @status = Status.new(
-          :ignindex_id => active_ign_id)
-      end
-
-      if user_signed_in?
-        @ignindex = Ignindex.find_by_user_id(current_user.id)
-      else
-        @ignindex = Ignindex.find(session[:ignindex_id])
-      end
+    if Status.where("win_value IS ?", nil).where("ignindex_id = ?", active_ign_id).count > 0
+      @status = Status.where("win_value IS ?", nil).where("ignindex_id = ?", active_ign_id).first
       
-      if @ignindex.prize_id != nil
-        prize = Prize.find(@ignindex.prize_id)
-        @prize_description = prize.description
-        @prize_vendor = prize.vendor
+      if ((Time.now.to_i - @status.created_at.to_i - @status.value) > -120)
+        @update_trigger = "cg-update-true"
+      else
+
+        if @status.trigger_timer.nil?
+          @update_trigger = ""
+        else
+
+          if ((Time.now.to_i - @status.trigger_timer) < 300)
+            @update_trigger = "cg-update-true"
+          else
+            @update_trigger = ""
+          end
+        end
       end
 
-      #prize region logic
-      @all_prize_desc = []
-      @all_prize_vendor = []
+    else
+      redirect_to new_status_path
+      @status = Status.new(
+        :ignindex_id => active_ign_id)
+    end
+    
+    if @ignindex.prize_id != nil
+      prize = Prize.find(@ignindex.prize_id)
+      @prize_description = prize.description
+      @prize_vendor = prize.vendor
+    else
+      show_prizes_2(@ignindex.region_id)
+    end
 
-      if @ignindex.region_id != nil #skip if there is no region
-        region = Region.find(@ignindex.region_id)
-        @region_city = region.city
-        @region_country = region.country
-        
-        #get country prizes
-        prize_1 = Prize.all.where("country_zone = ?", region.country).where("assignment = ? OR assignment = ?", 0,1).where("tier = ?", "1").first
-        prize_2 = Prize.all.where("country_zone = ?", region.country).where("assignment = ? OR assignment = ?", 0,1).where("tier = ?", "2").first
-        if prize_1 != nil
-          @all_prize_desc << prize_1.description
-          @all_prize_vendor << prize_1.vendor 
-        end     
-        if prize_2 != nil
-          @all_prize_desc << prize_2.description
-          @all_prize_vendor << prize_2.vendor 
-        end   
-
-        #get postal prizes
-        if region.prize_id_tier1 == nil or region.prize_id_tier1 == "[]"
-          #catch errors so json doens't derp
-        else
-          tier1 = Prize.find(JSON.parse(region.prize_id_tier1).first)
-          @all_prize_desc << tier1.description
-          @all_prize_vendor << tier1.vendor
-        end
-        
-        if region.prize_id_tier2 == nil or region.prize_id_tier2 == "[]"
-          #catch errors so json doens't derp
-        else
-          tier2 = Prize.find(JSON.parse(region.prize_id_tier2).first)
-          @all_prize_desc << tier2.description
-          @all_prize_vendor << tier2.vendor
-        end
-        
-        if region.prize_id_tier3 == nil or region.prize_id_tier3 == "[]"
-          #catch errors so json doens't derp
-        else
-          tier3 = Prize.find(JSON.parse(region.prize_id_tier3).first)
-          @all_prize_desc << tier3.description
-          @all_prize_vendor << tier3.vendor
-        end 
-      end #end prize pop logic
-      #end prize region logic
 
   end
 

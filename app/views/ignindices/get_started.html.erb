@@ -89,13 +89,16 @@
 
 <div class="row">
 	<div class="col-md-12 col-md-offset-0">
-		<h3>Prizes available for postal code: <strong><%= @region_postal %></strong></h3> 
+		<% if @all_prize_desc == [] %>
+			<h3>No prizes available for: <strong><%= @region_postal %></strong></h3> 
+		<% else %>
+			<h3>Prizes available for postal code: <strong><%= @region_postal %></strong></h3> 
+		<% end %>
 	</div>
 </div>
 
 
 	<div class="col-md-6">
-
 	      <% if @all_prize_desc.first == "$10 RP code" %>
 	        <%= image_tag("10rp_image.jpg", size: "175x233") %>
 	      <% elsif @all_prize_desc.first == "$11 RP code" %>
@@ -108,8 +111,13 @@
 	</div>
 
 	<div class="col-md-6" style="margin-top: 50px;">
-		<h2 class=""><%= @all_prize_desc.first %></h2>
-		<%= button_to "Select", games_path, :class => "btn btn-lg btn-primary", :method => :get  %>
+		<% if @all_prize_desc == []  %>
+			<h2 class="">No prizes available for this postal code</h2>
+			<%= button_to "Continue Anyway", games_path, :class => "btn btn-lg btn-primary", :method => :get  %>
+		<% else %>
+			<h2 class=""><%= @all_prize_desc.first %></h2>
+			<%= button_to "Select", games_path, :class => "btn btn-lg btn-primary", :method => :get  %>
+		<% end %>
 	</div>
 
 </div>
