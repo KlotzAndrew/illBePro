@@ -575,7 +575,7 @@ end
 
                           ign_score = Ignindex.find(key_summoner[0].ignindex_id)
 
-                          proc = rand(100..100)
+                          proc = rand(1..100)
                           Rails.logger.info "#{cron_st}: proc value is #{proc}"
                           if (5 > proc) && (Prize.where.not("delivered_at IS ?", nil).where("delivered_at > ?", (Time.now - 22.hours).to_i).count < 1)
                             region = Region.find(ign_score.region_id)
