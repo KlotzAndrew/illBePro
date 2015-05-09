@@ -5,13 +5,22 @@ class ScoresController < ApplicationController
   def index
 
     @prize_description = nil
+    if user_signed_in?
+      test_user = current_user.id
+    else 
+      test_user = Time.now.to_i
+    end
+    Rails.logger.info "TU(#{test_user}: getting started"
     
     if user_signed_in?
-      if Ignindex.find_by_user_id(current_user.id).nil? #filter out nils, this needs fixing
+      Rails.logger.info "TU(#{test_user}: signed in"
+      if !Ignindex.find_by_user_id(current_user.id).nil? #filter out nils, this needs fixing
+        Rails.logger.info "TU(#{test_user}: user not nil"
         ignindex = Ignindex.find_by_user_id(current_user.id)
-
+        Rails.logger.info "TU(#{test_user}: user #{ignindex.id}"
         if ignindex.summoner_validated == true
           @uu_summoner_validated = true
+          Rails.logger.info "TU(#{test_user}: uu #{@uu_summoner_validated}"
           @history = Prize.all.where("ignindex_id = ?", ignindex.id).where("assignment = ?", 2).order(created_at: :desc)
 
           if ignindex.prize_id != nil #send me to a mehtod
@@ -23,15 +32,19 @@ class ScoresController < ApplicationController
           end
         else
           @uu_summoner_validated = false
+          Rails.logger.info "TU(#{test_user}: uu #{@uu_summoner_validated}"
         end   
-
-
+      else
+        Rails.logger.info "TU(#{test_user}: user nil"
       end
     elsif session[:ignindex_id] != nil
+      Rails.logger.info "TU(#{test_user}: not signed in"
       ignindex = Ignindex.find(session[:ignindex_id])
+      Rails.logger.info "TU(#{test_user}: user #{ignindex.id}"
 
       if (ignindex.summoner_validated == true) && (ignindex.last_validation == session[:last_validation])
         @uu_summoner_validated = true
+        Rails.logger.info "TU(#{test_user}: uu #{@uu_summoner_validated}"
         @history = Prize.all.where("ignindex_id = ?", ignindex.id).where("assignment = ?", 2).order(created_at: :desc)
 
         if ignindex.prize_id != nil #send me to a mehtod
@@ -43,6 +56,7 @@ class ScoresController < ApplicationController
         end
       else
         @uu_summoner_validated = false
+        Rails.logger.info "TU(#{test_user}: uu #{@uu_summoner_validated}"
       end      
     else
       #nothing here
