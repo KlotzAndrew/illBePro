@@ -6,7 +6,28 @@ class ScoresController < ApplicationController
 
     @prize_description = nil
     
-    if session[:ignindex_id] != nil
+    if user_signed_in?
+      if Ignindex.find_by_user_id(current_user.id).nil? #filter out nils, this needs fixing
+        ignindex = Ignindex.find_by_user_id(current_user.id)
+
+        if ignindex.summoner_validated == true
+          @uu_summoner_validated = true
+          @history = Prize.all.where("ignindex_id = ?", ignindex.id).where("assignment = ?", 2).order(created_at: :desc)
+
+          if ignindex.prize_id != nil #send me to a mehtod
+            prize = Prize.find(ignindex.prize_id)
+            @prize_description = prize.description
+            @prize_vendor = prize.vendor
+            @prize_code = prize.code
+            @prize_reward_code = prize.reward_code
+          end
+        else
+          @uu_summoner_validated = false
+        end   
+
+
+      end
+    elsif session[:ignindex_id] != nil
       ignindex = Ignindex.find(session[:ignindex_id])
 
       if (ignindex.summoner_validated == true) && (ignindex.last_validation == session[:last_validation])

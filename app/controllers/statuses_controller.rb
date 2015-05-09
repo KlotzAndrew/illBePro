@@ -10,16 +10,20 @@
   def index
 
     #checks what ignindex we are using (redirect )
-    if user_signed_in?
+    if user_signed_in? #filter users for signed in
       if Ignindex.find_by_user_id(current_user.id).nil?
-        # redirect_to summoner_path, notice: "You need to validate your Summoner Name!"
+        redirect_to summoner_path, notice: "You need to validate your Summoner Name!"
       else
         active_ign_id = Ignindex.find_by_user_id(current_user.id).id
         @ignindex = Ignindex.find_by_user_id(current_user.id)
       end
-    else
-      active_ign_id = session[:ignindex_id]
-      @ignindex = Ignindex.find(session[:ignindex_id])
+    else #not signed-in users
+      if session[:ignindex_id].nil?
+        redirect_to summoner_path, notice: "You need to validate your Summoner Name!"
+      else
+        active_ign_id = session[:ignindex_id]
+        @ignindex = Ignindex.find(session[:ignindex_id])
+      end
     end
 
     #this block checks if there is a status running, if not it redirects you
@@ -43,11 +47,11 @@
       end
 
     else
-      if Ignindex.find_by_user_id(current_user.id).nil?
-        redirect_to summoner_path, notice: "You need to validate your Summoner Name!"
-      else
-        redirect_to new_status_path
-      end
+      # if Ignindex.find_by_user_id(current_user.id).nil?
+      #   redirect_to summoner_path, notice: "You need to validate your Summoner Name!"
+      # else
+      #   redirect_to new_status_path
+      # end
       @status = Status.new(
         :ignindex_id => active_ign_id)
     end
