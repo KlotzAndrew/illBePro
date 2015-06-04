@@ -64,8 +64,9 @@ class IgnindicesController < ApplicationController
       #this is a validation for having a region_id
       #*****will raise error for some users
       @ignindex = Ignindex.new 
-      if session[:region_id_temp].blank?
-        redirect_to new_ignindex_path
+      if session[:region_id_temp].blank? or session[:region_id_temp] == nil
+        redirect_to setup_path
+        reset_session_vars
       else
         show_prizes(session[:region_id_temp])
       end    

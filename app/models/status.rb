@@ -809,7 +809,7 @@ end
                           ign_score = Ignindex.find(key_summoner[0].ignindex_id)
                           curent_ach = Achievement.find(ign_score.active_achievement)
                           if !curent_ach.nil?
-                            experience_gain(curent_ach, clock_active_status)
+                            experience_gain(cron_st, curent_ach, clock_active_status)
                           end
 
                           Rails.logger.info "#{cron_st}: updated lost first for #{key_summoner[0].summoner_id}"
@@ -828,8 +828,10 @@ end
 
                           ign_score = Ignindex.find(key_summoner[0].ignindex_id)
 
-                          proc = rand(1..100)
+                          proc = rand(100..100)
                           Rails.logger.info "#{cron_st}: proc value is #{proc}"
+
+                          #*** WIP change to end of week/random prizing (based on types)
                           if (5 > proc) && (Prize.where.not("delivered_at IS ?", nil).where("delivered_at > ?", (Time.now - 22.hours).to_i).count < 10)
                             region = Region.find(ign_score.region_id)
                             Rails.logger.info "#{cron_st}: region used for prizing is #{region.id}"
@@ -861,30 +863,30 @@ end
                                 :prize_id => prize.id)
                               end
                             end                            
-
                           end
 
+                          #*** disabled, prizing is handled by proc method
+                          # if key_summoner[0].kind == 6
+                          #   ign_score.update(prize_id: key_summoner[0].prize_id)
+                          # elsif key_summoner[0].kind == 5
+                          #   # score.update(challenge_points: score.challenge_points + key_summoner[0].points)                                   
+                          # else
+                          # end 
 
-                          if key_summoner[0].kind == 6
-                            ign_score.update(prize_id: key_summoner[0].prize_id)
-                          elsif key_summoner[0].kind == 5
-                            # score.update(challenge_points: score.challenge_points + key_summoner[0].points)                                   
-                          else
-                          end 
-
-                          if !clock_active_status.user_id.nil?
-                            user_onload = User.find(clock_active_status.user_id)
-                            if user_onload.setup_progress == 0
-                              user_onload.update(setup_progress: 1)
-                              Rails.logger.info "#{cron_st}: user onload from 0 to 1"
-                            else 
-                              Rails.logger.info "#{cron_st}: user not onloaded"
-                            end
-                          end
+                          #*** disabled, not using an onboarding method right now
+                          # if !clock_active_status.user_id.nil?
+                          #   user_onload = User.find(clock_active_status.user_id)
+                          #   if user_onload.setup_progress == 0
+                          #     user_onload.update(setup_progress: 1)
+                          #     Rails.logger.info "#{cron_st}: user onload from 0 to 1"
+                          #   else 
+                          #     Rails.logger.info "#{cron_st}: user not onloaded"
+                          #   end
+                          # end
 
                           curent_ach = Achievement.find(ign_score.active_achievement)
                           if !curent_ach.nil?
-                            experience_gain(curent_ach, clock_active_status)
+                            experience_gain(cron_st, curent_ach, clock_active_status)
                           end
                                                                              
                           #Score.find_by_user_id(key_summoner[0].user_id).update(week_6: Score.find_by_user_id(key_summoner[0].user_id).week_6 + key_summoner[0].points)
@@ -932,7 +934,7 @@ end
 
   end #end of api_call_status
 
-  def experience_gain(ach, status)
+  def self.experience_gain(cron_st, ach, status)
     Rails.logger.info "#{cron_st}: status.win_value #{status.win_value}"
     if status.win_value == 2 # game won
       ach_win = 1

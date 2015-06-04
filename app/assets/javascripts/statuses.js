@@ -82,11 +82,7 @@ var check_game = function(){
                         $('#v3_prize_results').html("Lost your game")
                         $('#v3_game_results').html(game_summary)
                     }
-                    if ( $('#setup_progress_bar').length > 0 ) { // slide the setup over by 1
-                        setTimeout(function() {
-                            setup_2_3()
-                        }, 3000);
-                    } 
+
                 }
                 clearInterval(checkint)
                 clearTimeout(statusTimer);      

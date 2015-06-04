@@ -52,8 +52,9 @@
       # else
       #   redirect_to new_status_path
       # end
-      @status = Status.new(
-        :ignindex_id => active_ign_id)
+      # @status = Status.new(
+      #   :ignindex_id => active_ign_id)
+      redirect_to new_status_path
     end
     
     if @ignindex != nil
@@ -270,6 +271,8 @@
       Ignindex.where("id = ?", session_ignindex_id).first.update(
         :active_achievement => new_ach.id)
       @achievement = new_ach
+      number = @achievement.experience_earned/@achievement.experience_req
+      @achievement_progress = number.round(2)
       
     else
       @achievement = Achievement.find(Ignindex.where("id = ?", session_ignindex_id).first.active_achievement)

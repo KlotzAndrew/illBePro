@@ -163,7 +163,7 @@ var ign_clocks = function(){
 
   $('#test_cd').html(now1) // update total time left
   
-  now2 = parseInt(30 - ((current_time/1000 - grab2) % 60))
+  now2 = parseInt(60 - ((current_time/1000 - grab2) % 60))
   $('#check_loop').html(now2) // update estimate of clockwork
   
   console.log("ign timers updated")

@@ -67,12 +67,12 @@ ActiveRecord::Schema.define(version: 20150604152136) do
     t.integer  "last_prize_time",      default: 0
     t.integer  "prize_token"
     t.integer  "region_id"
-    t.string   "postal_code"
     t.integer  "last_validation"
     t.integer  "prize_id"
     t.integer  "ign_prize_level",      default: 1
     t.integer  "ign_challenge_points", default: 0
     t.integer  "region_id_temp"
+    t.string   "postal_code"
     t.integer  "active_achievement"
   end
 
