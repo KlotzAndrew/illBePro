@@ -1,8 +1,9 @@
 class Ignindex < ActiveRecord::Base
 
 	# belongs_to :user // ignindex now floats for 'temporary' users w/o user_id
+	has_many :statuses
 
-	def update_region_id(dirty_postal)
+	def update_region_id(dirty_postal) #line 17 & 26 are creating when not required
 		Rails.logger.info "method postal: #{self.postal_code}, dity_postal: #{dirty_postal}"
 		postal_search = dirty_postal.to_s
 

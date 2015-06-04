@@ -11,7 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150508192514) do
+ActiveRecord::Schema.define(version: 20150604152136) do
+
+  create_table "achievements", force: true do |t|
+    t.string   "description"
+    t.integer  "ignindex_id"
+    t.integer  "kind"
+    t.integer  "result"
+    t.integer  "experience_req",      default: 255
+    t.integer  "experience_earned",   default: 0
+    t.integer  "games_played",        default: 0
+    t.integer  "expire"
+    t.boolean  "require_wins",        default: false
+    t.string   "can_spell_name"
+    t.string   "can_spell_name_open"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "champions", force: true do |t|
     t.string   "champion"
@@ -51,12 +67,13 @@ ActiveRecord::Schema.define(version: 20150508192514) do
     t.integer  "last_prize_time",      default: 0
     t.integer  "prize_token"
     t.integer  "region_id"
+    t.string   "postal_code"
     t.integer  "last_validation"
     t.integer  "prize_id"
     t.integer  "ign_prize_level",      default: 1
     t.integer  "ign_challenge_points", default: 0
     t.integer  "region_id_temp"
-    t.string   "postal_code"
+    t.integer  "active_achievement"
   end
 
   create_table "prize_regions", force: true do |t|
@@ -149,6 +166,7 @@ ActiveRecord::Schema.define(version: 20150508192514) do
     t.integer  "proc_value",            default: 0
     t.integer  "roll_status",           default: 0
     t.integer  "ignindex_id"
+    t.integer  "achievement_id"
   end
 
   add_index "statuses", ["user_id"], name: "index_statuses_on_user_id"

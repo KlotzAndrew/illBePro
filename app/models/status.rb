@@ -15,7 +15,7 @@ class Status < ActiveRecord::Base
   serialize :game_5, Hash
 
 
-def dr_who
+def dr_who #this makes sure summoner is valid + region is entered
   w = Ignindex.find(self.ignindex_id)
   if w.summoner_validated != true
     errors.add(:you_need, ' a valid summoner name before you can start a challenge!')
@@ -24,8 +24,8 @@ def dr_who
   end
 end
 
-def one_fox_one_gun
-  if Status.all.where("ignindex_id = ?", self.ignindex_id).where(win_value: nil).count > 0
+def one_fox_one_gun #this is 1 game/user + concurrent requests/API
+  if Status.all.where("ignindex_id = ?", self.ignindex_id).where(win_value: nil).count > 1
     errors.add(:you_can, 'only have 1 challenge running at a time!')
   #elsif Status.all.where("user_id = ?", self.user_id).where("created_at > ?", Time.now - 22.hours).count >= 5
     #errors.add(:you_have, 'reached your challenge limit for the day! The limit refreshes every 22 hours')
@@ -541,23 +541,11 @@ end
                             })
                           clock_active_status.update(win_value: 0)
 
-                          # if key_summoner[0].kind == 6
-                          #   Prize.find(key_summoner[0].prize_id).update(
-                          #     :assignment => 0,
-                          #     :user_id => nil)
-                          #   # score = Score.find_by_user_id(key_summoner[0].user_id)
-                          #   # score.update(
-                          #   #   :challenge_points => score.challenge_points*0.5)
-                          # elsif key_summoner[0].kind == 5
-                          # end                          
-            
-                        # user_onload = User.find(clock_active_status.user_id)
-                        # if user_onload.setup_progress == 2
-                        #   user_onload.update(setup_progress: 3)
-                        #   Rails.logger.info "#{cron_st}: user onload from 2 to 3"
-                        # else 
-                        #   Rails.logger.info "#{cron_st}: user not onloaded"
-                        # end
+                          ign_score = Ignindex.find(key_summoner[0].ignindex_id)
+                          curent_ach = Achievement.find(ign_score.active_achievement)
+                          if !curent_ach.nil?
+                            experience_gain(curent_ach, clock_active_status)
+                          end
 
                           Rails.logger.info "#{cron_st}: updated lost first for #{key_summoner[0].summoner_id}"
                         elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
@@ -577,6 +565,8 @@ end
 
                           proc = rand(1..100)
                           Rails.logger.info "#{cron_st}: proc value is #{proc}"
+
+                          #this is generator for 1 of 15 random prizes
                           if (5 > proc) && (Prize.where.not("delivered_at IS ?", nil).where("delivered_at > ?", (Time.now - 22.hours).to_i).count < 1)
                             region = Region.find(ign_score.region_id)
 
@@ -622,7 +612,12 @@ end
                               Rails.logger.info "#{cron_st}: user not onloaded"
                             end
                           end
-                                                                             
+                          
+                          curent_ach = Achievement.find(ign_score.active_achievement)
+                          if !curent_ach.nil?
+                            experience_gain(curent_ach, clock_active_status)
+                          end
+
                           #Score.find_by_user_id(key_summoner[0].user_id).update(week_6: Score.find_by_user_id(key_summoner[0].user_id).week_6 + key_summoner[0].points)
                           #Score.find_by_summoner_id(key_summoner[0].summoner_id).update(week_6: Score.find_by_summoner_id(key_summoner[0].summoner_id).week_6 + key_summoner[0].points)
                           Rails.logger.info "#{cron_st}: won 1/1 for #{key_summoner[0].summoner_id}"            
@@ -811,23 +806,11 @@ end
                             })
                           clock_active_status.update(win_value: 0)
 
-                          # if key_summoner[0].kind == 6
-                          #   Prize.find(key_summoner[0].prize_id).update(
-                          #     :assignment => 0,
-                          #     :user_id => nil)
-                          #   # score = Score.find_by_user_id(key_summoner[0].user_id)
-                          #   # score.update(
-                          #   #   :challenge_points => score.challenge_points*0.5)
-                          # elsif key_summoner[0].kind == 5
-                          # end                          
-            
-                        # user_onload = User.find(clock_active_status.user_id)
-                        # if user_onload.setup_progress == 2
-                        #   user_onload.update(setup_progress: 3)
-                        #   Rails.logger.info "#{cron_st}: user onload from 2 to 3"
-                        # else 
-                        #   Rails.logger.info "#{cron_st}: user not onloaded"
-                        # end
+                          ign_score = Ignindex.find(key_summoner[0].ignindex_id)
+                          curent_ach = Achievement.find(ign_score.active_achievement)
+                          if !curent_ach.nil?
+                            experience_gain(curent_ach, clock_active_status)
+                          end
 
                           Rails.logger.info "#{cron_st}: updated lost first for #{key_summoner[0].summoner_id}"
                         elsif games_hash["matches"][valid_games[0]]["participants"][0]["stats"]["winner"]
@@ -845,7 +828,7 @@ end
 
                           ign_score = Ignindex.find(key_summoner[0].ignindex_id)
 
-                          proc = rand(1..1)
+                          proc = rand(1..100)
                           Rails.logger.info "#{cron_st}: proc value is #{proc}"
                           if (5 > proc) && (Prize.where.not("delivered_at IS ?", nil).where("delivered_at > ?", (Time.now - 22.hours).to_i).count < 10)
                             region = Region.find(ign_score.region_id)
@@ -856,7 +839,8 @@ end
                                Rails.logger.info "#{cron_st}: local prize being uses is #{prize.id}"
                                prize.update(
                                 :ignindex_id => ign_score.id,
-                                :assignment => "1")
+                                :assignment => "1",
+                                :delivered_at => Time.now.to_i)
                               ign_score.update(
                                 :prize_id => prize.id)
                               clock_active_status.update(
@@ -869,7 +853,8 @@ end
                                 Rails.logger.info "#{cron_st}: global prize being used is #{prize.id}"
                                 prize.update(
                                   :ignindex_id => ign_score.id,
-                                  :assignment => "1")
+                                  :assignment => "1",
+                                  :delivered_at => Time.now.to_i)
                                 ign_score.update(
                                   :prize_id => prize.id)
                                 clock_active_status.update(
@@ -895,6 +880,11 @@ end
                             else 
                               Rails.logger.info "#{cron_st}: user not onloaded"
                             end
+                          end
+
+                          curent_ach = Achievement.find(ign_score.active_achievement)
+                          if !curent_ach.nil?
+                            experience_gain(curent_ach, clock_active_status)
                           end
                                                                              
                           #Score.find_by_user_id(key_summoner[0].user_id).update(week_6: Score.find_by_user_id(key_summoner[0].user_id).week_6 + key_summoner[0].points)
@@ -941,6 +931,27 @@ end
     #puts "#{Time.now.to_i} | Cron Duration: #{Time.now.to_i - cron_st} | Throttle: #{throttle_total} | API calls: #{val_count + api_call_count} | Total challenges: #{total_count} | API/second: #{(val_count + api_call_count)/(Time.now.to_i - cron_st).round(2)}/second | max @ #{(val_count + api_call_count*1.00)/(Time.now.to_i - cron_st - throttle_total)}/second | Timeouts: #{timeout_count} | Overloads #{api_overload_count}"
 
   end #end of api_call_status
+
+  def experience_gain(ach, status)
+    Rails.logger.info "#{cron_st}: status.win_value #{status.win_value}"
+    if status.win_value == 2 # game won
+      ach_win = 1
+    else
+      ach_win = 0
+    end
+
+    Rails.logger.info "#{cron_st}: status.win_value or #{status.win_value}"
+    if status.win_value == 2 or status.win_value == 0
+      ach_exp = 1
+    else
+      ach_exp = 0
+    end
+
+    ach.update(
+      :experience_earned => ach.experience_earned += ach_win,
+      :games_played => ach.games_played += ach_exp)
+    Rails.logger.info "#{cron_st}: finished ach experience update"
+  end  
 
 
 

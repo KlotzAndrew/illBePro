@@ -3,6 +3,12 @@ class StaticpagesController < ApplicationController
 	def homepage
 	end
 
+  def landing_page
+  end
+
+  def current_achievement
+  end
+
   def about
   end
 

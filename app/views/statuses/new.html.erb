@@ -22,7 +22,7 @@
                 <% elsif @prize_description == "Free Pizza from Domino's" %>
                   <%= image_tag("dominos_image.png", size: "414x292") %>
                 <% else %> 
-                 <%= image_tag("kayle.jpg", size: "480x300") %>                
+                 <%= image_tag("cora1.jpg", size: "480x300") %>                
                 <% end %>
               </div>
             </div>
@@ -43,150 +43,100 @@
   </div>
 <% else %>
 
-  <% if @status_setup_display == true %>
-    <div class="container-fluid">
-      <div class="setup-background">
+<div class="container-fluid"  style="margin-top: 25px;">
 
-        <div class="row">
-
-          <h1 class="text-center">Welcome! Let's get you ready to win some pizza</h1>
-          
-          <div class="col-md-6 col-md-offset-3">
-
-
-            <div id="setup_progress_bar">
-              <div class="breadcrumb-trail">
-                <div class="breadcrumbs">
-                    <div class="breadcrumb-cell first">
-                      <% if @setup_progress == 0 %>
-                    <div id="bread_1" class="breadcrumb active">              
-                      <% else %>
-                      <div id="bread_1" class="breadcrumb checked selectable">
-                      <% end %>
-                        <div class="breadcrumb-icon"></div>
-                        <span class="breadcrumb-label">Postal Code</span>
-                      </div>
-                    </div>
-
-                    <div class="breadcrumb-cell">
-                      <% if @setup_progress == 1 %>
-                    <div id="bread_2" class="breadcrumb active">              
-                      <% elsif @setup_progress > 1 %>
-                      <div id="bread_2" class="breadcrumb checked selectable">
-                      <% else %>
-                      <div id="bread_2" class="breadcrumb">
-                      <% end %>
-                      <div class="breadcrumb-icon"></div>
-                      <span class="breadcrumb-label">Choose Prize</span>
-                    </div>
-                    </div> 
-
-                    <div class="breadcrumb-cell">
-                      <% if @setup_progress == 2 %>
-                    <div id="bread_2" class="breadcrumb active">              
-                      <% elsif @setup_progress > 2 %>
-                      <div id="bread_2" class="breadcrumb checked selectable">
-                      <% else %>
-                      <div id="bread_2" class="breadcrumb">
-                      <% end %>
-                      <div class="breadcrumb-icon"></div>
-                      <span class="breadcrumb-label">Choose Game</span>
-                    </div>
-                    </div>
-
-                    <div class="breadcrumb-cell">
-                      <% if @setup_progress == 3 %>
-                    <div id="bread_2" class="breadcrumb active">              
-                      <% elsif @setup_progress > 3 %>
-                      <div id="bread_2" class="breadcrumb checked selectable">
-                      <% else %>
-                      <div id="bread_2" class="breadcrumb">
-                      <% end %>
-                      <div class="breadcrumb-icon"></div>
-                      <span class="breadcrumb-label">Summoner Name</span>
-                    </div>
-                    </div>                                  
-
-                    <div class="breadcrumb-cell last">
-                      <% if @setup_progress == 4 %>
-                    <div id="bread_3" class="breadcrumb active">              
-                      <% else %>
-                      <div id="bread_3" class="breadcrumb">
-                      <% end %>
-                      <div class="breadcrumb-icon"></div>
-                      <span class="breadcrumb-label">Play</span>
-                    </div>
-                    </div>       
-
-                </div>
-              </div>  
-            </div>      
+  <div class="row">
 
 
 
-          </div>
+    <div class="col-md-6"  style="margin-top: 0px;">
+      
+      <h2>
+        CURRENT ACHIEVMENT
+      </h2>
 
-        </div>
+        <h5>
+          Earn 10 experience points to get an end of the week reward. Each win recoded is 1exp, winning game with a champion whose name starts with one of the letters CORA is 2exp.
+        </h5>
+        <h5>
+          Also, each game played has a chance to win 1 of 15 $5 pizza prizes
+        </h5>
 
-      </div>
+
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Value</th>
+            <th>Chance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Tier 1</th>
+            <td>$1</td>
+            <td>25%</td>
+          </tr>
+          <tr>
+            <th scope="row">Tier 2</th>
+            <td>$2</td>
+            <td>25%</td>
+          </tr>
+          <tr>
+            <th scope="row">Tier 3</th>
+            <td>$5</td>
+            <td>25%</td>
+          </tr>
+          <tr>
+            <th scope="row">Tier 4</th>
+            <td>$20</td>
+            <td>25%</td>
+          </tr>             
+        </tbody>
+      </table>
+
+      <h5>
+        Prizes get awarded Sunday at 8:00pm EST. Randomly selected from the above pool
+      </h5>
+
+      <span class="btn btn-primary" style="background-color: grey;">Switch Achievement</span>
+
     </div>
 
+    <div class="col-md-6 text-center">
+      Progress towards achievement
+      <div class="progress">
+        <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= @achievement.experience_earned/@achievement.experience_req %>%; min-width: 2em;" >
+          <%= @achievement.experience_earned/@achievement.experience_req %>%
+        </div>
+      </div>
 
-    <div class="container-fluid"  style="margin-top: 50px;">
+      <div class="text-left">
+        <h1>CORA</h1>
+        <h5>Games played: <%= @achievement.games_played %> </h5>
+        <h5>CORA games played: <%= @achievement.can_spell_name.length - @achievement.can_spell_name_open.length %> </h5>
+      </div>
+       <%= image_tag("cora1.jpg", size: "240x150") %>                
 
-    <div class="row absolute-margin">
-
-  <% else %>
-
-    <div class="container-fluid"  style="margin-top: 50px;">
-
-    <div class="row">
-  <% end %>
-        <div class="col-md-6 text-center"  style="margin-top: 0px;">
-
-          <% if @all_prize_desc.first.nil? %>
-            <h3>
-              No prizes currently available for this postal code :(
-            </h3>
-          <% else %>
-            <h3>
-              5% chance to win <%= @all_prize_desc.last %>
-            </h3>
-          <% end %>
-
-            <div class="form-actions">
-              <div class="text-center">
-                <div>
-                  <%= simple_form_for(@status, html: {class: 'form-hoizontal'}) do |f| %>
-                    <%= f.hidden_field :kind, :value=>5 %>
-                    <%= f.button :submit, "Play", class: "btn btn-lg btn-success" %>
-                  <% end %>
-                </div>
-              </div>
+        <div class="form-actions">
+          <div class="text-center">
+            <div>
+              <%= simple_form_for(@status, html: {class: 'form-hoizontal'}) do |f| %>
+                <%= f.hidden_field :kind, :value=>5 %>
+                <%= f.button :submit, "Play Game", class: "btn btn-lg btn-success" %>
+              <% end %>
             </div>
-     
-          <h3>
-            When you finish a ranked game, come back here to see if you won
-          </h3>
+          </div>
         </div>
 
-        <div class="col-md-6 text-center">
-          <% if @all_prize_desc.first == "$10 RP code" %>
-            <%= image_tag("10rp_image.jpg", size: "175x233") %>
-          <% elsif @all_prize_desc.first == "$11 RP code" %>
-            <%= image_tag("10rp_image.jpg", size: "175x233") %>
-          <% elsif @all_prize_desc.first == "Free Pizza from Domino's" %>
-            <%= image_tag("dominos_image.png", size: "414x292") %>
-          <% else %> 
-           <%= image_tag("kayle.jpg", size: "480x300") %>                
-          <% end %>
-        </div>
-
-
-      </div>
-
-    <h4 class="text-center" style="margin-top: 50px;">*Enabled for Solo/Duo Queue NA Ranked 5v5 on Summoners Rift</h4>
     </div>
+
+
+  </div>
+
+<h4 class="text-center" style="margin-top: 50px;">*Enabled for Solo/Duo Queue NA Ranked 5v5 on Summoners Rift</h4>
+</div>
 <% end %>
 
 <script>

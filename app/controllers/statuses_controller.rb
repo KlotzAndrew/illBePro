@@ -117,10 +117,12 @@
     if !user_signed_in? #unauthenticate partial sign-in
 
       if session[:ignindex_id].nil? 
-        redirect_to new_ignindex_path
+        redirect_to setup_path
 
       elsif Ignindex.find(session[:ignindex_id]).last_validation != session[:last_validation]
-        redirect_to new_ignindex_path, notice: "redirected you, summoner not validated"
+        
+        session[:setup_progress] = 0
+        redirect_to setup_path, notice: "redirected you, summoner not validated"
 
       else
 
@@ -137,13 +139,22 @@
           last_game_created = last_game.created_at.to_i
         end
         
-        if Ignindex.find(session[:ignindex_id]).last_validation < 90.minutes.ago.to_i && last_game_created < 90.minutes.ago.to_i
-          Ignindex.find(session[:ignindex_id]).update(
-            :last_validation => nil)
-          redirect_to new_ignindex_path, notice: "Your validation timed out! Re-validate to keep playing."
+        current_ign = Ignindex.find(session[:ignindex_id])
+
+        if current_ign.last_validation.nil? #this is getting set to nil somewhere???
+          current_ign.update(
+            :last_validation => 0)
+        end
+
+        if current_ign.last_validation < 90.minutes.ago.to_i && last_game_created < 90.minutes.ago.to_i
+          current_ign.update(
+            :last_validation => 0)
+          session[:setup_progress] = 0
+          redirect_to setup_path, notice: "Your validation timed out! Re-validate to keep playing."
 
         else
 
+          get_current_achievement(session[:ignindex_id])
           #status object is new or existing?
           if Status.where("win_value IS ?", nil).where("ignindex_id = ?", session[:ignindex_id]).count > 0
             @status = Status.where("win_value IS ?", nil).where("ignindex_id = ?", session[:ignindex_id]).first
@@ -246,6 +257,25 @@
 
   end
 
+  def get_current_achievement(session_ignindex_id)
+    if Achievement.where("ignindex_id = ?", session_ignindex_id).empty?
+      new_ach = Achievement.create(
+        :ignindex_id => session_ignindex_id,
+        :experience_req => 10,
+        :can_spell_name => "CORA",
+        :can_spell_name_open => "CORA",
+        :description => "Earn 10 experience points to get an end of the week reward. Each win recoded is 1exp, winning game with a champion whose name starts with one of the letters CORA is 2exp.",
+        :kind => 1,
+        :expire => 4.weeks.from_now.to_i )
+      Ignindex.where("id = ?", session_ignindex_id).first.update(
+        :active_achievement => new_ach.id)
+      @achievement = new_ach
+      
+    else
+      @achievement = Achievement.find(Ignindex.where("id = ?", session_ignindex_id).first.active_achievement)
+    end
+  end
+
   def show_prizes(x)   
       #prize region logic
       region = Region.find(x)
@@ -271,13 +301,14 @@
   # POST /statuses.json
   def create
 
-    @status = Status.new
     if user_signed_in?
       @ignindex = Ignindex.find_by_user_id(current_user.id)
     else
       @ignindex = Ignindex.find(session[:ignindex_id])
     end
-    # @status = current_user.statuses.new(status_params)
+    @status = Status.new(
+      :achievement_id => @ignindex.active_achievement )
+
     @status.summoner_id = @ignindex.summoner_id
     @status.summoner_name = @ignindex.summoner_name
     @status.ignindex_id = @ignindex.id

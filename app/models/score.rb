@@ -8,7 +8,7 @@ class Score < ActiveRecord::Base
 	    	if choice == "Accept" or self.prize_level == 3
 		      prize.update(
 		      	:assignment => 2,
-		      	:delivered_at => Time.now.to_i)
+		      	:delivered_at => Time.now.to_i) #this is a double net
 		      self.update(
 		      	:prize_id => nil,
 		      	:last_prize_time => Time.now.to_i,
@@ -18,7 +18,7 @@ class Score < ActiveRecord::Base
 	      	elsif choice == "Keep Playing"
 		      prize.update(
 		      	:assignment => 0,
-		      	:user_id => nil)
+		      	:ignindex_id => nil)
 		      self.update(
 		      	:prize_id => nil)
 		      	#:challenge_points => 0

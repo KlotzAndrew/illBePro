@@ -11,7 +11,7 @@
 </head>
 <body>
 	
-	<% if defined?(@setup_progress) %>
+	<% if defined?(@setup_navbar_toggle) && @setup_navbar_toggle == true %>
 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
 	<% else %>
 	<nav class="navbar navbar-ltheme navbar-fixed-top" role="navigation">
@@ -28,9 +28,12 @@
 	                    <li><a href="/scores">History</a></li>
 			
 					<% else %>
-	                    
-	                    <li><a href="/statuses/new">Play</a></li>
-	                    <li><a href="/scores">History</a></li>
+	                  
+		                <% if session[:setup_progress] < 3 %>
+		                <% else %>
+		                    <li><a href="/statuses/new">Play</a></li>
+		                    <li><a href="/scores">History</a></li>
+		                <% end %>
 					<% end %>
 				</ul>
 
@@ -59,7 +62,7 @@
 					<ul class="nav navbar-nav list-inline col-md-3 col-md-4 navbar-right" >
 
 						<% if @has_settings == true %>
-						<li><a href="/ignindices/new">Reset Settings</a></li>
+							<li><a href="/reset_setup">Reset Settings</a></li>
 						<% end %>
 
 		            	<li><a href="/register">Sign up</a></li>

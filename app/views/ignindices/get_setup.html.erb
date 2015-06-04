@@ -1,1 +1,86 @@
-yo
+<div class="container-fluid">
+	<div class="setup-background">
+
+		<div class="row">
+
+			<h1 class="text-center">Welcome! Let's get you ready to win some pizza</h1>
+			
+			<div class="col-md-6 col-md-offset-3">
+
+
+				<div id="setup_progress_bar">
+					<div class="breadcrumb-trail">
+
+						<div class="breadcrumbs">
+						    <div class="breadcrumb-cell first">
+						    	<% if @setup_progress == 0 %>
+								<div id="bread_1" class="breadcrumb active">				    	
+						    	<% else %>
+						   		<div id="bread_1" class="breadcrumb checked selectable">
+						    	<% end %>
+							    	<div class="breadcrumb-icon"></div>
+							    	<span class="breadcrumb-label">Postal Code</span>
+						     	</div>
+						    </div>
+
+						    <div class="breadcrumb-cell">
+						    	<% if @setup_progress == 1 %>
+								<div id="bread_2" class="breadcrumb active">				    	
+						    	<% elsif @setup_progress > 1 %>
+						   		<div id="bread_2" class="breadcrumb checked selectable">
+						   		<% else %>
+						   		<div id="bread_2" class="breadcrumb">
+						    	<% end %>
+									<div class="breadcrumb-icon"></div>
+									<span class="breadcrumb-label">Choose Prize</span>
+								</div>
+						    </div> 
+							     						    
+
+						    <div class="breadcrumb-cell last">
+						    	<% if @setup_progress == 2 %>
+								<div id="bread_3" class="breadcrumb active">				    	
+						   		<% else %>
+						   		<div id="bread_3" class="breadcrumb">
+						    	<% end %>
+								<div class="breadcrumb-icon"></div>
+								<span class="breadcrumb-label">Summoner Name</span>
+								</div>
+						    </div>       
+
+					  </div>
+					</div>	
+				</div>			
+
+
+
+			</div>
+
+		</div>
+
+	</div>
+</div>
+
+<div class="absolute-margin">
+	<% if @setup_progress == 0 %>
+		<%= render 'ignindices/step1' %>
+	<% elsif @setup_progress == 1 %>
+		<%= render 'ignindices/step2' %>
+	<% elsif @setup_progress == 2 or @setup_progress == 3%>
+		<%= render 'ignindices/step3' %>
+	<% else %>
+	<% end %>
+</div>
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-57285202-1', 'auto');
+  ga('require', 'displayfeatures');
+  ga('send', 'pageview');
+
+</script>

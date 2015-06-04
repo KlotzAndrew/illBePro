@@ -71,6 +71,21 @@
         
         </div>
 
+        <h4>
+          Your current rank is Wood 7 <br />
+          <br>
+          Step 1: Open League, go to your 1st mastery page <br>
+          Step 2: Press 'generate validation code'<br>
+          Step 3: Rename your 1st mastery page to validation code<br>
+          Step 4: Press 'validate me!' once you have finished changing your validation code</br>
+          Step 5: Wait up to 60s for your summoner to validate</br>
+
+
+          <div id="button_teaser_summoner" class="btn btn-large btn-primary ">
+            Generate Validation Code
+          </div>
+        </h4>
+
         <% if !@uu_summoner_validated && @ignindex.summoner_name != nil %>
           <div id="summoner_valid_panel" class="panel-body">
             <div id="ign_hide_1" class="row">
@@ -78,7 +93,7 @@
                 <div class="col-md-4">
                   <div class="gen-button">
                     <div class="btn-group">
-                      <%= button_to "New validation code", @ignindex, remote: true, :form => { :id => 'validation_code_submit' }, method: :put, class: "btn btn-large btn-success" %>
+                      <%= button_to "Validate Me", @ignindex, remote: true, :form => { :id => 'validation_code_submit' }, method: :put, class: "btn btn-large btn-success" %>
                     </div>
                   </div>
                 </div>

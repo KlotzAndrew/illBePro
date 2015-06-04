@@ -98,25 +98,60 @@
 </div>
 
 
-	<div class="col-md-6">
+	<div class="col-md-6 text-left"> 
+		<h4>
+			Complete the achievement for each week to be eligible to roll on of the 4 types of prizes listed below
+
+		</br>
+
+		<table class="table">
+		        <thead>
+		          <tr>
+		            <th></th>
+		            <th>Prizes</th>
+		          </tr>
+		        </thead>
+		        <tbody>
+		          <tr>
+		            <th scope="row">1</th>
+		            <td>Tier 1</td>
+		          </tr>
+		          <tr>
+		            <th scope="row">2</th>
+		            <td>Tier 2</td>
+		          </tr>
+		          <tr>
+		            <th scope="row">3</th>
+		            <td>Tier 3</td>
+		          </tr>
+		          <tr>
+		            <th scope="row">4</th>
+		            <td>Tier 4</td>
+		          </tr>		          
+		        </tbody>
+		      </table>
+
+		</br>
+			In addition, for ach of the games you win along the way to completeing your weekly achievement, you get a chance tow in 1 of 15 $5 prizes instantly.
+		</h4>
+	</div>
+
+	<div class="col-md-6" style="margin-top: 50px;">
 	      <% if @all_prize_desc.first == "$10 RP code" %>
 	        <%= image_tag("10rp_image.jpg", size: "175x233") %>
 	      <% elsif @all_prize_desc.first == "$11 RP code" %>
 	        <%= image_tag("10rp_image.jpg", size: "175x233") %>
 	      <% elsif @all_prize_desc.first == "Free Pizza from Domino's" %>
-	        <%= image_tag("dominos_image.png", size: "414x292") %>
+	        <%= image_tag("dominos_image.png", size: "212x147") %>
 	      <% else %> 
 	       <%= image_tag("kayle.jpg", size: "480x300") %>                
 	      <% end %>
-	</div>
-
-	<div class="col-md-6" style="margin-top: 50px;">
 		<% if @all_prize_desc == []  %>
 			<h2 class="">No prizes available for this postal code</h2>
-			<%= button_to "Continue Anyway", games_path, :class => "btn btn-lg btn-primary", :method => :get  %>
+			<%= button_to "Continue Anyway", summoner_path, :class => "btn btn-lg btn-primary", :method => :get  %>
 		<% else %>
-			<h2 class=""><%= @all_prize_desc.first %></h2>
-			<%= button_to "Select", games_path, :class => "btn btn-lg btn-primary", :method => :get  %>
+
+			<%= button_to "Start playing", summoner_path, :class => "btn btn-lg btn-primary", :method => :get, :style => "margin-top:20px;"  %>
 		<% end %>
 	</div>
 

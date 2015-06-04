@@ -30,7 +30,7 @@ def set_variables
 
   else #not signed in
     @summoner_name_ref = session[:summoner_name_ref_temp]
-
+     session[:setup_progress] ||= 0
     if session[:region_id_temp] != nil
       @has_settings = true
     else

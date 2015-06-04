@@ -1,11 +1,217 @@
-<div class="container-fluid absolute-margin">
-		<h1>Choose Game</h1>
-	<div class="col-md-8 col-md-offset-2">
+<div data-pagespec="ignindex_index" id="page_name">
+</div>
 
-		<%= button_to "League of Legends", summoner_path, :class => "btn btn-lg btn-primary", :method => :get  %>
-        <div class="btn-group">
-        	<div style="margin-top: 10px;" class="btn btn-lg btn-default">More Coming Soon...</div>
+<div id="ign" data-id="<%= @ignindex.id %>">
+</div>
+
+<div class="container-fluid" style="margin-top:20px;">
+
+  <div class="row">
+
+    <div id="how_to_going" class="col-md-4 lwell col-md-offset-0" style="margin-top: 20px;margin-bottom: 20px;">
+      <h3>How to Validate Summoner</h3>
+      <ol>
+        <li><strong>Enter</strong> summoner name on this page</li>
+        <li><strong>Press</strong> 'generate validation code'</li>
+        <li><strong>Open</strong> League, go to 1st mastery page</li>
+        <li><strong>Rename</strong> 1st masteries page to validation code</li>
+        <li><strong>Press</strong> 'Save Masteries'</li>
+        <li><strong>Wait</strong> 1-2 minutes to check League</li>
+      </ol>
+        There is a 5 min timer on your code
+
+      <div class="text-center" style="margin-top: 15px;">
+        (example below)</br>
+        <%= image_tag("onetwo_final.jpg", size: "225x300") %>
+      </div>
+    </div>   
+
+    <div class="col-md-7 col-md-offset-1">
+
+
+      <h3 id="summoner_name_text" class="page-header">
+        <% if @ignindex.summoner_name.nil?  or @ignindex.summoner_name == ""%>
+          <span id="js_name">
+            ▼ Enter your summmoner name below
+          </span>
+          <span id="js_val"></span>
+        <% else %>
+          <% if @uu_summoner_validated == true %>
+            <span id="js_name">
+              <%= @ignindex.summoner_name %>
+            </span>
+            <span id="js_val" class="validated">
+               - Valid
+            </span>     
+
+          <% else %>
+            <span id="js_name">
+              <%= @ignindex.summoner_name %>
+            </span>
+            <span id="js_val" class="not-validated">
+               - Not Valid
+            </span>    
+          <% end %>
+        <% end %>
+      </h3>
+          
+      <% if @uu_summoner_validated == true %>
+      <div id="summoner_panel" class="panel panel-success">
+      <% else %>
+      <div id="summoner_panel" class="panel panel-danger">
+      <% end %>
+      
+      <div class="panel-heading">
+      
+        <div class="row">
+          <div class="col-md-12">
+            <div class="row">
+
+              
+              <div class="">
+                <%= form_for @ignindex, remote: true, :html => { :id => 'summoner_name_submit' } do |t| %>
+                  <%= t.text_field :summoner_name, :placeholder => 'Summoner name', :id => "summoner_input" %>
+                      
+                      </span>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">NA<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">North America</a></li>
+                        </ul>
+                      </span>
+
+                  <% if @ignindex.summoner_name.nil? or @ignindex.summoner_name == ""%>
+                    <%= t.submit "Add Summoner Name", class: "btn btn-large btn-primary" %>
+                  <% else %>
+                    <%= t.submit "Update Summoner Name", class: "btn btn-large btn-primary" %>
+                  <% end %>
+                <% end %>
+              </div>
+
+            </div>
+          </div>
+        </div>        
+      </div>
+
+      <% if !@uu_summoner_validated && @ignindex.summoner_name != nil %>
+        <div id="summoner_valid_panel" class="panel-body">
+          <div id="ign_hide_1" class="row">
+            <div>
+              <div class="col-md-4">
+                <div class="gen-button">
+                  <div class="btn-group">
+                    <%= button_to "Generate Validation Code", @ignindex, remote: true, :form => { :id => 'validation_code_submit' }, method: :put, class: "btn btn-large btn-success" %>
+                  </div>
+                </div>
+              </div>
+              <div id="validation_code_div" class="col-md-7 col-md-offset-1">
+                <% if !@ignindex.validation_timer.nil? %>
+                  <div class="well">   
+                    <h5>Validation code: <strong id="js_validation_string"><%= @ignindex.validation_string %></strong></h5>
+                    <% if !@ignindex.mastery_1_name.nil? %>
+                      <h5 id="mastery_page_div">Current 1st page: 
+                        <strong id="mastery_page_name"><%= @ignindex.mastery_1_name %></strong>
+                      </h5>
+                    <% else %>
+                      <h5 id="mastery_page_div" class="start-ghost">Current 1st page: 
+                        <strong id="mastery_page_name"></strong>
+                      </h5>
+                    <% end %>
+                    <h5>
+                      Code valid for 
+                        <span id="test_cd" data-timer="<%= @ignindex.validation_timer %>">
+                          <%= ((300 - (Time.now.to_i - @ignindex.validation_timer))/60) %> more minutes!
+                        </span>
+                    </h5>
+                    <h5>(checks League in ~
+                      <span id="check_loop" data-check="<%= @ignindex.updated_at.to_i %>">
+                        <%= 60 - ((Time.now.to_i - @ignindex.updated_at.to_i) % 60) %>
+                      </span> seconds)
+                    </h5>      
+                  </div>
+                <% else %>
+                  <div class="well">   
+                    <h5>Validation code: <strong id="js_validation_string"></strong></h5>
+                    <% if !@ignindex.mastery_1_name.nil? %>
+                      <h5 id="mastery_page_div">Current 1st page: 
+                        <strong id="mastery_page_name"><%= @ignindex.mastery_1_name %></strong>
+                      </h5>
+                    <% else %>
+                      <h5 id="mastery_page_div" class="start-ghost">Current 1st page: 
+                        <strong id="mastery_page_name"></strong>
+                      </h5>
+                    <% end %>
+                    <h5>
+                      Code valid for:
+                        <span id="test_cd" data-timer="<%= @ignindex.validation_timer %>">
+                          
+                        </span>
+                    </h5>
+                    <h6>(next check in ~
+                      <span id="check_loop" data-check="<%= @ignindex.updated_at.to_i %>">
+                        ?
+                      </span> seconds)
+                    </h6>      
+                  </div>                
+                <% end %>
+              </div>
+            </div>
+          </div>
         </div>
-	</div>
+      <% else %>
+        <div id="summoner_valid_panel" class="panel-body start-ghost">
+          <div id="ign_hide_1" class="row">
+            <div>
+              <div class="col-md-4">
+                <div class="gen-button">
+                  <div class="btn-group">
+                    <%= button_to "New validation code", @ignindex, remote: true, :form => { :id => 'validation_code_submit' }, method: :put, class: "btn btn-large btn-success" %>
+                  </div>
+                </div>
+              </div>
+              <div id="validation_code_div" class="col-md-7 col-md-offset-1">
+                  <div class="well">   
+                    <h5>Validation code: <strong id="js_validation_string"></strong></h5>
+                    <h5 id="mastery_page_div" class="start-ghost">Current 1st page: 
+                      <strong id="mastery_page_name"></strong>
+                    </h5>
+
+                    <h5>
+                      Code valid for 
+                        <span id="test_cd" data-timer="">
+                        </span>
+                    </h5>
+                    <h6>(next check in ~
+                      <span id="check_loop" data-check="<%= @ignindex.updated_at.to_i %>">
+                      </span> seconds)
+                    </h6>      
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>        
+      <% end %>
+
+        </div>
+
+      </div>
+
+      <% if @uu_summoner_validated %> 
+      <div id="how_to_finished" class="col-md-4 col-md-offset-1 text-center" style="margin-top: 0px;margin-bottom: 20px;">
+      <% else %>
+    
+      <div id="how_to_finished" class="col-md-4 lwell col-md-offset-1 text-center start-ghost" style="margin-top: 0px;margin-bottom: 20px;">
+      <% end %>
+
+    	<%= form_for @ignindex do |t| %>
+	        <span id="">
+	      <%= t.submit "Continue", class: "btn btn-large btn-primary" %>
+	        </span>
+	    <% end %>
+
+    </div>
+
+ 
+    
+  </div>
 
 </div>

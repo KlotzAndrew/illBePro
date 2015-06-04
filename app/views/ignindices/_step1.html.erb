@@ -1,18 +1,65 @@
-<div class="container-fluid absolute-margin">
 
-	<h1>Enter your postal code - so we can match you up with a pizza brand that can deliver to you</h1>
+<div class="container-fluid">
 
-	<div class="panel-heading">
-	    <%= form_for @ignindex do |t| %>
-	      <%= t.text_field :postal_code, :placeholder => 'Postal/Zip Code' %>
-	        <span id="">
-	      <%= t.submit "Add Postal/Zip Code", class: "btn btn-large btn-primary" %>
-	        </span>
-	    <% end %>
-
-	    <h6>*US uses first 5-digits</h6>
-	    <h6>*CAN uses first 3-digits</h6>
+	<div class="row">
+		<div class="col-md-12 col-md-offset-0">
+			<h3>Enter your postal code - so we can match you with a restaurant that can deliver to you</h3> 
+		</div>
 	</div>
 
-	**currently works for exact matches, no error handling
+	<div class="row">
+		<div class="col-md-6">
+			<% if @ignindex.errors.any? %>
+			  <div id="error_explanation">
+			    <h2><%= pluralize(@ignindex.errors.count, "error") %> prohibited this ignindex from being saved:</h2>
+			 
+			    <ul>
+			    <% @ignindex.errors.full_messages.each do |msg| %>
+			      <li><%= msg %></li>
+			    <% end %>
+			    </ul>
+			  </div>
+			<% end %>
+
+			<div class="panel-heading">
+			    <%= form_for @ignindex do |t| %>
+			      <%= t.text_field :postal_code, :placeholder => 'Postal/Zip Code' %>
+			        <span id="">
+			      <%= t.submit "Add Postal/Zip Code", class: "btn btn-large btn-primary" %>
+			        </span>
+			    <% end %>
+
+			    <h6>*US uses first 5-digits</h6>
+			    <h6>*CAN uses first 3-digits</h6>
+			</div>
+			<h5>
+				Click for a Map of Toronto Postal codes
+			</h5>
+		</div>
+
+		<div class="col-md-6">
+			<h3 class="text-center">Cora Pizza Will be Prizing Your League Games</h3>
+			<div class="col-md-12">
+				<div class="col-md-6">
+						<h5>
+							Cora's delivers to: 
+						</h5>
+					<ul>
+						<li>M6G</li>
+						<li>M6J</li>
+						<li>M5R</li>
+						<li>M5S</li>
+						<li>M5T</li>
+						<li>M5G</li>
+					</ul>
+				</div>
+				<div class="col-md-6">
+					<%= image_tag("cora1.jpg", size: "240x150") %> 
+				</div>
+			</div>
+			<div class="col-md-12 text-center">
+		  		<%= button_to "Learn More", current_achievement_path, :class => "btn btn-success green-button-long", :method => :get  %>
+			</div>
+		</div>
+	</div>
 </div>

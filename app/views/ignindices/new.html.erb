@@ -89,34 +89,53 @@
 
 <div class="container-fluid absolute-margin">
 
-<div class="row">
-	<div class="col-md-12 col-md-offset-0">
-		<h3>Enter your postal code- so we can match you up with a pizza brand that can deliver to you</h3> 
+	<div class="row">
+		<div class="col-md-12 col-md-offset-0">
+			<h3>Enter your postal code- so we can match you up with a pizza brand that can deliver to you</h3> 
+		</div>
 	</div>
-</div>
 
-<% if @ignindex.errors.any? %>
-  <div id="error_explanation">
-    <h2><%= pluralize(@ignindex.errors.count, "error") %> prohibited this ignindex from being saved:</h2>
- 
-    <ul>
-    <% @ignindex.errors.full_messages.each do |msg| %>
-      <li><%= msg %></li>
-    <% end %>
-    </ul>
-  </div>
-<% end %>
+	<div class="row">
+		<div class="col-md-6">
+			<% if @ignindex.errors.any? %>
+			  <div id="error_explanation">
+			    <h2><%= pluralize(@ignindex.errors.count, "error") %> prohibited this ignindex from being saved:</h2>
+			 
+			    <ul>
+			    <% @ignindex.errors.full_messages.each do |msg| %>
+			      <li><%= msg %></li>
+			    <% end %>
+			    </ul>
+			  </div>
+			<% end %>
 
-	<div class="panel-heading">
-	    <%= form_for @ignindex do |t| %>
-	      <%= t.text_field :postal_code, :placeholder => 'Postal/Zip Code' %>
-	        <span id="">
-	      <%= t.submit "Add Postal/Zip Code", class: "btn btn-large btn-primary" %>
-	        </span>
-	    <% end %>
+			<div class="panel-heading">
+			    <%= form_for @ignindex do |t| %>
+			      <%= t.text_field :postal_code, :placeholder => 'Postal/Zip Code' %>
+			        <span id="">
+			      <%= t.submit "Add Postal/Zip Code", class: "btn btn-large btn-primary" %>
+			        </span>
+			    <% end %>
 
-	    <h6>*US uses first 5-digits</h6>
-	    <h6>*CAN uses first 3-digits</h6>
+			    <h6>*US uses first 5-digits</h6>
+			    <h6>*CAN uses first 3-digits</h6>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<ul>
+				CORA postal codes
+				<li>M5R</li>
+				<li>M5R</li>
+				<li>M5R</li>
+				<li>M5R</li>
+				<li>M5R</li>
+				<li>M5R</li>
+				<li>M5R</li>
+			</ul>
+		</div>
+		<div class="col-md-3">
+			<%= image_tag("kayle.jpg", size: "240x150") %> 
+		</div>
 	</div>
 
 </div>
