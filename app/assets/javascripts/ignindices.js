@@ -53,6 +53,10 @@ var ajax_button_validation_string = function() {
         console.log(data)
         $('#js_validation_string').html(data["ignindex"].validation_string)
         $('#test_cd').data("timer", data["ignindex"].validation_timer)
+        clearTimeout(ignTimer)
+        clearTimeout(ign_update_timeout)
+        ign_clocks()
+        ign_update()
       }
     })
   })
@@ -120,7 +124,7 @@ var ign_update = function() {
           $('#summoner_panel').addClass("panel-success")
           $('#summoner_valid_panel').slideUp(3000) // get rid of clock
 
-          $('#how_to_going').addClass("start-ghost")
+          // $('#how_to_going').addClass("start-ghost")
           $('#how_to_finished').removeClass("start-ghost")
             
             // if ( $('#setup_progress_bar').length > 0 ) { // slide the setup over by 1
@@ -148,12 +152,18 @@ var ign_clocks = function(){
 
   grab = $('#test_cd').data("timer") // validation timout counter
   grab2 = $('#check_loop').data("check") // clockwork estimate
-
   current_time = (new Date).getTime()
-  now1 = parseInt((grab - (current_time/1000) + 300)/60) + "m " + parseInt((grab - (current_time/1000) + 300)%60) + "s"
+
+  // this sets timeout to 0, if there is no timer running
+  // if ( (grab - (current_time/1000) + 300) < 0 ) { 
+  //   now1 = "0m 0s"
+  //   } else {
+      now1 = parseInt((grab - (current_time/1000) + 300)/60) + "m " + parseInt((grab - (current_time/1000) + 300)%60) + "s"
+  //   }
+
   $('#test_cd').html(now1) // update total time left
   
-  now2 = parseInt(30 - ((current_time/1000 - grab2) % 30))
+  now2 = parseInt(30 - ((current_time/1000 - grab2) % 60))
   $('#check_loop').html(now2) // update estimate of clockwork
   
   console.log("ign timers updated")
@@ -164,6 +174,12 @@ var ign_clocks = function(){
       // $('#validation_code_div').toggleClass("start-ghost")
       clearTimeout(ign_update_timeout);
     }
+  } else { 
+    // set timers to 0, if there is no active validation
+    now1 = ""
+    now2 = 0
+    $('#test_cd').html(now1)
+    $('#check_loop').html(now2)
   }
 };
 

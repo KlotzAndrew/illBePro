@@ -1,7 +1,7 @@
 <h1 class="text-center ">
-	<strong>Welcome to i'llBePro</strong>
+	<strong>Welcome to i'llBePro(HOMEPAGE)</strong>
 	<h4 class="text-center ">
-		Win a free pizza by playing your favorite games through our portal <%= user_signed_in? %>
+		Win a free pizza by playing your favorite games through our portal
 	</h4>
 </h1>
       
@@ -11,9 +11,9 @@
 	    <div class="col-md-12">
 	    	<div class="text-center">
 		    	<% if user_signed_in? %>
-			    	<%= button_to "Play", challenges_path, :class => "btn btn-lprimary home-button", :method => :get  %>
+			    	<%= button_to "Play", new_status_path, :class => "btn btn-lprimary home-button", :method => :get  %>
 		    	<% else %>
-			    	<%= button_to "Play", new_ignindex_path, :class => "btn btn-lprimary home-button", :method => :get  %>
+			    	<%= button_to "Play", setup_path, :class => "btn btn-lprimary home-button", :method => :get  %>
 		    	<% end %>
 	    	</div>
 	    </div>
