@@ -324,6 +324,9 @@ class IgnindicesController < ApplicationController
         end
         User.find(current_user.id).update(
           :summoner_id => @ignindex.validation_timer)
+
+        Rails.logger.info "matching validation summoner_id: #{User.find(current_user.id).summoner_id}"
+        Rails.logger.info "matching validation summoner_id: #{@ignindex.validation_timer}"
       end
 
       Rails.logger.info "session sum name: #{session[:summoner_name_ref_temp]}"
@@ -385,6 +388,22 @@ class IgnindicesController < ApplicationController
       Rails.logger.info "triggers update for: new 'gen validation code'"
       @ignindex.refresh_validation
       session[:last_validation] = @ignindex.validation_timer
+
+      #assign validator to user
+      if user_signed_in?
+        Rails.logger.info "this should trigger user adding ignindex#update"
+  
+        if !Ignindex.find_by_user_id(current_user.id).nil? #remove user from any current ignindex
+          Ignindex.find_by_user_id(current_user.id).update(
+            :user_id => nil)
+        end
+        User.find(current_user.id).update(
+          :summoner_id => @ignindex.validation_timer)
+
+        Rails.logger.info "matching validation summoner_id: #{User.find(current_user.id).summoner_id}"
+        Rails.logger.info "matching validation summoner_id: #{@ignindex.validation_timer}"
+      end
+      
     end
   end
 

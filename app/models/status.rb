@@ -205,6 +205,7 @@ end
             
             #WIP attach_user
             attach_user = nil
+            add_a_user = nil
             if User.find_by_summoner_id(ign_for_mastery_hash.validation_timer).nil? #check if any user has vaidator
               Rails.logger.info "attach_user 1: #{attach_user}"
               add_a_user = nil
@@ -285,6 +286,9 @@ end
             Rails.logger.info "User.find_by_summoner_id(ign_for_mastery_hash.validation_timer).nil?: #{User.find_by_summoner_id(ign_for_mastery_hash.validation_timer).nil?}"
             
             attach_user = nil
+            add_a_user = nil
+            Rails.logger.info "#{cron_st}: ign_for_mastery_hash.validation_timer #{ign_for_mastery_hash.validation_timer}"
+            Rails.logger.info "#{cron_st}: ign_for_mastery_hash.validation_timer #{User.find_by_summoner_id(ign_for_mastery_hash.validation_timer)}"
             if User.find_by_summoner_id(ign_for_mastery_hash.validation_timer).nil? #check if any user has vaidator
               Rails.logger.info "attach_user 1: #{attach_user}"
               add_a_user =  nil
