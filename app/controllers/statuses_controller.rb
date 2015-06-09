@@ -264,7 +264,11 @@
     gca_ign = Ignindex.where("id = ?", session_ignindex_id).first
     Rails.logger.info "gca_ign.id: #{gca_ign.id}"
     if gca_ign.active_achievement.nil?
-      Rails.logger.info "JSON.parse(Region.find(gca_ign.region_id).prize_id_tier1)[0]: #{JSON.parse(Region.find(gca_ign.region_id).prize_id_tier1)[0]}"
+      if Region.find(gca_ign.region_id).prize_id_tier1.nil?
+        Region.find(gca_ign.region_id).updte(
+          :prize_id_tier1 => "[]")
+      end
+
       if JSON.parse(Region.find(gca_ign.region_id).prize_id_tier1)[0] == 1
         prizing_here = 1
       else
