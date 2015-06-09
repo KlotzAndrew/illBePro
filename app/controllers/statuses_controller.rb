@@ -265,7 +265,7 @@
     Rails.logger.info "gca_ign.id: #{gca_ign.id}"
     if gca_ign.active_achievement.nil?
       if Region.find(gca_ign.region_id).prize_id_tier1.nil?
-        Region.find(gca_ign.region_id).updte(
+        Region.find(gca_ign.region_id).update(
           :prize_id_tier1 => "[]")
       end
 
