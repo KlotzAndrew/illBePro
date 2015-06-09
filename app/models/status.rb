@@ -207,12 +207,14 @@ end
             attach_user = nil
             if User.find_by_summoner_id(ign_for_mastery_hash.validation_timer).nil? #check if any user has vaidator
               Rails.logger.info "attach_user 1: #{attach_user}"
-
+              add_a_user = nil
             else
               attach_user = User.find_by_summoner_id(ign_for_mastery_hash.validation_timer)
               attach_user.update(
                 :ignindex_id => ign_for_mastery_hash.id)
               Rails.logger.info "attach_user 2: #{attach_user}"
+
+               add_a_user = attach_user.id
             end
 
             Rails.logger.info "attach_user end: #{attach_user}"
@@ -224,7 +226,7 @@ end
               :summoner_validated => true,
               :validation_timer => nil,
               :validation_string => nil,
-              :user_id => attach_user.id,
+              :user_id => add_a_user,
               :region_id => ign_for_mastery_hash.region_id_temp,
               :active_achievement => nil)
             Rails.logger.info "#{cron_st}: key validated"
@@ -248,7 +250,7 @@ end
           that_comma = 0
           mass_summoner = ""
         rescue => e
-          Rails.logger.info "#{cron_st}: uri error request on masteries"
+          Rails.logger.info "#{cron_st}: uri error request on masteries 1"
           that_comma = 0
           mass_summoner = ""
         end
@@ -285,12 +287,15 @@ end
             attach_user = nil
             if User.find_by_summoner_id(ign_for_mastery_hash.validation_timer).nil? #check if any user has vaidator
               Rails.logger.info "attach_user 1: #{attach_user}"
+              add_a_user =  nil
 
             else
               attach_user = User.find_by_summoner_id(ign_for_mastery_hash.validation_timer)
               attach_user.update(
                 :ignindex_id => ign_for_mastery_hash.id)
               Rails.logger.info "attach_user 2: #{attach_user}"
+
+              add_a_user = attach_user.id
             end
 
             Rails.logger.info "attach_user end: #{attach_user}"
@@ -298,11 +303,12 @@ end
             ign_for_mastery_hash.update(
               :last_validation => ign_for_mastery_hash.validation_timer)
 
+
             ign_for_mastery_hash.update(
               :summoner_validated => true,
               :validation_timer => nil,
               :validation_string => nil,
-              :user_id => attach_user.id,
+              :user_id => add_a_user,
               :region_id => ign_for_mastery_hash.region_id_temp,
               :active_achievement => nil)
             Rails.logger.info "#{cron_st}: key validated"
@@ -326,7 +332,7 @@ end
         that_comma = 0
         mass_summoner = ""
       rescue => e
-        Rails.logger.info "#{cron_st}: uri error request on masteries"
+        Rails.logger.info "#{cron_st}: uri error request on masteries 2"
         that_comma = 0
         mass_summoner = ""
       end
