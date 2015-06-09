@@ -260,8 +260,11 @@
   end
 
   def get_current_achievement(session_ignindex_id)
+    Rails.logger.info "session_ignindex_id: #{session_ignindex_id}"
     gca_ign = Ignindex.where("id = ?", session_ignindex_id).first
+    Rails.logger.info "gca_ign.id: #{gca.id}"
     if gca_ign.active_achievement.nil?
+      Rails.logger.info "JSON.parse(Region.find(gca_ign.region_id).prize_id_tier1)[0]: #{JSON.parse(Region.find(gca_ign.region_id).prize_id_tier1)[0]}"
       if JSON.parse(Region.find(gca_ign.region_id).prize_id_tier1)[0] == 1
         prizing_here = 1
       else
