@@ -7,6 +7,15 @@ class IgnindicesController < ApplicationController
 
   respond_to :html, :xml, :json
   
+  def zone
+    if user_signed_in? && !current_user.ignindex_id.nil?
+      @ignindex = Ignindex.find_by_user_id(current_user.id)
+      @zone_pc = @ignindex.region.postal_code
+    else
+      redirect_to setup_path
+    end
+  end
+
   def show #for ajax requests only
     if user_signed_in? && !Ignindex.find_by_user_id(current_user.id).nil?
       respond_to do |format|
@@ -69,13 +78,14 @@ class IgnindicesController < ApplicationController
         reset_session_vars
       else
         show_prizes(session[:region_id_temp])
+        show_prizes_v2(session[:region_id_temp])
       end    
     elsif session[:setup_progress] == 2 or session[:setup_progress] == 3
       @setup_progress = 2
 
       session[:region_id_temp] ||= nil
 
-      if user_signed_in?
+      if user_signed_in? && !Ignindex.find_by_user_id(current_user.id).nil?
         using_ign = Ignindex.find_by_user_id(current_user.id)
       
         if using_ign.nil?
@@ -166,6 +176,14 @@ class IgnindicesController < ApplicationController
 
   end
 
+  def show_prizes_v2(x)
+    if [43871, 43873, 43859, 43860, 43861, 43851].include?(x)
+      @tagged_for_prizing = true
+    else
+      @tagged_for_prizing = false
+    end
+  end
+
   def show_prizes(x) #prize region logic (duplicate in ignindeces/statuses controller)
     @all_prize_desc = []
     @all_prize_vendor = []
@@ -205,7 +223,7 @@ class IgnindicesController < ApplicationController
     @setup_progress = 3
     session[:region_id_temp] ||= nil
 
-    if user_signed_in?
+    if user_signed_in? && !Ignindex.find_by_user_id(current_user.id).nil?
       using_ign = Ignindex.find_by_user_id(current_user.id)
     
       if using_ign.nil?
@@ -231,7 +249,6 @@ class IgnindicesController < ApplicationController
       end
 
     end #end of user in/out block
-
   end
 
   def get_unauth_ignindex #sets @ignindex to new or existing
@@ -262,24 +279,25 @@ class IgnindicesController < ApplicationController
   end
 
   def update # used on step 2 and 4 (if using @ignindex.where("...").first.not.nil?)
-    if params[:commit] == "Add Summoner Name" #this will never be triggered (add is now create only)?
-      @ignindex.update(ignindex_params)
-      @ignindex.refresh_summoner
-      @ignindex.refresh_validation
-    elsif params[:commit] == "Update Summoner Name" #triggered on 'update, with a different name'
- 
+    if params[:commit] == "Add Summoner Name" or params[:commit] == "Update Summoner Name" 
+      Rails.logger.info "triggering add/update on ignindex#update"
+
       session[:summoner_name_temp] = params["ignindex"]["summoner_name"]
       session[:summoner_name_ref_temp] = params["ignindex"]["summoner_name"].mb_chars.downcase.gsub(' ', '')
+      session[:last_validation] = nil
+
  
+      #check if ignindex for summmoner aleady exists and assign
       if !session[:summoner_name_ref_temp].blank? && !Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first.nil?
+        
+        #assign ignindex to current session
         @ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
         session[:ignindex_id] = @ignindex.id
 
+        #set temp validator
         @ignindex.update(
           :region_id_temp => session[:region_id_temp])
-
-        #dont load in the full object -_-; fix me later
-      else
+      else #new ignindex required for summoner
 
         @ignindex = Ignindex.new(
           :region_id => session[:region_id_temp],
@@ -287,19 +305,29 @@ class IgnindicesController < ApplicationController
           :summoner_name => session[:summoner_name_temp],
           :summoner_name_ref => session[:summoner_name_ref_temp])
         @ignindex.save
+
+        #assign it to current session
         session[:ignindex_id] = @ignindex.id
       end    
 
+      #reset validation timer && assign match to session
       @ignindex.refresh_validation
       session[:last_validation] = @ignindex.validation_timer
+
+      #assign validator to user
       if user_signed_in?
-        User.find(current_user.id).update(
-          :summoner_id => @ignindex.validation_timer)
-        Ignindex.where("user_id = ?", 10).each do |x| 
-          x.update(
+        Rails.logger.info "this should trigger user adding ignindex#update"
+  
+        if !Ignindex.find_by_user_id(current_user.id).nil? #remove user from any current ignindex
+          Ignindex.find_by_user_id(current_user.id).update(
             :user_id => nil)
         end
+        User.find(current_user.id).update(
+          :summoner_id => @ignindex.validation_timer)
       end
+
+      Rails.logger.info "session sum name: #{session[:summoner_name_ref_temp]}"
+
     elsif params["commit"] == "Continue"
       #this moves from step3 to step4
       session[:setup_progress] = 3
@@ -386,7 +414,7 @@ class IgnindicesController < ApplicationController
         end 
       end
       # redirect_to get_started_path
-    elsif params["commit"] == "Continue Anyway" or params["commit"] == "Start playing"
+    elsif params["commit"] == "Continue Anyway" or params["commit"] == "Select"
       session[:setup_progress] = 2
       respond_to do |format|
         format.html { redirect_to setup_path }
@@ -408,6 +436,7 @@ class IgnindicesController < ApplicationController
         session[:summoner_name_temp] = params["ignindex"]["summoner_name"]
         session[:summoner_name_ref_temp] = params["ignindex"]["summoner_name"].mb_chars.downcase.gsub(' ', '')
 
+        #check for existing && valid ignindex
         if !session[:summoner_name_ref_temp].blank? && !Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first.nil?
           @ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
           session[:ignindex_id] = @ignindex.id
@@ -432,6 +461,7 @@ class IgnindicesController < ApplicationController
         # session[:last_validation] = @ignindex.validation_timer
 
         if user_signed_in?
+          Rails.logger.info "this should trigger user adding ignindex#create"
           User.find(current_user.id).update(
             :summoner_id => @ignindex.validation_timer)
         end

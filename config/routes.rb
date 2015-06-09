@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   get 'games', to: 'ignindices#games', as: :games
   get 'setup', to: "ignindices#get_setup", as: :setup
   get 'reset_setup', to: "ignindices#reset_setup", as: :reset_setup
+  get 'zone', to: "ignindices#zone"
   
   resources :profiles
 
@@ -27,13 +28,13 @@ Rails.application.routes.draw do
   get 'challenges', to: 'statuses#index', as: :challenges
   
 
-authenticated :user do
-  root to: 'staticpages#homepage', as: :authenticated_root
-end
+# authenticated :user do
+#   root to: 'staticpages#homepage', as: :authenticated_root
+# end
 
-unauthenticated do
+# unauthenticated do
   root to: "staticpages#landing_page"
-end
+# end
 
 
 
@@ -42,6 +43,7 @@ end
   get 'teaser_challenges', to: "staticpages#teaser_challenges"
   get 'teaser_prize_zone', to: "staticpages#teaser_prize_zone"
   get 'current_achievement', to: "staticpages#current_achievement"
+  get 'dash', to: "staticpages#dash"
   
   get 'about', to: "staticpages#about"
   get 'contact', to: "staticpages#contact"

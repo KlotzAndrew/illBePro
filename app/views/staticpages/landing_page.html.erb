@@ -8,10 +8,10 @@
 		  	<div class="col-md-6">
 		  		<div class="row" style="margin-top: 15px;">
 					<div class="col-md-3">
-						<%= image_tag("pizza1.jpeg", size: "100x100") %>
+						<%= image_tag("mouse1.jpeg", size: "100x100") %>
 					</div>	
 					<div class="col-md-8" style="margin-top: 15px;">
-						<h4>Complete in-game achievements for a $1-20 pizza prize each week</h4>
+						<h4>Complete in-game achievements for up to a $20 pizza prize each week</h4>
 					</div>
 		  		</div>
 
@@ -29,14 +29,14 @@
 						<%= image_tag("pizza1.jpeg", size: "100x100") %>
 					</div>	
 					<div class="col-md-8" style="margin-top: 15px;">
-						<h4>Gaming to promote your local pizza restaurants</h4>
+						<h4>Gaming to promote your local pizza restaurants & earn food</h4>
 					</div>
 		  		</div>
 
 		  	</div>
 
 		    <div class="col-md-6">
-		    	<div class="text-center">
+		    	<div class="text-center" style="margin-top: 70px;">
 			    	<% if user_signed_in? %>
 				    	<%= button_to "Start Now", new_status_path, :class => "btn btn-lprimary home-button", :method => :get  %>
 			    	<% else %>
@@ -46,17 +46,17 @@
 		    </div>
 		</div>
 		<div class="col-md-12">
-  			<div class="col-md-8 col-md-offset-1">
-	  			<h3>
-		  			Cora Pizza (downtown Toronto) will be awading you starting June X
-		  		</h3>
-  			</div>
-
-  			<div class="col-md-2">
+  			<div class="col-md-2 col-md-offset-2" style="margin-top:10px;">
   				<h3>
 			  		<%= button_to "Learn More", current_achievement_path, :class => "btn btn-success green-button-long", :method => :get  %>
   				</h3>
   			</div>
+  			<div class="col-md-6 col-md-offset-2 text-center">
+	  			<h3>
+		  			Attention Toronto! Cora Pizza will reward your League games with pizza starting June 15th
+		  		</h3>
+  			</div>
+
 
 		</div>
 

@@ -1,56 +1,53 @@
 <div class="row">
-	<div class="col-md-12 col-md-offset-0">
-			<h3>Achievement available for: <strong><%= @region_postal %></strong></h3> 
+	<div class="col-md-6 col-md-offset-0">
+		<% if @tagged_for_prizing == true %>
+			<h3>Cora Pizza has an achievement available for: <strong><%= @region_postal %></strong></h3>
+		<% else %>
+			<h3>No achievement/prizes available for: <strong><%= @region_postal %></strong></h3>
+		<% end %>
 	</div>
 </div>
 
 	<div class="col-md-6 text-left"> 
-		<h4>
-			Complete the achievement for each week to be eligible to roll on of the 4 types of prizes listed below
 
-		</br>
-
-		<table class="table">
-		        <thead>
-		          <tr>
-		            <th></th>
-		            <th>Prizes</th>
-		          </tr>
-		        </thead>
-		        <tbody>
-		          <tr>
-		            <th scope="row">1</th>
-		            <td>Tier 1</td>
-		          </tr>
-		          <tr>
-		            <th scope="row">2</th>
-		            <td>Tier 2</td>
-		          </tr>
-		          <tr>
-		            <th scope="row">3</th>
-		            <td>Tier 3</td>
-		          </tr>
-		          <tr>
-		            <th scope="row">4</th>
-		            <td>Tier 4</td>
-		          </tr>		          
-		        </tbody>
-		      </table>
-
-		</br>
-			In addition, for ach of the games you win along the way to completeing your weekly achievement, you get a chance tow in 1 of 15 $5 prizes instantly.
-		</h4>
+		<% if @tagged_for_prizing == true %>
+			<h5>Up to a $20 pizza awarded at the end of each week</h5>
+			<h5>Bonus, each game won has a random chance to instantly win 1 of 15 $5 pizza prizes</h5>
+		<% else %>
+			<h5>Play the Cora Pizza achievement just for fun</h5>
+		<% end %>
+     
+	<h4><u>Instructions to complete:</u></h4>
+        <h5>
+          Earn 10 experience points
+          <ul>
+            <li>1exp per win recorded</li>
+            <li>2exp for spelling "CORA" by winning games with champions whose name starts with that letter (e.g. Corki, Olaf, Ryze, Ashe)</li>
+          </ul>
+        </h5>
+	     <h5>
+	     
+	    </h5>	
+	    (<a href="/current_achievement">learn more</a>)
+     
+      <h5 class="margin-top: 25;">
+        **Games are only recorded for Solo/Duo Queue NA Ranked 5v5 on Summoners Rift
+      </h5>	    
+   
 	</div>
 
-	<div class="col-md-6" style="margin-top: 50px;">
+	<div class="col-md-6" style="margin-top: 00px;">
 
-		<%= image_tag("cora1.jpg", size: "480x300") %>                
+		<div class="text-center">
+			<%= image_tag("cora1.jpg", size: "500x225") %>              
+		</div>
 
-
-	    <%= form_for @ignindex do |t| %>
-	        <span id="">
-	      <%= t.submit "Start playing", class: "btn btn-large btn-primary" %>
-	        </span>
-	    <% end %>
+		<div class="text-center" style="margin-top: 25px;">
+		    <%= form_for @ignindex do |t| %>
+		        <span id="">
+		      <%= t.submit "Select", class: "btn btn-large btn-primary ach-select-button" %>
+		        </span>
+		    <% end %>
+		</div>
 
 	</div>

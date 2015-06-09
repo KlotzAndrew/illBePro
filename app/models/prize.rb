@@ -10,6 +10,70 @@ has_one :user
 
 # before_destroy :clean_region
 
+	def insert_prizes_manually
+		Prize.find(dont_run)
+
+1.times do |x|
+  Prize.create(
+    # :country_zone => "",
+    :assignment => 0,
+    :vendor => "Cora Pizza",
+    :description => "$10 off pizza",
+    :reward_code => "C8V9",
+    :tier => "1")
+end; nil 
+
+1.times do |x|
+  Prize.create(
+    # :country_zone => "",
+    :assignment => 0,
+    :vendor => "Cora Pizza",
+    :description => "$5 off pizza",
+    :reward_code => "BR3Z",
+    :tier => "2")
+end; nil
+
+postal_raw = ["M6G", "M6J", "M5R", "M5S", "M5T", "M5G"]
+postal_regions = []
+postal_raw.each do |x|
+	postal_regions << Region.where("postal_code = ?", x).first.id
+end; nil
+
+Prize.all.each do |prize|
+	postal_regions.each do |x|
+	  prize.regions << Region.find(x)
+	  prize.save
+	end
+end
+
+prize = Prize.last
+prize.regions
+
+		h2 = [3687, 3688, 3689, 3690, 3691, 3692]
+		
+		h2.each do |x|
+		  prize.regions << Region.find(x)
+		  prize.save
+		end
+
+		Region.where("id < 100").each do |region|
+		  prize.regions << region
+		  prize.save
+		end
+
+		prize = Prize.find(id)
+		prize.regions
+
+		Region.where("id < 100").each do |region|
+		  prize.regions << region
+		  prize.save
+		end		
+
+
+	end
+
+
+
 	def clean_region
 		puts "cleaning regions..."
 		puts "value: #{self.region_id != nil}"

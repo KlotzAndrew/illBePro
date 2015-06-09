@@ -1,42 +1,132 @@
 <h1 class="page-header">
-	Some information about Cora Pizza
+	About Cora Pizza
 </h1>
 
-<ul>
-	<li>render current achievement</li>
-	<li>Basic info + maybe a map of where it is (right next to UofT)</li>
-	<li>Should definetly include a promo blurb, on how they are ahead of the curve when it comes to video games</li>
-</ul>
+<div class="row">
+  <div class="col-md-12">
+    
+    <div class="col-md-6">
+      <h4>
+        Cora Pizza loves gamers, and will be experimenting with rewarding your League of Legends games with pizza. Starting June 15th Cora Pizza will be rewarding your in-game acheivements with pizza.
+      </h4>
+    </br>
+      <h4>
+        Since 1984, Cora Pizza's family-owned business has been satisfying Toronto appetites. Located Downtown Toronto, Cora Pizza offers gourmet specialty pizzas that are guaranteed to please your taste buds! 
+      </h4>
 
 
-      <table class="table">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Value</th>
-            <th>Chance</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">Tier 1</th>
-            <td>$1</td>
-            <td>25%</td>
-          </tr>
-          <tr>
-            <th scope="row">Tier 2</th>
-            <td>$2</td>
-            <td>25%</td>
-          </tr>
-          <tr>
-            <th scope="row">Tier 3</th>
-            <td>$5</td>
-            <td>25%</td>
-          </tr>
-          <tr>
-            <th scope="row">Tier 4</th>
-            <td>$20</td>
-            <td>25%</td>
-          </tr>             
-        </tbody>
-      </table>
+    </div>
+
+
+    <div class="col-md-6">
+      <a href="http://www.corapizza.com">
+        <%= image_tag("cora1.jpg", size: "500x225") %>    
+      </a>
+    </div>
+
+  </div>
+
+  <div class="col-md-12">
+    <div class="col-md-3 text-center">
+        <%= image_tag("cora_map.jpg", size: "200x200") %>  
+    </div>
+
+    <div class="col-md-3">
+     <div class="text-center" style="margin-top: 40px">
+        <h4>656A Spadina Av</h4>
+        <h4>Toronto, ON M5S 2H7</h4>
+        <h4>(416) 922-1188</h4>
+        <h4>www.corapizza.com</h4>
+      </div>      
+    </div>
+  </div>
+
+</div>
+
+<h1 class="page=header">
+  About Cora Pizza's Achievement
+</h1>
+
+  <div class="col-md-12" style="margin-top:25px;">
+
+    <div class="col-md-6">
+      <div class="well">
+        <h4><u>Instructions:</u></h4>
+        <h5>
+          Earn 10 experience points to complete the achievement and win a pizza prize
+          <ul>
+            <li>1exp per win recorded</li>
+            <li>2exp for spelling "CORA" by winning games with champions whose name starts with that letter (e.g. Corki, Olaf, Ryze, Ashe)</li>
+          </ul>
+        </h5>
+        <h5>
+          Random Bonus, each game played has a chance to win 1 of 15 $5 pizza prizes
+        </h5>
+
+        <h5>
+          Games are only recorded for Solo/Duo Queue NA Ranked 5v5 on Summoners Rift
+        </h5>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="well">
+        <table class="table">
+          <h4><u>Prize Pool for completing achievement</u></h4>
+          Bonus, 15 $5 pizza codes instantly awarded per game won (~2%/win)
+          <thead>
+            <tr>
+              <th>Reward</th>
+              <th>Chance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>$1</td>
+              <td>41%</td>
+            </tr>
+            <tr>
+              <td>$2</td>
+              <td>35%</td>
+            </tr>
+            <tr>
+              <td>$5</td>
+              <td>18%</td>
+            </tr>
+            <tr>
+              <td>$20</td>
+              <td>6%</td>
+            </tr>             
+          </tbody>
+        </table>
+        *$5+ prizes have a minimum purchase order of $15+
+      </div>
+    </div>
+
+  </div>
+  
+
+  <h1 class="page=header">
+    About Prizes & Delivery
+  </h1>
+  <div>
+    <h4>Prizes for achievements are awarded at 6:00pm Sunday, for players who have completed an achievement. Bonus prizes are awarded instantly. Prizes awarded will be emailed to the winner as well as appear under the 'history' tab on that users account. Each prize is a single-use reward code that can be used with puchase
+    </h4>
+
+    <h4>
+      There are a fixed number of prizes, a <span style="color:red;">RED</span> marker will appear on the achievement page when none are left. Winning prizes is subject to prize avialability
+    </h4>    
+  </div>
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-57285202-1', 'auto');
+  ga('require', 'displayfeatures');
+  ga('send', 'pageview');
+
+</script>

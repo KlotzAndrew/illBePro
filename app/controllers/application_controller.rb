@@ -22,7 +22,7 @@ def set_variables
     
 
     if Ignindex.find_by_user_id(current_user.id).nil?
-      @ign_id = nil
+      @ign_id_full = nil
     else
       @ign_id_full = Ignindex.find_by_user_id(current_user.id)
     end

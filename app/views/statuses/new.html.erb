@@ -1,7 +1,7 @@
 <%= render 'form' %>
 
 <% if @ignindex.prize_id != nil %>
-  <div class="page-header">
+  <div class="">
     <div class="row">
       <div class="col-md-12">
     
@@ -15,15 +15,9 @@
             </div>
             <div class="col-md-6">
               <div class="text-center">
-                <% if @prize_description == "$10 RP code" %>
-                  <%= image_tag("10rp_image.jpg", size: "175x233") %>
-                <% elsif @prize_description == "$11 RP code" %>
-                  <%= image_tag("10rp_image.jpg", size: "175x233") %>
-                <% elsif @prize_description == "Free Pizza from Domino's" %>
-                  <%= image_tag("dominos_image.png", size: "414x292") %>
-                <% else %> 
+
                  <%= image_tag("cora1.jpg", size: "480x300") %>                
-                <% end %>
+
               </div>
             </div>
           </div>
@@ -43,17 +37,18 @@
   </div>
 <% else %>
 
-<div class="container-fluid"  style="margin-top: 25px;">
+<div class="container-fluid"  style="margin-top: 0px;">
 
   <div class="row">
-
-
 
     <div class="col-md-6"  style="margin-top: 0px;">
       
       <h2>
         CURRENT ACHIEVMENT
       </h2>
+      <% if @ignindex.ign_challenge_points > 0 %>
+        <h6>Completed (1) times</h6>
+      <% end %>
 
       <div class="well">
         <div class="progress">
@@ -63,26 +58,29 @@
         </div>      
 
         <h5>Experience earned: <%= @achievement.experience_earned %>/<%= @achievement.experience_req %> </h5>
-        <h5>Games played: <%= @achievement.games_played %> </h5>
+        <h5>Games won: <%= @achievement.games_played %> </h5>
         <h5>CORA letters remaining: <%= @achievement.can_spell_name_open %> </h5>
       </div>
 
       <div class="well">
-        <h4><u>Instructions:</u></h4>
-        <h5>
-          Earn 10 experience points to complete the achievement and win a pizza prize
-          <ul>
-            <li>1exp per win recorded</li>
-            <li>2exp for spelling "CORA" by winning games with champions whose name starts with that letter (e.g. Corki, Olaf, Ryze, Ashe)</li>
-          </ul>
-        </h5>
-        <h5>
-          Random Bonus, each game played has a chance to win 1 of 15 $5 pizza prizes
-        </h5>
 
-        <h5>
-          Games are only recorded for Solo/Duo Queue NA Ranked 5v5 on Summoners Rift
-        </h5>
+          <h5>
+            Up to a $20 pizza awarded at the end of each week (Sunday 5:00pm)
+          </h5>
+           
+        <h4><u>Instructions to complete:</u></h4>
+              <h5>
+                Earn 10 experience points
+                <ul>
+                  <li>1exp per win recorded</li>
+                  <li>2exp for spelling "CORA" by winning games with champions whose name starts with that letter (e.g. Corki, Olaf, Ryze, Ashe)</li>
+                </ul>
+              </h5>
+             <h5>
+             Bonus, each game won has a random chance to instantly win 1 of 15 $5 pizza prizes
+            </h5> 
+            (<a href="/current_achievement">learn more</a>)
+
       </div>
 
 
@@ -107,14 +105,11 @@
           </div>
         </div>      
 
+
     </div>
 
 
   </div>
-
-    <h5 class="text-center" style="margin-top: 50px;">
-      Achievement prizes are awarded Sunday at 8:00pm EST. 'Bonus' prizes are awarded right after your game. Check out the <a href="/faq">FAQ</a> for more info.
-    </h5>
 
   </div>
 <% end %>

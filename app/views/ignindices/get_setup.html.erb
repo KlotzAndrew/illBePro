@@ -14,24 +14,31 @@
 						<div class="breadcrumbs">
 						    <div class="breadcrumb-cell first">
 						    	<% if @setup_progress == 0 %>
-								<div id="bread_1" class="breadcrumb active">				    	
+									<div id="bread_1" class="breadcrumb active">				    	
+										<div class="breadcrumb-icon"></div>
 						    	<% else %>
-						   		<div id="bread_1" class="breadcrumb checked selectable">
+							   		<div id="bread_1" class="breadcrumb checked selectable">
+									<a href="/reset_setup">
+								    	<div class="breadcrumb-icon"></div>
+									</a>
 						    	<% end %>
-							    	<div class="breadcrumb-icon"></div>
 							    	<span class="breadcrumb-label">Postal Code</span>
 						     	</div>
 						    </div>
 
 						    <div class="breadcrumb-cell">
 						    	<% if @setup_progress == 1 %>
-								<div id="bread_2" class="breadcrumb active">				    	
+									<div id="bread_2" class="breadcrumb active">
+									<div class="breadcrumb-icon"></div>			    	
 						    	<% elsif @setup_progress > 1 %>
-						   		<div id="bread_2" class="breadcrumb checked selectable">
+							   		<div id="bread_2" class="breadcrumb checked selectable">
+									<a href="/reset_setup">
+								    	<div class="breadcrumb-icon"></div>
+									</a>							   			
 						   		<% else %>
 						   		<div id="bread_2" class="breadcrumb">
-						    	<% end %>
 									<div class="breadcrumb-icon"></div>
+						    	<% end %>
 									<span class="breadcrumb-label">Choose Prize</span>
 								</div>
 						    </div> 

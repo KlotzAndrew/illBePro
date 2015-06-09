@@ -1,20 +1,53 @@
-
 <% if @uu_summoner_validated == true %>
   <% if @prize_description != nil %>
 
+    <h3 class="text-center">History</h3>
+    <div class="row">
+      <div class="col-md-12">
+    
+        <div class="well">
+        
+          <div class="row">
+            <div class="col-md-6">  
 
-    <h3 class="text-center">Current Prize</h3>
-      <div class="well">
-      <p class="text-center">
-         <%= @prize_vendor %>
-        </br> <%= @prize_description %>
-      </p>
+              <div class="text-center">
+              <h2>Cora Pizza</h2>
 
-      <%= simple_form_for(@score, html: {class: 'form-hoizontal'}) do |f| %>
-        <%= f.button :submit, "Accept", class: "btn btn-lg btn-success" %>
-        <%= f.button :submit, "Upgrade", class: "btn btn-lg btn-danger" %>
-      <% end %>
+                <div class="coupon-image">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <%= image_tag("cora3.jpg", class: "reward-logo text-center") %>
+                    </div>
+                    <div class="col-md-8">
+                      <h3 class="text-center" style="margin-top: 40px;"> <strong><%= @prize_description %></strong> </h3>
+                      <h3 class="text-center"><strong> <%= @prize_reward_code %></strong></h3>
+                    </div>
+                  </div>
+                  </div>
+                </div>
+
+              </div>
+
+            <div class="col-md-6">
+              <div class="text-center">
+                 <%= image_tag("cora1.jpg", size: "500x225", class: "tony-image") %>
+              </div>
+
+              <div class="text-center">
+                <h3>
+                  Address: 656A Spadina Av.
+                </h3>
+                <h3>
+                  Phone: 416-922-1188
+                </h3>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
       </div>
+    </div>
 
   <% else %>  
 
@@ -26,35 +59,49 @@
       </div>
 
       <% @history.each do |x| %>       
+
+    <div class="row">
+      <div class="col-md-12">
+    
         <div class="well">
         
           <div class="row">
-            <div class="col-md-6">      
-              <div class="">
-                <h4 class="text-center"><strong><%= x.description %></strong></h4>
-                <h4 class="text-center">From: <%= x.vendor %></h4>
-                <h4 class="text-center">Reward Code: <%= x.reward_code %></h4>
-                <% if x.code != nil %>
-                  <h4 class="text-center">PIN: <%= x.code %></h4>
-                <% end %>
+            <div class="col-md-6">  
+
+              <div class="text-center">
+                <div class="">
+                   <%= image_tag("happy6.jpg", size: "400x250", class: "") %>
+                </div>
+
+                <div class="">
+                  <h3 class="text-center">You just won: <%= @prize_description %></h3>
+                  <h3 class="text-center">From: <%= @prize_vendor %></h3>
+                  </div>
+                </div>
               </div>
-            </div>
+
             <div class="col-md-6">
               <div class="text-center">
-                <% if x.description == "$10 RP code" %>
-                  <%= image_tag("10rp_image.jpg", size: "175x233") %>
-                <% elsif x.description == "$11 RP code" %>
-                  <%= image_tag("10rp_image.jpg", size: "175x233") %>                  
-                <% elsif x.description == "Free Pizza from Domino's" %>
-                  <%= image_tag("dominos_image.png", size: "414x292") %>
-                <% else %> 
-                 <%= image_tag("kayle.jpg", size: "480x300") %>
-                <% end %>  
+                 <%= image_tag("cora1.jpg", size: "500x225", class: "tony-image") %>
+              </div>
+
+              <div class="text-center">
+                <h3>
+                  Address: 656A Spadina St.
+                </h3>
+                <h3>
+                  Phone: 416-922-1188
+                </h3>
               </div>
             </div>
           </div>
 
         </div>
+
+      </div>
+    </div>
+
+
       <% end %>
     
     </div>

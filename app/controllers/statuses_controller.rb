@@ -66,7 +66,6 @@
         show_prizes_2(@ignindex.region_id)
       end
     end
-
   end
 
   # GET /statuses/1
@@ -113,7 +112,6 @@
   end  
 
   def new
-
     Rails.logger.info "User sign-in status: #{user_signed_in?}"
     if !user_signed_in? #unauthenticate partial sign-in
 
@@ -195,81 +193,99 @@
 
       end
     else #user signed-in; this can be refractored
-      if current_user.setup_progress != 0
-        @status_setup_display = false
+ 
+      if Ignindex.find_by_user_id(current_user.id).nil?
+        redirect_to setup_path
       else
-        @status_setup_display = true
-        @setup_progress = 4
-      end
-
-
-      if Ignindex.find_by_user_id(current_user.id).nil? 
-        redirect_to new_ignindex_path, notice: "Need to enter your summoner name before starting!"
-
-      elsif Ignindex.find_by_user_id(current_user.id).summoner_validated != true
-        redirect_to new_ignindex_path, notice: "redirected you, summoner not validated"
-
-      else
-
-
-
-      #status object is new or existing?
-      if Status.where("win_value IS ?", nil).where("ignindex_id = ?", session[:ignindex_id]).count > 0
-        @status = Status.where("win_value IS ?", nil).where("ignindex_id = ?", session[:ignindex_id]).first
-        
-        if ((Time.now.to_i - @status.created_at.to_i - @status.value) > -120)
-          
-          @update_trigger = "cg-update-true"
+        #setup progress?
+        if current_user.setup_progress != 0
+          @status_setup_display = false
         else
+          @status_setup_display = true
+          @setup_progress = 4
+        end
 
-          if @status.trigger_timer.nil?
-            @update_trigger = ""
+        #does user have valid ignindex, get achievement
+        if Ignindex.find_by_user_id(current_user.id).nil? #does user have ignindex
+          redirect_to new_ignindex_path, notice: "Need to enter your summoner name before starting!"
+        elsif Ignindex.find_by_user_id(current_user.id).summoner_validated != true #is the ignindex valid?
+          redirect_to new_ignindex_path, notice: "redirected you, summoner not validated"
+        else #looks good, grab the achievement
+          get_current_achievement(Ignindex.find_by_user_id(current_user.id).id)
+        end
+
+        #sets @ignindex
+        if user_signed_in?
+          @ignindex = Ignindex.find_by_user_id(current_user.id)
+        else
+          @ignindex = Ignindex.find(session[:ignindex_id])
+        end
+
+        #status object is new or existing?
+        if Status.where("win_value IS ?", nil).where("ignindex_id = ?", session[:ignindex_id]).count > 0
+          @status = Status.where("win_value IS ?", nil).where("ignindex_id = ?", session[:ignindex_id]).first
+          
+          if ((Time.now.to_i - @status.created_at.to_i - @status.value) > -120)
+            
+            @update_trigger = "cg-update-true"
           else
 
-            if ((Time.now.to_i - @status.trigger_timer) < 300)
-              @update_trigger = "cg-update-true"
-            else
+            if @status.trigger_timer.nil?
               @update_trigger = ""
+            else
+
+              if ((Time.now.to_i - @status.trigger_timer) < 300)
+                @update_trigger = "cg-update-true"
+              else
+                @update_trigger = ""
+              end
             end
           end
+        else
+          @status = Status.new(
+            :ignindex_id => session[:ignindex_id])
         end
-      else
-        @status = Status.new(
-          :ignindex_id => session[:ignindex_id])
-      end
 
-      #is a prize pending user accept? (can probably move to method)
-      if user_signed_in? 
-        @ignindex = Ignindex.find_by_user_id(current_user.id)
-      else
-        @ignindex = Ignindex.find(session[:ignindex_id])
+        #this checks prizes, probably not needed
+        if @ignindex.prize_id != nil 
+          prize = Prize.find(@ignindex.prize_id)
+          @prize_description = prize.description
+          @prize_vendor = prize.vendor 
+        else 
+         show_prizes_2(@ignindex.region_id)
+        end
       end
-
-      if @ignindex.prize_id != nil
-        prize = Prize.find(@ignindex.prize_id)
-        @prize_description = prize.description
-        @prize_vendor = prize.vendor
-      else 
-       show_prizes_2(@ignindex.region_id)
-      end
-
-      end      
+ 
     end
-
   end
 
   def get_current_achievement(session_ignindex_id)
-    if Achievement.where("ignindex_id = ?", session_ignindex_id).empty?
-      new_ach = Achievement.create(
-        :ignindex_id => session_ignindex_id,
-        :experience_req => 10,
-        :can_spell_name => "CORA",
-        :can_spell_name_open => "CORA",
-        :description => "Earn 10 experience points to get an end of the week reward. Each win recoded is 1exp, winning game with a champion whose name starts with one of the letters CORA is 2exp.",
-        :kind => 1,
-        :expire => 4.weeks.from_now.to_i )
-      Ignindex.where("id = ?", session_ignindex_id).first.update(
-        :active_achievement => new_ach.id)
+    gca_ign = Ignindex.where("id = ?", session_ignindex_id).first
+    if gca_ign.active_achievement.nil?
+      if JSON.parse(Region.find(gca_ign.region_id).prize_id_tier1)[0] == 1
+        prizing_here = 1
+      else
+        prizing_here = 0
+      end
+      gca_ach_search = Achievement.where("ignindex_id = ?", gca_ign.id).where("result IS ?", nil).where("kind = ?", prizing_here).first
+
+      if gca_ach_search.nil?
+        new_ach = Achievement.create(
+          :ignindex_id => session_ignindex_id,
+          :experience_req => 10,
+          :can_spell_name => "CORA",
+          :can_spell_name_open => "CORA",
+          :description => "Earn 10 experience points to get an end of the week reward. Each win recoded is 1exp, winning game with a champion whose name starts with one of the letters CORA is 2exp.",
+          :kind => prizing_here,
+          :expire => 4.weeks.from_now.to_i )
+        Ignindex.where("id = ?", session_ignindex_id).first.update(
+          :active_achievement => new_ach.id)
+      else        
+        new_ach = gca_ach_search
+        Ignindex.where("id = ?", session_ignindex_id).first.update(
+          :active_achievement => new_ach.id)        
+      end
+
       @achievement = new_ach
       number = @achievement.experience_earned/@achievement.experience_req
       @achievement_progress = number.round(2)
@@ -296,7 +312,6 @@
       end
       Rails.logger.info "apd: #{@all_prize_desc}, apv: #{@all_prize_vendor}"
       Rails.logger.info "apd: #{@all_prize_desc.class}, apv: #{@all_prize_vendor.class}"
-  
   end
 
 
@@ -372,7 +387,6 @@
       end
 
     end
-
   end
 
   def destroy
@@ -426,6 +440,7 @@
     def status_params
       params.require(:status).permit(:kind)
     end
+
 end
 
 #user name input, from _form.html.erb

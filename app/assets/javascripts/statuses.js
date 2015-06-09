@@ -82,6 +82,7 @@ var check_game = function(){
                         $('#v3_prize_results').html("Lost your game")
                         $('#v3_game_results').html(game_summary)
                     }
+                    $('#game_end_instructions').html("Every game has a random chance for a prize")
 
                 }
                 clearInterval(checkint)
