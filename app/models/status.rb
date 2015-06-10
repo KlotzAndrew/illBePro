@@ -956,7 +956,7 @@ end
         :result => 2)
       ach.ignindex.update(
         :active_achievement => nil,
-        :ign_challenge_points => ach.ign_challenge_points += 1)
+        :ign_challenge_points => ach.ignindex.ign_challenge_points += 1)
     end
     Rails.logger.info "#{cron_st}: experience_gain finished"
   end  

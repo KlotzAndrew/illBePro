@@ -156,7 +156,9 @@ $(document).ready(function(){
     }  
 })
 
-$(document).on('page:load', function(){
+
+// move to application.js, add page-specific stuff
+$(document).on('page:load', function(){ 
     current_page = $('#page_name').data("pagespec")  
     if (typeof statusTimer !== 'undefined') {
        clearTimeout(checkint); 
