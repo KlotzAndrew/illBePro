@@ -47,12 +47,12 @@
         CURRENT ACHIEVMENT
       </h2>
       <% if @ignindex.ign_challenge_points > 0 %>
-        <h6>Completed (1) times</h6>
+        <h6>Completed (<%= (@ignindex.ign_challenge_points) %>) times</h6>
       <% end %>
 
       <div class="well">
         <div class="progress">
-          <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= @achievement.experience_earned/@achievement.experience_req %>%; min-width: 2em;" >
+          <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= (@achievement.experience_earned/@achievement.experience_req.round(2)*100).round %>%; min-width: 2em;" >
             <%= (@achievement.experience_earned/@achievement.experience_req.round(2)*100).round %>%
           </div>
         </div>      
