@@ -33,7 +33,7 @@ if !x.active_achievement.nil?
 x.update(
 :active_achievement => nil)
 end
-end
+end; nil
 
 1.times do |x|
   Prize.create(

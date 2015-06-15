@@ -26,6 +26,8 @@ gem "typhoeus"
  #gem "chardinjs-rails"
  gem "introjs-rails"
 
+ gem "font-awesome-rails"
+
 # gem 'geocoder'
 
 

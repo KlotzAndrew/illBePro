@@ -13,8 +13,8 @@ class StaticpagesController < ApplicationController
         @status_count = Status.all.where("updated_at > ?", Time.at(campaign_start_cora)).count
         all_prize = Prize.all.where("vendor = ?", "Cora Pizza").count
         @prize_sent = Prize.all.where("vendor = ?", "Cora Pizza").where("assignment = ?", 2).count
-        @prize_remaining = all_prize - @prize_sent
-        @view_count = 485
+        @prize_remaining = 100 #all_prize - @prize_sent
+        @view_count = 2560
       end
     end
   end
