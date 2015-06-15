@@ -564,7 +564,7 @@ end
                           proc = rand(1..100)
                           Rails.logger.info "#{cron_st}: proc value is #{proc}"
 
-                          random_prize(cron_st)
+                          random_prize(cron_st, ign_score, clock_active_status)
 
                           if key_summoner[0].kind == 6
                             ign_score.update(prize_id: key_summoner[0].prize_id)
@@ -801,7 +801,8 @@ end
 
                           proc = rand(100..100)
                           Rails.logger.info "#{cron_st}: proc value is #{proc}"
-                          random_prize(cron_st)
+                          
+                          random_prize(cron_st, ign_score, clock_active_status)
 
                           curent_ach = Achievement.find(ign_score.active_achievement)
                           if !curent_ach.nil?
@@ -854,40 +855,36 @@ end
 
   end #end of api_call_status
 
-  def self.random_prize(cron_st)
-    Rails.logger.info "#{cron_st}: proc not running"
-    # if (5 > proc) && (Prize.where.not("delivered_at IS ?", nil).where("delivered_at > ?", (Time.now - 22.hours).to_i).count < 10)
-    #   region = Region.find(ign_score.region_id)
-    #   Rails.logger.info "#{cron_st}: region used for prizing is #{region.id}"
+  def self.random_prize(cron_st, ign, clock_active_status)
+    Rails.logger.info "#{cron_st}: checking for random prize"
 
-    #   if !region.prizes.where("assignment = ?", "0").first.nil? #use local prize
-    #      prize = region.prizes.where("assignment = ?", "0").first
-    #      Rails.logger.info "#{cron_st}: local prize being uses is #{prize.id}"
-    #      prize.update(
-    #       :ignindex_id => ign_score.id,
-    #       :assignment => "1",
-    #       :delivered_at => Time.now.to_i)
-    #     ign_score.update(
-    #       :prize_id => prize.id)
-    #     clock_active_status.update(
-    #       :prize_id => prize.id)
+    if Prize.all.where("vendor = ?", "Cora Pizza").where("assignment = ?", 0).where("tier = ?", "2").where("delivered_at < ?", 12.hours.ago.to_i).count == 0
+      Rails.logger.info "#{cron_st}: prize open, doing a roll"
+      proc2 = rand(0..100)
+      Rails.logger.info "#{cron_st}: proc2 is #{proc2}"
+      if proc2 < 2 && Prize.all.where("vendor = ?", "Cora Pizza").where("assignment = ?", 0).where("tier = ?", "2").count > 0
+        Rails.logger.info "#{cron_st}: rolled prize"
+        assign_prize = Prize.all.where("vendor = ?", "Cora Pizza").where("assignment = ?", 0).where("tier = ?", "2").first
+        assign_prize.update(
+          :assignment => 1,
+          :delivered_at => Time.now.to_i,
+          :ignindex_id => ign.id)
+        clock_active_status.update(
+          :prize_id => assign_prize.id)
+        ign.update(
+          :prize_id => assign_prize.id)
+        Rails.logger.info "#{cron_st}: assigned prize id #{assign_prize.id}"
+      else
+        Rails.logger.info "#{cron_st}: rolled no prize"
+      end
 
-    #   else #use global prize
-    #     prize = Prize.all.where("country_zone = ?", region.country).where("assignment = ?", "0").where("tier = ?", "1").first
-    #     Rails.logger.info "#{cron_st}: using global prize, is it nil? (#{prize.nil?})"
-    #     if !prize.nil?
-    #       Rails.logger.info "#{cron_st}: global prize being used is #{prize.id}"
-    #       prize.update(
-    #         :ignindex_id => ign_score.id,
-    #         :assignment => "1",
-    #         :delivered_at => Time.now.to_i)
-    #       ign_score.update(
-    #         :prize_id => prize.id)
-    #       clock_active_status.update(
-    #       :prize_id => prize.id)
-    #     end
-    #   end                            
-    # end    
+
+    else
+      Rails.logger.info "#{cron_st}: prize not open, no roll"
+
+    end
+
+    Rails.logger.info "#{cron_st}: finished for random prize"
   end
 
   def self.experience_gain(cron_st, ach, status)

@@ -12,7 +12,9 @@ class StaticpagesController < ApplicationController
         @user_count = Ignindex.all.where("updated_at > ?", Time.at(campaign_start_cora)).where.not("summoner_name IS ?", nil).count
         @status_count = Status.all.where("updated_at > ?", Time.at(campaign_start_cora)).count
         all_prize = Prize.all.where("vendor = ?", "Cora Pizza").count
-        @prize_sent = Prize.all.where("vendor = ?", "Cora Pizza").where("assignment = ?", 2).count
+        assign_1 = Prize.all.where("vendor = ?", "Cora Pizza").where("assignment = ?", 1).count
+        assign_2 = Prize.all.where("vendor = ?", "Cora Pizza").where("assignment = ?", 2).count
+        @prize_sent = assign_1 + assign_2
         @prize_remaining = 100 #all_prize - @prize_sent
         @view_count = 2560
       end

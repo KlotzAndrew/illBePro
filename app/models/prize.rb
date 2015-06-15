@@ -13,15 +13,15 @@ has_one :user
 def insert_prizes_manually
 	Prize.find(dont_run)
 
-h1 = ["5gopvb", "5axqil", "5aytfu", "5bcyoa", "5cofdl"]
-
+h1 = ["5gopvb", "5axqil", "5aytfu"]
+, "5bcyoa", "5cofdl" #not entered
 h1.each do |x|
 	  Prize.create(
     # :country_zone => "",
     :assignment => 0,
     :vendor => "Cora Pizza",
     :description => "$5 off",
-    :reward_code => "",
+    :reward_code => "#{x}",
     :tier => "2")
 end
 
