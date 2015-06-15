@@ -177,7 +177,7 @@ class IgnindicesController < ApplicationController
   end
 
   def show_prizes_v2(x)
-    if [43871, 43873, 43859, 43860, 43861, 43851].include?(x)
+    if [43867, 43869, 43855, 43856, 43857, 43847].include?(x) #[43871, 43873, 43859, 43860, 43861, 43851] is local server id's
       @tagged_for_prizing = true
     else
       @tagged_for_prizing = false
