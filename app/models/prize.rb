@@ -10,15 +10,37 @@ has_one :user
 
 # before_destroy :clean_region
 
-	def insert_prizes_manually
-		Prize.find(dont_run)
+def insert_prizes_manually
+	Prize.find(dont_run)
+
+h1 = ["5gopvb", "5axqil", "5aytfu", "5bcyoa", "5cofdl"]
+
+h1.each do |x|
+	  Prize.create(
+    # :country_zone => "",
+    :assignment => 0,
+    :vendor => "Cora Pizza",
+    :description => "$5 off",
+    :reward_code => "",
+    :tier => "2")
+end
+
+Achievement.delete_all
+Ignindex.all.each do |x|
+x.update(
+:ign_challenge_points => 0)
+if !x.active_achievement.nil?
+x.update(
+:active_achievement => nil)
+end
+end
 
 1.times do |x|
   Prize.create(
     # :country_zone => "",
     :assignment => 0,
     :vendor => "Cora Pizza",
-    :description => "$10 off pizza",
+    :description => "$10 off",
     :reward_code => "C8V9",
     :tier => "1")
 end; nil 
@@ -28,7 +50,7 @@ end; nil
     # :country_zone => "",
     :assignment => 0,
     :vendor => "Cora Pizza",
-    :description => "$5 off pizza",
+    :description => "$5 off",
     :reward_code => "BR3Z",
     :tier => "2")
 end; nil
