@@ -60,7 +60,9 @@ var check_game = function(){
         success: function(data) {
             console.log(data)
             if (data.win_value !== null && data.game_1["win_value"] !== null) {
-                
+                console.log("response has a game!")
+                console.log(data.win_value !== null)
+                console.log(data.game_1["win_value"] !== null)
                 if (data.prize_id !== null) {
                     document.location.reload(true);
                 } else {
