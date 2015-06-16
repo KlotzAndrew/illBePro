@@ -59,7 +59,7 @@ var check_game = function(){
         dataType: "json",
         success: function(data) {
             console.log(data)
-            if (data.win_value !== null) {
+            if (data.win_value !== null && data.game_1["win_value"] !== null) {
                 
                 if (data.prize_id !== null) {
                     document.location.reload(true);
@@ -76,7 +76,7 @@ var check_game = function(){
 
 
                     if (data.win_value == 2) { // won game
-                        $('#v3_prize_results').html("Won your game, but no prize this time")
+                        $('#v3_prize_results').html("Won your game")
                         $('#v3_game_results').html(game_summary)
                     } else { // loss or timeout
                         $('#v3_prize_results').html("Lost your game")
