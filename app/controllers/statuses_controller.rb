@@ -196,6 +196,9 @@
  
       if Ignindex.find_by_user_id(current_user.id).nil?
         redirect_to setup_path
+        session[:setup_progress] = 0
+      elsif Ignindex.find_by_user_id(current_user.id).region_id.nil?
+        redirect_to zone_url, alert: 'You need a valid Postal Code!'
       else
         #setup progress?
         if current_user.setup_progress != 0
@@ -246,14 +249,14 @@
             :ignindex_id => session[:ignindex_id])
         end
 
-        #this checks prizes, probably not needed
-        if @ignindex.prize_id != nil 
-          prize = Prize.find(@ignindex.prize_id)
-          @prize_description = prize.description
-          @prize_vendor = prize.vendor 
-        else 
-         show_prizes_2(@ignindex.region_id)
-        end
+        # #this checks prizes, probably not needed
+        # if @ignindex.prize_id != nil 
+        #   prize = Prize.find(@ignindex.prize_id)
+        #   @prize_description = prize.description
+        #   @prize_vendor = prize.vendor 
+        # else 
+        #  show_prizes_2(@ignindex.region_id)
+        # end
       end
  
     end
@@ -331,6 +334,7 @@
     else
       @ignindex = Ignindex.find(session[:ignindex_id])
     end
+
     @status = Status.new(
       :achievement_id => @ignindex.active_achievement )
 

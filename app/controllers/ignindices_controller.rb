@@ -10,7 +10,11 @@ class IgnindicesController < ApplicationController
   def zone
     if user_signed_in? && !current_user.ignindex_id.nil?
       @ignindex = Ignindex.find_by_user_id(current_user.id)
-      @zone_pc = @ignindex.region.postal_code
+      if !Ignindex.find_by_user_id(current_user.id).postal_code.nil?
+        @zone_pc = @ignindex.region.postal_code
+      else
+        @zone_pc = "?"
+      end
     else
       redirect_to setup_path
     end
