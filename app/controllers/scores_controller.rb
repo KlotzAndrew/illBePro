@@ -3,17 +3,21 @@ class ScoresController < ApplicationController
 
 
   def scoreboard
-    cora_start = 1433781134
     @achievements = []
     @ignindexes = []
-    Ignindex.all.includes(:achievements).where("updated_at > ?", Time.at(1433781134)).where.not("summoner_name IS ?", nil).each do |x|
-      if !x.active_achievement.nil?
-        @achievements << x.achievements.where(id: x.active_achievement)
-        @ignindexes << x
+    if user_signed_in?
+      if current_user.email == "andrew.klotz@hotmail.com"
+        cora_start = 1433781134
+        Ignindex.all.includes(:achievements).where("updated_at > ?", Time.at(1433781134)).where.not("summoner_name IS ?", nil).each do |x|
+          if !x.active_achievement.nil?
+            @achievements << x.achievements.where(id: x.active_achievement)
+            @ignindexes << x
+          end
+        end; nil
+        @achievements = @achievements[0]
+        @ignindexes = @ignindexes[0]
       end
-    end; nil
-    @achievements = @achievements[0]
-    @ignindexes = @ignindexes[0]
+    end
   end
 
   def index
