@@ -1,6 +1,6 @@
 class Score < ActiveRecord::Base
 
-  def assign_prize(choice)
+  def assign_prize(choice) #move this to m/prize.rb
   	if choice == "Accept" or choice == "Upgrade"
 	prize = Prize.find(self.prize_id)
 	    if self.ignindex_id == prize.ignindex_id #double check prize is assigned correctly

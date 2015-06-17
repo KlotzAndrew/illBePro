@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   resources :prizes
 
   resources :scores
+  get 'scoreboard', to: 'scores#scoreboard'
 
   resources :geodelivers
 

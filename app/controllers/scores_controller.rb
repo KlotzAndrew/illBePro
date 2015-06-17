@@ -2,6 +2,20 @@ class ScoresController < ApplicationController
   before_action :set_score, only: [:show, :edit, :update, :destroy]
 
 
+  def scoreboard
+    cora_start = 1433781134
+    @achievements = []
+    @ignindexes = []
+    Ignindex.all.includes(:achievements).where("updated_at > ?", Time.at(1433781134)).where.not("summoner_name IS ?", nil).each do |x|
+      if !x.active_achievement.nil?
+        @achievements << x.achievements.where(id: x.active_achievement)
+        @ignindexes << x
+      end
+    end; nil
+    @achievements = @achievements[0]
+    @ignindexes = @ignindexes[0]
+  end
+
   def index
 
     @prize_description = nil
@@ -60,8 +74,7 @@ class ScoresController < ApplicationController
       end      
     else
       #nothing here
-    end
-
+    end#this should really be in prizes... you got your controllers confused.
   end
 
   def update
@@ -83,8 +96,7 @@ class ScoresController < ApplicationController
         format.html { redirect_to scores_url, notice: 'There is an issue with your prize :(' }
         format.json { head :no_content }
       end
-    end
-
+    end#this is prize logic, not score stuff wth bro
   end
 
   def show
