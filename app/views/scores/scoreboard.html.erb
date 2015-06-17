@@ -14,11 +14,11 @@
 			<tbody>
 				<% p = 1 %>
 				<% @achievements.each do |x| %>
-					<% number = x.experience_earned/x.experience_req %>
+					<% number = x[0].experience_earned/x[0].experience_req %>
 					<% achievement_progress = (number.round(2)*100).round(0) %>
 					<tr>
 					  <td><%= p %></td>
-					  <td><%= x.ignindex.summoner_name %></td>
+					  <td><%= x[0].ignindex.summoner_name %></td>
 					  <td>
 				  	<div class="col-md-12">
 					   <div class="progress">
@@ -28,7 +28,7 @@
 					    </div>  
 				  	</div>
 					  </td>
-						<% if x.kind == 1 or x.kind == 2 %>
+						<% if x[0].kind == 1 or x[0].kind == 2 %>
 							<td>Cora Pizza</td>
 						<% else %>
 							<td></td>

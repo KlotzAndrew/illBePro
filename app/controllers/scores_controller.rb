@@ -6,7 +6,7 @@ class ScoresController < ApplicationController
     @achievements = []
     @ignindexes = []
     if user_signed_in?
-      if current_user.email == "andrew.klotz@hotmail.com"
+      if current_user.email == "andrew.klotz@hotmail.com" or current_user.email == "aklotz@tangiblegameworks.com"
         cora_start = 1433781134
         Ignindex.all.includes(:achievements).where("updated_at > ?", Time.at(1433781134)).where.not("summoner_name IS ?", nil).each do |x|
           if !x.active_achievement.nil?
@@ -14,8 +14,8 @@ class ScoresController < ApplicationController
             @ignindexes << x
           end
         end; nil
-        @achievements = @achievements[0]
-        @ignindexes = @ignindexes[0]
+
+        Rails.logger.info "@achievements #{@achievements}"
       end
     end
   end
