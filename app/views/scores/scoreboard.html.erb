@@ -14,7 +14,7 @@
 			<tbody>
 				<% p = 1 %>
 				<% @achievements.each do |x| %>
-					<% number = x[0].experience_earned/x[0].experience_req %>
+					<% number = x[0].experience_earned/x[0].experience_req.round(1) %>
 					<% achievement_progress = (number.round(2)*100).round(0) %>
 					<tr>
 					  <td><%= p %></td>
@@ -28,7 +28,7 @@
 					    </div>  
 				  	</div>
 					  </td>
-						<% if x[0].kind == 1 or x[0].kind == 2 %>
+						<% if x[0].can_spell_name == "CORA" %>
 							<td>Cora Pizza</td>
 						<% else %>
 							<td></td>
