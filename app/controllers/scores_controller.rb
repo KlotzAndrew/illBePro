@@ -21,7 +21,7 @@ class ScoresController < ApplicationController
           block << progress
           @achievements << block
         end
-        @achievements = @achievements.sort_by{|a,b,c,d| [a,d]}
+        @achievements = @achievements.sort_by{|a,b,c,d| [a,d]}.reverse
       end
     end
   end
