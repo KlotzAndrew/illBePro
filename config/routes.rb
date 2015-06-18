@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   resources :prizes
 
   resources :scores
-  get 'scoreboard', to: 'scores#scoreboard'
+  get 'leaderboard', to: 'scores#leaderboard'
 
   resources :geodelivers
 

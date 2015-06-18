@@ -191,6 +191,7 @@ end
             ign_for_mastery_hash = Ignindex.find_by_summoner_id(key)
             ign_for_mastery_hash.update(mastery_1_name: "#{mastery_hash["#{key}"]["pages"][0]["name"]}")
             Rails.logger.info "#{cron_st}: 1st page name: #{mastery_hash["#{key}"]["pages"][0]["name"]}"
+            Rails.logger.info "#{cron_st}: 1st page name should be: #{ign_for_mastery_hash.validation_string}"
 
             if "#{mastery_hash["#{key}"]["pages"][0]["name"]}" == ign_for_mastery_hash.validation_string
               # if ign_for_mastery_hash.where(summoner_validated: true).count > 1
@@ -273,6 +274,7 @@ end
           ign_for_mastery_hash = Ignindex.find_by_summoner_id(key)
           ign_for_mastery_hash.update(mastery_1_name: "#{mastery_hash["#{key}"]["pages"][0]["name"]}")
           Rails.logger.info "#{cron_st}: 1st page name: #{mastery_hash["#{key}"]["pages"][0]["name"]}"
+          Rails.logger.info "#{cron_st}: 1st page name should be: #{ign_for_mastery_hash.validation_string}"          
 
           if "#{mastery_hash["#{key}"]["pages"][0]["name"]}" == ign_for_mastery_hash.validation_string
             # if ign_for_mastery_hash.where(summoner_validated: true).count > 1

@@ -1,4 +1,4 @@
-<h1 class="page-header text-center">ScoreBoard</h1>
+<h1 class="page-header text-center">Leader Board<br/><p>(week of June 15th)</p></h1>
 
 <div class="row">
 	<div class="col-md-10 col-md-offset-1">
@@ -8,20 +8,22 @@
 				  <th class="col-md-1">#</th>
 				  <th class="col-md-2">Summoner</th>
 				  <th class="col-md-6 text-center">Progress</th>
-				  <th>Restaurant</th>
+				  <th class="col-md-3 text-center">Prizing From</th>
 				</tr>
 			</thead>
 			<tbody>
 				<% p = 1 %>
 				<% @achievements.each do |points,name,index,prog| %>
-					<% points %>
-					<% points %>
 					<tr>
 					  <td><%= p %></td>
-					  <td><%= name %></td>
+					  <td><%= name %>
+					  	<% if points > 0 %>
+					  	(<%= points %>)
+					  	<% end %>
+					  </td>
 					  <td>
 				  	<div class="col-md-12">
-					   <div class="progress">
+					   <div class="progress basic-border">
 					      <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= prog %>%; min-width: 2em;" >
 					        <%= prog %>%
 					      </div>
@@ -29,13 +31,13 @@
 				  	</div>
 					  </td>
 						<% if index.can_spell_name == "CORA" %>
-							<td>Cora Pizza</td>
+							<td class="col-md-3 text-center"><a href="/current_achievement">Cora Pizza</a></td>
 						<% else %>
 							<td></td>
 						<% end %>
 					</tr>
 					<% p = p += 1 %>
-				<% end %>   
+				<% end %>
 			</tbody>
 		</table>
 	</div>

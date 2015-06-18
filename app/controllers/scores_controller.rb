@@ -2,7 +2,7 @@ class ScoresController < ApplicationController
   before_action :set_score, only: [:show, :edit, :update, :destroy]
 
 
-  def scoreboard
+  def leaderboard
     @achievements = []
     @ignindexes = []
     if user_signed_in?
