@@ -20,8 +20,8 @@ class ScoresController < ApplicationController
           block << an_ach
           block << progress
           @achievements << block
-          @achievements = @achievements.sort_by{|a,b,c,d| [a,d]}
         end
+        @achievements = @achievements.sort_by{|a,b,c,d| [a,d]}
       end
     end
   end
