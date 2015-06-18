@@ -8,14 +8,20 @@ class ScoresController < ApplicationController
     if user_signed_in?
       if current_user.email == "andrew.klotz@hotmail.com" or current_user.email == "aklotz@tangiblegameworks.com"
         cora_start = 1433781134
-        Ignindex.all.includes(:achievements).where("updated_at > ?", Time.at(1433781134)).where.not("summoner_name IS ?", nil).each do |x|
-          if !x.active_achievement.nil?
-            @achievements << x.achievements.where(id: x.active_achievement)
-            @ignindexes << x
-          end
-        end; nil
+        @achievements = []
+        Ignindex.all.includes(:achievements).where("updated_at > ?", Time.at(1433781134)).where.not("summoner_name IS ?", nil).where.not("active_achievement IS ?", nil).each do |x|
+          an_ach = Achievement.find(x.active_achievement)
+          number = an_ach.experience_earned/an_ach.experience_req.round(1) 
+          progress = (number.round(2)*100).round(0)
 
-        Rails.logger.info "@achievements #{@achievements}"
+          block = []
+          block << x.ign_challenge_points
+          block << x.summoner_name
+          block << an_ach
+          block << progress
+          @achievements << block
+          @achievements = @achievements.sort_by{|a,b,c,d| [a,d]}
+        end
       end
     end
   end
