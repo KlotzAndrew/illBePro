@@ -176,7 +176,7 @@ class IgnindicesController < ApplicationController
 
   def reset_setup
     reset_session_vars
-    redirect_to setup_path
+    redirect_to root_path
 
   end
 
@@ -361,8 +361,9 @@ class IgnindicesController < ApplicationController
         format.html { redirect_to new_status_path }
         format.json { head :no_content } 
       end         
-    elsif params["commit"] == "Add Postal/Zip Code"
-      # @ignindex.postal_code = ignindex_params[:postal_code])
+
+    elsif params["commit"] == "Add Postal/Zip Code" or params["commit"] == "Search Postal/Zip Code"
+      reset_session_vars
       update_region_id(@ignindex, ignindex_params[:postal_code])
 
       if user_signed_in?
@@ -432,7 +433,8 @@ class IgnindicesController < ApplicationController
 
   def create # runs on step 2 and 4 (if using @ignindex.new; runs on 'add' or 'update'
 
-    if params["commit"] == "Add Postal/Zip Code" #no save action
+    if params["commit"] == "Add Postal/Zip Code" or params["commit"] == "Search Postal/Zip Code"#no save action
+      reset_session_vars
 
       Rails.logger.info "params_psotal_code: #{ignindex_params[:postal_code]}"
       @ignindex = Ignindex.new(

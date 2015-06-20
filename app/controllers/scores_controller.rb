@@ -5,9 +5,11 @@ class ScoresController < ApplicationController
   def leaderboard
     @achievements = []
     @ignindexes = []
-    if user_signed_in?
-      if current_user.email == "andrew.klotz@hotmail.com" or current_user.email == "aklotz@tangiblegameworks.com"
-        cora_start = 1433781134 #cora start date
+
+    # if user_signed_in?
+    #   if current_user.email == "andrew.klotz@hotmail.com" or current_user.email == "aklotz@tangiblegameworks.com"
+        cora_start = 1433781134
+
         @achievements = []
         Ignindex.all.includes(:achievements).where("updated_at > ?", Time.at(cora_start)).where.not("summoner_name IS ?", nil).where.not("active_achievement IS ?", nil).each do |x|
           an_ach = Achievement.find(x.active_achievement)
@@ -22,8 +24,8 @@ class ScoresController < ApplicationController
           @achievements << block
         end
         @achievements = @achievements.sort_by{|a,b,c,d| [a,d]}.reverse
-      end
-    end
+    #   end
+    # end
   end
 
   def index

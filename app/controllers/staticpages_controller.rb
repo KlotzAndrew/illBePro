@@ -22,6 +22,7 @@ class StaticpagesController < ApplicationController
   end
 
   def landing_page
+    @ignindex = Ignindex.new
   end
 
   def current_achievement
