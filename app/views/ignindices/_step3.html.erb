@@ -7,32 +7,14 @@
 <div class="container-fluid" style="margin-top:20px;">
 
   <div class="row">
+      <h1>Add Summoner Name & Rename 1st Mastery Page</h1>
 
-    <div id="how_to_going" class="col-md-4 lwell col-md-offset-0" style="margin-top: 20px;margin-bottom: 20px;">
-      <h3>How to Validate Summoner</h3>
-      <ol>
-        <li><strong>Enter</strong> summoner name on this page</li>
-        <li><strong>Press</strong> 'generate validation code'</li>
-        <li><strong>Open</strong> League, go to 1st mastery page</li>
-        <li><strong>Rename</strong> 1st masteries page to validation code</li>
-        <li><strong>Press</strong> 'Save Masteries'</li>
-        <li><strong>Wait</strong> 1-2 minutes to check League</li>
-      </ol>
-        There is a 5 min timer on your code
-
-      <div class="text-center" style="margin-top: 15px;">
-        (example below)</br>
-        <%= image_tag("onetwo_final.jpg", size: "225x300") %>
-      </div>
-    </div>   
-
-    <div class="col-md-7 col-md-offset-1">
-
+    <div class="col-md-6 col-md-offset-0">
 
       <h3 id="summoner_name_text" class="page-header">
         <% if @ignindex.summoner_name.nil?  or @ignindex.summoner_name == ""%>
           <span id="js_name">
-            ▼ Enter your summmoner name below
+
           </span>
           <span id="js_val"></span>
         <% else %>
@@ -64,32 +46,36 @@
       <div class="panel-heading">
       
         <div class="row">
-          <div class="col-md-12">
-            <div class="row">
 
-              
-              <div class="">
-                <%= form_for @ignindex, remote: true, :html => { :id => 'summoner_name_submit' } do |t| %>
-                  <%= t.text_field :summoner_name, :placeholder => 'Summoner name', :id => "summoner_input" %>
-                      
-                      </span>
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">NA<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                          <li><a href="#">North America</a></li>
-                        </ul>
-                      </span>
-
-                  <% if @ignindex.summoner_name.nil? or @ignindex.summoner_name == ""%>
-                    <%= t.submit "Add Summoner Name", class: "btn btn-large btn-primary" %>
-                  <% else %>
-                    <%= t.submit "Update Summoner Name", class: "btn btn-large btn-primary" %>
-                  <% end %>
-                <% end %>
-              </div>
-
-            </div>
+          <div class="col-md-4">
+            <%= form_for @ignindex, remote: true, :html => { :id => 'summoner_name_submit' } do |t| %>
+              <%= t.text_field :summoner_name, :placeholder => 'Summoner name', :id => "summoner_input" %>
           </div>
+          
+          <div class="col-md-2 text-right">
+             <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  NA
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                  <li><a href="#">North America</a></li>
+                </ul>
+              </div>            
+          </div>
+
+          <div class="col-md-4 text-left">
+              <% if @ignindex.summoner_name.nil? or @ignindex.summoner_name == ""%>
+                <%= t.submit "Add Summoner Name", class: "btn btn-large btn-primary" %>
+              <% else %>
+                <%= t.submit "Update Summoner Name", class: "btn btn-large btn-primary" %>
+              <% end %>
+            <% end %>
+          </div>
+
+  
         </div>        
+
       </div>
 
       <% if !@uu_summoner_validated && @ignindex.summoner_name != nil %>
@@ -108,13 +94,13 @@
               <div id="validation_code_div" class="col-md-7 col-md-offset-1">
                 <% if !@ignindex.validation_timer.nil? %>
                   <div class="well">   
-                    <h5>Validation code: <strong id="js_validation_string"><%= @ignindex.validation_string %></strong></h5>
+                    <h5>Should be: <strong id="js_validation_string"><%= @ignindex.validation_string %></strong></h5>
                     <% if !@ignindex.mastery_1_name.nil? %>
-                      <h5 id="mastery_page_div">Current 1st page: 
+                      <h5 id="mastery_page_div">Currently is: 
                         <strong id="mastery_page_name"><%= @ignindex.mastery_1_name %></strong>
                       </h5>
                     <% else %>
-                      <h5 id="mastery_page_div" class="start-ghost">Current 1st page: 
+                      <h5 id="mastery_page_div" class="start-ghost">Currently is: 
                         <strong id="mastery_page_name"></strong>
                       </h5>
                     <% end %>
@@ -132,13 +118,13 @@
                   </div>
                 <% else %>
                   <div class="well">   
-                    <h5>Validation code: <strong id="js_validation_string"></strong></h5>
+                    <h5>Should be: <strong id="js_validation_string"></strong></h5>
                     <% if !@ignindex.mastery_1_name.nil? %>
-                      <h5 id="mastery_page_div">Current 1st page: 
+                      <h5 id="mastery_page_div">Currently is: 
                         <strong id="mastery_page_name"><%= @ignindex.mastery_1_name %></strong>
                       </h5>
                     <% else %>
-                      <h5 id="mastery_page_div" class="start-ghost">Current 1st page: 
+                      <h5 id="mastery_page_div" class="start-ghost">Currently is: 
                         <strong id="mastery_page_name"></strong>
                       </h5>
                     <% end %>
@@ -172,7 +158,7 @@
               </div>
               <div id="validation_code_div" class="col-md-7 col-md-offset-1">
                   <div class="well">   
-                    <h5>Validation code: <strong id="js_validation_string"></strong></h5>
+                    <h5>Should be: <strong id="js_validation_string"></strong></h5>
                     <h5 id="mastery_page_div" class="start-ghost">Current 1st page: 
                       <strong id="mastery_page_name"></strong>
                     </h5>
@@ -197,20 +183,42 @@
 
       </div>
 
-      <% if @uu_summoner_validated %> 
-      <div id="how_to_finished" class="col-md-4 col-md-offset-1 text-center" style="margin-top: 0px;margin-bottom: 20px;">
-      <% else %>
-    
-      <div id="how_to_finished" class="col-md-4 lwell col-md-offset-1 text-center start-ghost" style="margin-top: 0px;margin-bottom: 20px;">
-      <% end %>
+        <% if @uu_summoner_validated %> 
+        <div id="how_to_finished" class="col-md-4 col-md-offset-1 text-center" style="margin-top: 0px;margin-bottom: 20px;">
+        <% else %>
+      
+        <div id="how_to_finished" class="col-md-4 lwell col-md-offset-1 text-center start-ghost" style="margin-top: 0px;margin-bottom: 20px;">
+        <% end %>
 
-    	<%= form_for @ignindex do |t| %>
-	        <span id="">
-	      <%= t.submit "Continue", class: "btn btn-large btn-primary" %>
-	        </span>
-	    <% end %>
-
+        <%= form_for @ignindex do |t| %>
+            <span id="">
+          <%= t.submit "Continue", class: "btn btn-large btn-primary" %>
+            </span>
+        <% end %>
     </div>
+
+    <div id="how_to_going" class="col-md-6 lwell col-md-offset-0" style="margin-top: 20px;margin-bottom: 20px;">
+      <h3 class="text-center">How to rename your 1st mastery page</h3>
+
+      <div class="col-md-5">
+        <div class="text-center">
+          <%= image_tag("onetwo_final.jpg", size: "225x300") %>
+        </div>
+      </div>
+      <div class="col-md-7">
+        <ol>
+          <li><strong>Enter</strong> summoner name on this page</li>
+          <li><strong>Press</strong> 'generate validation code'</li>
+          <li><strong>Open</strong> League, go to 1st mastery page</li>
+          <li><strong>Rename</strong> 1st masteries page to validation code</li>
+          <li><strong>Press</strong> 'Save Masteries'</li>
+          <li><strong>Wait</strong> 1-2 minutes to check League</li>
+        </ol>
+     
+      </div>
+    </div>   
+
+
 
  
     

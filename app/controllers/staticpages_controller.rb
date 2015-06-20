@@ -22,6 +22,7 @@ class StaticpagesController < ApplicationController
   end
 
   def landing_page
+    session[:setup_progress] ||= 0
     @ignindex = Ignindex.new
   end
 

@@ -14,7 +14,7 @@ class Ignindex < ActiveRecord::Base
 
 	def refresh_validation
 		self.update(validation_timer: "#{Time.now.to_i}")
-		self.update(validation_string: "#{('a'..'z').to_a.shuffle.first(5).join}")
+		self.update(validation_string: "#{"pizza-" + ('a'..'z').to_a.shuffle.first(4).join}")
 	end
 
 	def self.prize_objects(ignindex_id)

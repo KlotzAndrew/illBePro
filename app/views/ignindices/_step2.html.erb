@@ -1,60 +1,54 @@
 <div class="row">
-	<div class="col-md-6 col-md-offset-0">
+	<div class="col-md-6">
+		<h1>Challenges in your area</h1>
 		<% if @tagged_for_prizing == true %>
-			<h3>Achievement Available: <strong><%= @region_postal %></strong></h3>
+			<div class="well">
+				<h3>Cora Pizza Challenge</h3>
+		        <h5>
+		          Earn 10 experience points
+		          <ul>
+		            <li>1exp per win</li>
+		            <li>2exp per win with champions whose name starts with any letter from "CORA" (e.g. <strong>C</strong>orki, <strong>O</strong>laf, <strong>R</strong>yze, <strong>A</strong>she)</li>
+		          </ul>
+		        </h5>
+		        Prizes
+	        	<ol>
+		        	<li>Completing Challenge during the week</li>
+			        <ul>
+			        	<li>Random Pizza prize (up to a Free Pizza) awarded Sundays @ 5pm</li>
+			        </ul>
+		        	<li>Every win</li>
+		        	<ul>
+			        	<li>Chance to win a Free Slice</li>
+		        	</ul>
+	        	</ol>
+	        (<a href="/current_achievemnet">learn more</a>)
+			</div>	
+
 		<% else %>
 			<h3>No prizes available: <strong><%= @region_postal %></strong></h3>
-		<% end %>
+		<% end %>			
+	</div>
+
+	<div class="col-md-6" style="margin-top: 70px;">
+		<% if @tagged_for_prizing == true %>
+			<div class="well prize-well " >
+				<h4>Cora Pizza Challenge</h4>
+				
+				<div class="row">
+					<div class="col-md-8">
+						<%= image_tag("cora1.jpg", size: "250x112") %> 
+					</div>
+					<div class="col-md-4">
+					    <%= form_for @ignindex do |t| %>
+					      <%= t.submit "Select", class: "btn btn-large btn-primary" %>
+					    <% end %>			
+					</div>
+				</div>
+			</div>
+
+		<% else %>
+			<h3>No prizes available: <strong><%= @region_postal %></strong></h3>
+		<% end %>	
 	</div>
 </div>
-
-	<div class="col-md-6 text-left"> 
-
-		<% if @tagged_for_prizing == true %>
-			<h3>Cora Pizza - Spell 'Cora' or win 10 games</h3>
-			<h5>Up to a $20 pizza awarded at the end of each week</h5>
-			<h5>Each game won has a random chance to instantly win 1 of 15 $5 pizza prizes</h5>
-		<% else %>
-			<h5>Play the Cora Pizza achievement just for fun</h5>
-			<h5>Starting June 15th @ 5pm Cora Pizza will begin rewarding your League games</h5>
-			<ul>
-				<li><h5>Up to a $20 pizza awarded at the end of each week</h5></li>
-				<li><h5>Bonus, each game won has a random chance to instantly win 1 of 15 $5 pizza prizes</h5></li>
-			</ul>
-						
-		<% end %>
-     
-	<h4><u>Details:</u></h4>
-        <h5>
-          Earn 10 experience points
-          <ul>
-            <li>1exp per win recorded</li>
-            <li>2exp for spelling "CORA" by winning games with champions whose name starts with that letter (e.g. <strong>C</strong>orki, <strong>O</strong>laf, <strong>R</strong>yze, <strong>A</strong>she)</li>
-          </ul>
-        </h5>
-	     <h5>
-	     
-	    </h5>	
-	    (<a href="/current_achievement">learn more</a>)
-     
-      <h5 class="margin-top: 25;">
-        **Games are only recorded for Solo/Duo Queue NA Ranked 5v5 on Summoners Rift
-      </h5>	    
-   
-	</div>
-
-	<div class="col-md-6" style="margin-top: 00px;">
-
-		<div class="text-center">
-			<%= image_tag("cora1.jpg", size: "500x225") %>              
-		</div>
-
-		<div class="text-center" style="margin-top: 25px;">
-		    <%= form_for @ignindex do |t| %>
-		        <span id="">
-		      <%= t.submit "Select", class: "btn btn-large btn-primary ach-select-button" %>
-		        </span>
-		    <% end %>
-		</div>
-
-	</div>
