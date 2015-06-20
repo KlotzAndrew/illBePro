@@ -62,7 +62,7 @@
   </div>  
 
     <h1 class="page-header text-center">
-         Playing towards the Cora Pizza Achievement
+         Go Play League & Come back for Results
     </h1>
 
     <div id="show_chal" class="new-challenge">
@@ -71,28 +71,22 @@
 
         <div class="row">
 
-
-
           <div class="col-md-6 text-center">
 
             <div class="row well">
 
               <div id="v3_ingame" class="">
                 <div class="col-md-12">
-                  <div class=""><h4 class="text-left"><strong><%= @status.summoner_name %></strong></h4></div>
+                  <div class="text-left">
+                    <h4 class=""><strong><%= @status.summoner_name %></strong> - playing game</h4>
+                    <h5>Result: </h5>
+                    <h5>Champion:</h5> 
+                    <h5>K/D/A:</h5>
+                    <h5>Length:</h5>
+                  </div>
                 </div>          
                 
-                <div class="col-md-12">
-                  <div id="cg_id" data-status_id="<%= @status.id %>" >
-                    <div id="cg-refresher" class="<%= @update_trigger %>"></div>
-                    <h4 class="text-left">
-                      Finish a ranked game within:
-                      <span id="challenge_timer" data-chal_time_value="<%= (@status.value + @status.created_at.to_i) %>" >
-                      <%= (@status.value - (Time.now.to_i - @status.created_at.to_i))/60 %> min
-                      <span>
-                    </h4>
-                  </div>
-                </div>  
+
 
                 <div class="col-md-10 text-left">
                   <div class="">
@@ -173,6 +167,18 @@
                       <%= button_to "Cancel", @status, method: :delete, class: "btn btn-default " %>
                   </div>
                 </div>
+
+                <div class="col-md-12">
+                  <div id="cg_id" data-status_id="<%= @status.id %>" >
+                    <div id="cg-refresher" class="<%= @update_trigger %>"></div>
+                    <h5 class="text-center">
+                      Page expires in:
+                      <span id="challenge_timer" data-chal_time_value="<%= (@status.value + @status.created_at.to_i) %>" >
+                      <%= (@status.value - (Time.now.to_i - @status.created_at.to_i))/60 %> min
+                      <span>
+                    </h5>
+                  </div>
+                </div>                  
               </div>
 
               <div id="v3_outgame" class="start-ghost">
@@ -183,7 +189,6 @@
 
             </div>
               <h3 id="game_end_instructions">
-                Come back here when your game is over to see the results
               </h3>            
           </div>
               

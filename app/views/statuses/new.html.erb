@@ -54,7 +54,7 @@
       </h6>
 
       <div class="well">
-        <div class="progress">
+        <div class="progress basic-border">
           <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= (@achievement.experience_earned/@achievement.experience_req.round(2)*100).round %>%; min-width: 2em;" >
             <%= (@achievement.experience_earned/@achievement.experience_req.round(2)*100).round %>%
           </div>
@@ -62,26 +62,41 @@
 
         <h5>Experience earned: <%= @achievement.experience_earned %>/<%= @achievement.experience_req %> </h5>
         <h5>Games won: <%= @achievement.games_played %> </h5>
-        <h5>CORA letters remaining: <%= @achievement.can_spell_name_open %> </h5>
+        <h5>  
+        <% name_count = @achievement.can_spell_name.length %>
+        <% i = 0 %>
+        <% name_count.times do |x| %>
+        <% if @achievement.can_spell_name_open.include?(@achievement.can_spell_name[i]) %>
+          <%= @achievement.can_spell_name[i] %>
+        <% else %>
+          <strong><%= @achievement.can_spell_name[i] %></strong>
+        <% end %>
+        <% i = i += 1 %>
+        <% end %>
+         letters open: (<%= @achievement.can_spell_name_open %>) </h5>
       </div>
 
-      <div class="well">
 
-          <h5>
-            Up to a $20 pizza awarded at the end of each week (Sunday 5:00pm)
-          </h5>
-           
-        <h4><u>Instructions to complete:</u></h4>
-              <h5>
-                Earn 10 experience points
-                <ul>
-                  <li>1exp per win recorded</li>
-                  <li>2exp for spelling "CORA" by winning games with champions whose name starts with that letter (e.g. Corki, Olaf, Ryze, Ashe)</li>
-                </ul>
-              </h5>
-             <h5>
-             Bonus, each game won has a random chance to instantly win 1 of 15 $5 pizza prizes
-            </h5> 
+      <div class="well">
+        <h3>Cora Pizza Challenge</h3>
+            <h5>
+              Earn 10 experience points
+              <ul>
+                <li>1exp per win</li>
+                <li>2exp per win with champions whose name starts with any letter from "CORA" (e.g. <strong>C</strong>orki, <strong>O</strong>laf, <strong>R</strong>yze, <strong>A</strong>she)</li>
+              </ul>
+            </h5>
+            Prizes
+            <ol>
+              <li>Completing Challenge during the week</li>
+              <ul>
+                <li>Random Pizza prize (up to a Free Pizza) awarded Sundays @ 5pm</li>
+              </ul>
+              <li>Every win</li>
+              <ul>
+                <li>Chance to win a Free Slice</li>
+              </ul>
+            </ol>
             (<a href="/current_achievement">learn more</a>)
 
       </div>
@@ -102,7 +117,7 @@
             <div>
               <%= simple_form_for(@status, html: {class: 'form-hoizontal'}) do |f| %>
                 <%= f.hidden_field :kind, :value=>5 %>
-                <%= f.button :submit, "Play Game", class: "btn btn-lg btn-success start-game-button" %>
+                <%= f.button :submit, "Play for Challenge", class: "btn btn-lg btn-success start-game-button" %>
               <% end %>
             </div>
           </div>

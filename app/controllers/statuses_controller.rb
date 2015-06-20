@@ -333,7 +333,7 @@
 
   # POST /statuses
   # POST /statuses.json
-  def create
+  def create # does not take any params
 
     if user_signed_in?
       @ignindex = Ignindex.find_by_user_id(current_user.id)

@@ -41,7 +41,7 @@ def challenge_init
   #build baseline for kind 5 (this can be refractored)
   proc = rand(1..100)
   self.update(
-    :value => 3900,
+    :value => 5400,
     :points => 1,
     :proc_value => proc,
     :kind => 5,
