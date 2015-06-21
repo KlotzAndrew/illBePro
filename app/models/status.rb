@@ -585,6 +585,7 @@ end
                             end
                           end
                           
+                          achievement_refresh(ign_score.id)
                           curent_ach = Achievement.find(ign_score.active_achievement)
                           if !curent_ach.nil?
                             experience_gain(cron_st, curent_ach, clock_active_status)
@@ -806,6 +807,7 @@ end
                           
                           random_prize(cron_st, ign_score, clock_active_status)
 
+                          achievement_refresh(ign_score.id)
                           curent_ach = Achievement.find(ign_score.active_achievement)
                           if !curent_ach.nil?
                             experience_gain(cron_st, curent_ach, clock_active_status)
@@ -957,6 +959,50 @@ end
 
     Rails.logger.info "#{cron_st}: spelling_vandor_name finished"
   end
+
+  def achievement_refresh(session_ignindex_id) #input also takes current_user.ignindex_id
+    Rails.logger.info "session_ignindex_id: #{session_ignindex_id}"
+    gca_ign = Ignindex.where("id = ?", session_ignindex_id).first
+    Rails.logger.info "gca_ign.id: #{gca_ign.id}"
+    if gca_ign.active_achievement.nil?
+
+      if Region.find(gca_ign.region_id).prize_id_tier1.nil? #fixes sloppy db default vars
+        Region.find(gca_ign.region_id).update(
+          :prize_id_tier1 => "[]")
+      end
+
+      if JSON.parse(Region.find(gca_ign.region_id).prize_id_tier1)[0] == 1
+        prizing_here = 1
+      else
+        prizing_here = 0
+      end
+      gca_ach_search = Achievement.where("ignindex_id = ?", gca_ign.id).where("result IS ?", nil).where("kind = ?", prizing_here).first
+
+      if gca_ach_search.nil?
+        new_ach = Achievement.create(
+          :ignindex_id => session_ignindex_id,
+          :experience_req => 10,
+          :can_spell_name => "CORA",
+          :can_spell_name_open => "CORA",
+          :description => "Earn 10 experience points to get an end of the week reward. Each win recoded is 1exp, winning game with a champion whose name starts with one of the letters CORA is 2exp.",
+          :kind => prizing_here,
+          :expire => 4.weeks.from_now.to_i )
+        Ignindex.where("id = ?", session_ignindex_id).first.update(
+          :active_achievement => new_ach.id)
+      else        
+        new_ach = gca_ach_search
+        Ignindex.where("id = ?", session_ignindex_id).first.update(
+          :active_achievement => new_ach.id)        
+      end
+
+      @achievement = new_ach
+      number = @achievement.experience_earned/@achievement.experience_req
+      @achievement_progress = number.round(2)
+      
+    else
+      @achievement = Achievement.find(Ignindex.where("id = ?", session_ignindex_id).first.active_achievement)
+    end
+  end  
 
 
 end

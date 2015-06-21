@@ -7,9 +7,9 @@ class ScoresController < ApplicationController
     @ignindexes = []
     if user_signed_in?
       if current_user.email == "andrew.klotz@hotmail.com" or current_user.email == "aklotz@tangiblegameworks.com"
-        cora_start = 1433781134
+        cora_start = 1433781134 #cora start date
         @achievements = []
-        Ignindex.all.includes(:achievements).where("updated_at > ?", Time.at(1433781134)).where.not("summoner_name IS ?", nil).where.not("active_achievement IS ?", nil).each do |x|
+        Ignindex.all.includes(:achievements).where("updated_at > ?", Time.at(cora_start)).where.not("summoner_name IS ?", nil).where.not("active_achievement IS ?", nil).each do |x|
           an_ach = Achievement.find(x.active_achievement)
           number = an_ach.experience_earned/an_ach.experience_req.round(1) 
           progress = (number.round(2)*100).round(0)

@@ -44,11 +44,13 @@
     <div class="col-md-6"  style="margin-top: 0px;">
       
       <h2>
-        CURRENT ACHIEVMENT
+        CURRENT ACHIEVMENT 
       </h2>
+      <h6>(week of June 22nd)
       <% if @ignindex.ign_challenge_points > 0 %>
-        <h6>Completed (<%= (@ignindex.ign_challenge_points) %>) times</h6>
+        , Completed (<%= (@ignindex.ign_challenge_points) %>) times
       <% end %>
+      </h6>
 
       <div class="well">
         <div class="progress">

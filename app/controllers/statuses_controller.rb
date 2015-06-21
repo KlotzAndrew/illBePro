@@ -262,12 +262,13 @@
     end
   end
 
-  def get_current_achievement(session_ignindex_id)
+  def get_current_achievement(session_ignindex_id) #input also takes current_user.ignindex_id
     Rails.logger.info "session_ignindex_id: #{session_ignindex_id}"
     gca_ign = Ignindex.where("id = ?", session_ignindex_id).first
     Rails.logger.info "gca_ign.id: #{gca_ign.id}"
     if gca_ign.active_achievement.nil?
-      if Region.find(gca_ign.region_id).prize_id_tier1.nil?
+
+      if Region.find(gca_ign.region_id).prize_id_tier1.nil? #fixes sloppy db default vars
         Region.find(gca_ign.region_id).update(
           :prize_id_tier1 => "[]")
       end
