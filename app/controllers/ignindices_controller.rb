@@ -365,7 +365,7 @@ class IgnindicesController < ApplicationController
           @ignindex.assign_prize(params[:commit])
           if params[:commit] == "Accept"
             respond_to do |format|
-              format.html { redirect_to new_status_path, notice: 'Prize accepted' }
+              format.html { redirect_to scores_path, notice: 'Prize accepted' }
               format.json { head :no_content }
             end
           elsif params[:commit] == "Upgrade"

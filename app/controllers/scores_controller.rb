@@ -47,7 +47,8 @@ class ScoresController < ApplicationController
           Rails.logger.info "TU(#{test_user}: uu #{@uu_summoner_validated}"
           @history = Prize.all.where("ignindex_id = ?", ignindex.id).where("assignment = ?", 2).order(created_at: :desc)
 
-          if ignindex.prize_id != nil #send me to a mehtod
+          if !ignindex.prize_id.nil? #send me to a mehtod
+            @ignindex = ignindex
             prize = Prize.find(ignindex.prize_id)
             @prize_description = prize.description
             @prize_vendor = prize.vendor
@@ -92,7 +93,7 @@ class ScoresController < ApplicationController
       @score.assign_prize(params[:commit])
       if params[:commit] == "Accept"
         respond_to do |format|
-          format.html { redirect_to scores_url, notice: 'Prize accepted' }
+          format.html { redirect_to scores_path, notice: 'Prize accepted' }
           format.json { head :no_content }
         end
       elsif params[:commit] == "Keep Playing"

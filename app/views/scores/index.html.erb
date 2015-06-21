@@ -1,8 +1,9 @@
 <% if @uu_summoner_validated == true %>
-  <% if @prize_description != nil %>
+  <% if @prize_description == nil %>
 
     <h3 class="text-center">History</h3>
     <div class="row">
+     <% @history.each do |x| %> 
       <div class="col-md-12">
     
         <div class="well">
@@ -19,8 +20,8 @@
                       <%= image_tag("cora3.jpg", class: "reward-logo text-center") %>
                     </div>
                     <div class="col-md-8">
-                      <h3 class="text-center" style="margin-top: 40px;"> <strong><%= @prize_description %></strong> </h3>
-                      <h3 class="text-center"><strong> <%= @prize_reward_code %></strong></h3>
+                      <h3 class="text-center" style="margin-top: 40px;"> <strong><%= x.description %></strong> </h3>
+                      <h3 class="text-center"><strong>Code: <%= x.reward_code %></strong></h3>
                     </div>
                   </div>
                   </div>
@@ -47,6 +48,7 @@
         </div>
 
       </div>
+      <% end %>
     </div>
 
   <% else %>  
@@ -57,8 +59,6 @@
       <div class="page-header">
         <h1 class="text-center"><strong>Prize history</strong></h1>
       </div>
-
-      <% @history.each do |x| %>       
 
     <div class="row">
       <div class="col-md-12">
@@ -76,6 +76,7 @@
                 <div class="">
                   <h3 class="text-center">You just won: <%= @prize_description %></h3>
                   <h3 class="text-center">From: <%= @prize_vendor %></h3>
+
                   </div>
                 </div>
               </div>
@@ -96,19 +97,26 @@
             </div>
           </div>
 
+          <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+              <%= simple_form_for(@ignindex, url: ignindex_path(@ignindex), html: {class: 'form-hoizontal'}) do |f| %>
+                <%= f.button :submit, "Accept", class: "btn btn-lg btn-success" %>
+                <%= f.button :submit, "Upgrade", class: "btn btn-lg btn-danger", data: { confirm: "There are no prizes to upgrade to, this will reject the prize you won. Are you sure?" } %>
+              <% end %>
+            </div>
+          </div>      
         </div>
 
       </div>
     </div>
 
 
-      <% end %>
     
     </div>
   </div>
   <% end %>
 <% else %>
-<h1 class="text-center" style="margin-bottom: 200px;"><strong>Validated your Summoner Name to see history</strong></h1>
+<h1 class="text-center" style="margin-bottom: 200px;"><strong>Add Summoner Name to see history</strong></h1>
 <% end %>
 
 

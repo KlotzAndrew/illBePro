@@ -57,11 +57,14 @@
       redirect_to new_status_path
     end
     
+    Rails.logger.info "prize display 1/3"
     if @ignindex != nil
+      Rails.logger.info "prize display 2/3"
       if @ignindex.prize_id != nil
         prize = Prize.find(@ignindex.prize_id)
         @prize_description = prize.description
         @prize_vendor = prize.vendor
+         Rails.logger.info "prize display 3/3"
       else
         show_prizes_2(@ignindex.region_id)
       end
@@ -181,10 +184,12 @@
 
           #is a prize pending user accept? (can probably move to method)
           @ignindex = Ignindex.find(session[:ignindex_id])
+           Rails.logger.info "prize display 1/3"
           if @ignindex.prize_id != nil
             prize = Prize.find(@ignindex.prize_id)
             @prize_description = prize.description
             @prize_vendor = prize.vendor
+            Rails.logger.info "prize display 2/3"
           else 
            show_prizes_2(@ignindex.region_id)
           end
@@ -249,14 +254,14 @@
             :ignindex_id => session[:ignindex_id])
         end
 
-        # #this checks prizes, probably not needed
-        # if @ignindex.prize_id != nil 
-        #   prize = Prize.find(@ignindex.prize_id)
-        #   @prize_description = prize.description
-        #   @prize_vendor = prize.vendor 
-        # else 
-        #  show_prizes_2(@ignindex.region_id)
-        # end
+       
+        if @ignindex.prize_id != nil 
+          prize = Prize.find(@ignindex.prize_id)
+          @prize_description = prize.description
+          @prize_vendor = prize.vendor 
+        else 
+         show_prizes_2(@ignindex.region_id)
+        end
       end
  
     end
