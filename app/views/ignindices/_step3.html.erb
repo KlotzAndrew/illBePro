@@ -97,11 +97,13 @@
           <div id="ign_hide_1" class="row">
             <div>
               <div class="col-md-4">
+
                 <div class="gen-button">
-                  <div class="btn-group">
-                    <%= button_to "Generate Validation Code", @ignindex, remote: true, :form => { :id => 'validation_code_submit' }, method: :put, class: "btn btn-large btn-success" %>
-                  </div>
+                <%= form_for @ignindex, remote: true, :html => { :id => 'validation_code_submit' } do |t| %>
+                  <%= t.submit "Generate Validation Code", class: "btn btn-large btn-primary" %>
+                <% end %>
                 </div>
+                
               </div>
               <div id="validation_code_div" class="col-md-7 col-md-offset-1">
                 <% if !@ignindex.validation_timer.nil? %>

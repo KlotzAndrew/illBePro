@@ -53,7 +53,7 @@ class IgnindicesController < ApplicationController
     session[:setup_progress] ||= 0
     setup_progress_finder(session[:setup_progress])
 
-    if session[:setup_progress] == 0
+    if session[:setup_progress] == 0 #set @ignindex, or reset_session_vars
       @setup_progress = session[:setup_progress]
       if user_signed_in? 
         step1_ign = Ignindex.find_by_user_id(current_user.id)
@@ -72,10 +72,10 @@ class IgnindicesController < ApplicationController
         @ignindex = Ignindex.new #triggers 'new' action
       end
       #_1 end step1
-    elsif session[:setup_progress] == 1
+    elsif session[:setup_progress] == 1 #set @ignindex, or reset_session_vars
       @setup_progress == session[:setup_progress]
       #this is a validation for having a region_id
-      #*****will raise error for some users
+      #*****may raise error for some users (use case?)
       @ignindex = Ignindex.new 
       if session[:region_id_temp].blank? or session[:region_id_temp] == nil
         redirect_to setup_path
@@ -92,9 +92,9 @@ class IgnindicesController < ApplicationController
       if user_signed_in? && !Ignindex.find_by_user_id(current_user.id).nil?
         using_ign = Ignindex.find_by_user_id(current_user.id)
       
-        if using_ign.nil?
+        if using_ign.nil? #set @ignindex
           if session[:region_id_temp].blank?
-            redirect_to new_ignindex_path
+            redirect_to new_ignindex_path #bad spot for redirect
           end
           @uu_summoner_validated = false
           @ignindex = Ignindex.new(
@@ -108,9 +108,20 @@ class IgnindicesController < ApplicationController
       else #user not signed in
         session[:region_id_temp] ||= nil
         if session[:region_id_temp].blank?
-          redirect_to new_ignindex_path
+          reset_session_vars
+          redirect_to setup_path
+        elsif session[:summoner_name_ref_temp].blank?
+          @ignindex = Ignindex.new(
+            :region_id => session[:region_id_temp])          
         else
-          get_unauth_ignindex #sets @ignindex to existing or new
+          if !Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first.nil?
+            @ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
+            session[:ignindex_id] = @ignindex.id
+            #dont load in the full object -_-; fix me later
+          else
+            @ignindex = Ignindex.new(
+              :region_id => session[:region_id_temp])
+          end
           is_unauth_summoner_valid(@ignindex, session[:last_validation])
         end
 
@@ -119,6 +130,34 @@ class IgnindicesController < ApplicationController
     else
     end
   end
+
+
+  def get_unauth_ignindex #sets @ignindex to new or existing
+    if !session[:summoner_name_ref_temp].blank? && !Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first.nil?
+      @ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
+      session[:ignindex_id] = @ignindex.id
+      #dont load in the full object -_-; fix me later
+    else
+      @ignindex = Ignindex.new(
+        :region_id => session[:region_id_temp])
+    end
+  end
+  
+  def is_summoner_valid(current_ignindex)
+    if current_ignindex.summoner_validated == true
+      @uu_summoner_validated = true
+    else
+      @uu_summoner_validated = false
+    end
+  end
+
+  def is_unauth_summoner_valid(current_ignindex, session_validation) #checks is valid w/ session token
+    if (current_ignindex.summoner_validated == true) && (current_ignindex.last_validation == session_validation)
+      @uu_summoner_validated = true
+    else
+      @uu_summoner_validated = false
+    end    
+  end    
 
   def setup_progress_finder(setup_progress)
     @setup_progress = setup_progress
@@ -179,6 +218,8 @@ class IgnindicesController < ApplicationController
     end
 
   end
+
+
 
   def show_prizes_v2(x)
     if [43867, 43869, 43855, 43856, 43857, 43847].include?(x) #[43871, 43873, 43859, 43860, 43861, 43851] is local server id's
@@ -255,32 +296,6 @@ class IgnindicesController < ApplicationController
     end #end of user in/out block
   end
 
-  def get_unauth_ignindex #sets @ignindex to new or existing
-    if !session[:summoner_name_ref_temp].blank? && !Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first.nil?
-      @ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
-      session[:ignindex_id] = @ignindex.id
-      #dont load in the full object -_-; fix me later
-    else
-      @ignindex = Ignindex.new(
-        :region_id => session[:region_id_temp])
-    end
-  end
-  
-  def is_summoner_valid(current_ignindex)
-    if current_ignindex.summoner_validated == true
-      @uu_summoner_validated = true
-    else
-      @uu_summoner_validated = false
-    end
-  end
-
-  def is_unauth_summoner_valid(current_ignindex, session_validation) #checks is valid w/ session token
-    if (current_ignindex.summoner_validated == true) && (current_ignindex.last_validation == session_validation)
-      @uu_summoner_validated = true
-    else
-      @uu_summoner_validated = false
-    end    
-  end
 
   def update # used on step 2 and 4 (if using @ignindex.where("...").first.not.nil?)
     if params[:commit] == "Add Summoner Name" or params[:commit] == "Update Summoner Name" 
@@ -388,7 +403,7 @@ class IgnindicesController < ApplicationController
         end
 
       end
-    else #params for 'new validation code'
+    elsif params["commit"] == "Generate Validation Code"
       Rails.logger.info "triggers update for: new 'gen validation code'"
       @ignindex.refresh_validation
       session[:last_validation] = @ignindex.validation_timer
@@ -407,7 +422,8 @@ class IgnindicesController < ApplicationController
         Rails.logger.info "matching validation summoner_id: #{User.find(current_user.id).summoner_id}"
         Rails.logger.info "matching validation summoner_id: #{@ignindex.validation_timer}"
       end
-      
+    else
+      #error?
     end
   end
 
