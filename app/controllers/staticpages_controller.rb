@@ -15,15 +15,10 @@ class StaticpagesController < ApplicationController
         assign_1 = Prize.all.where("vendor = ?", "Cora Pizza").where("assignment = ?", 1).count
         assign_2 = Prize.all.where("vendor = ?", "Cora Pizza").where("assignment = ?", 2).count
         @prize_sent = assign_1 + assign_2
-        @prize_remaining = 100 #all_prize - @prize_sent
+        @prize_remaining = 100 - @prize_sent
         @view_count = 4085
       end
     end
-  end
-
-  def landing_page
-    session[:setup_progress] ||= 0
-    @ignindex = Ignindex.new
   end
 
   def current_achievement

@@ -4,30 +4,30 @@
 
 	<h1 class="text-center">Win  a Free Pizza for Playing League of Legends</h1>
 
-		<div class="col-md-12">
+		<div class="col-md-12"  style="margin-top: 20px">
 		  	<div class="col-md-6">
-		  		<div class="row" style="margin-top: 15px;">
-	
+		  		<div class="row" style="">
+				
 					<div class="col-md-6 col-md-offset-2 intro-square" style="margin-top: 15px;">
 						<h4>Pick Challenge</h4>
 					</div>
 		  		</div>
 
-		  		<div class="row" style="margin-top: 15px;">
+		  		<div class="row" style="">
 
 					<div class="col-md-6 col-md-offset-2 intro-square" style="margin-top: 15px;">
 						<h4>Press 'Play for Challenge'</h4>
 					</div>
 		  		</div>	 
 
-		  		<div class="row" style="margin-top: 15px;">
+		  		<div class="row" style="">
 			
 					<div class="col-md-6 col-md-offset-2 intro-diamond" style="margin-top: 15px;">
 						<h4>Play League</h4>
 					</div>
 		  		</div>
 
-		  		<div class="row" style="margin-top: 15px;">
+		  		<div class="row" style="">
 			
 					<div class="col-md-6 col-md-offset-2 intro-square" style="margin-top: 15px;">
 						<h4>Check Challenge</h4>
@@ -37,26 +37,25 @@
 		  	</div>
 
 		    <div class="col-md-6">
-		    	<div class="text-center" style="margin-top: 20px;">
+		    	<div class="text-center">
 			    	<% if user_signed_in? %>
 				    	<%= button_to "Start Now", new_status_path, :class => "btn btn-lprimary home-button", :method => :get  %>
 			    	<% else %>
 
 			    		<div class="lwell">
 			    			<h3>See what you can win in your area</h3>
+
 							<div class="row">
-								<div class="col-md-6">
-								    <%= form_for @ignindex do |t| %>
-								      <%= t.text_field :postal_code, :placeholder => 'Postal/Zip Code' %>
-								    <h6 class="">*US uses first 5-digits</h6>
-								    <h6>*CAN uses first 3-digits</h6>
+
+								<div class="form-inline" style="margin-top:20px;">
+									<div class="form-group">
+									    <%= form_for @ignindex, :method => :post do |t| %>
+									      <%= t.text_field :postal_code, :placeholder => 'Postal/Zip Code', class: "form-control input-md" %>
+									      <%= t.submit "Search", class: "btn btn-large btn-primary" %>
+									    <% end %>
+									</div>
 								</div>
-								<div class="col-md-6">
-								        <span id="">
-								      <%= t.submit "Search Postal/Zip Code", class: "btn btn-large btn-primary" %>
-								        </span>
-								    <% end %>
-								</div>
+							    <h6 class="">(CAN uses first 3-digits, US uses first 5-digits)</h6>
 							</div>
 
 			    		</div>
@@ -66,15 +65,7 @@
 		    	</div>
 		    </div>
 		</div>
-<!-- 		<div class="col-md-12">
-  			<div class="col-md-2 col-md-offset-2" style="margin-top:10px;">
-  				<h3>
-			  		<%= button_to "Learn More", current_achievement_path, :class => "btn btn-success green-button-long", :method => :get  %>
-  				</h3>
-  			</div>
 
-		</div>
- -->
 	</div>
 </div>
 

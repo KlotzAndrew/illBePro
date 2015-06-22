@@ -7,6 +7,12 @@ class IgnindicesController < ApplicationController
 
   respond_to :html, :xml, :json
   
+  def landing_page
+    session[:setup_progress] ||= 0
+    @ignindex = Ignindex.new
+    
+  end
+
   def zone
     if user_signed_in? && !current_user.ignindex_id.nil?
       @ignindex = Ignindex.find_by_user_id(current_user.id)
@@ -298,8 +304,8 @@ class IgnindicesController < ApplicationController
 
 
   def update # used on step 2 and 4 (if using @ignindex.where("...").first.not.nil?)
+    Rails.logger.info "triggering add/update on ignindex#update"
     if params[:commit] == "Add Summoner Name" or params[:commit] == "Update Summoner Name" 
-      Rails.logger.info "triggering add/update on ignindex#update"
 
       session[:summoner_name_temp] = params["ignindex"]["summoner_name"]
       session[:summoner_name_ref_temp] = params["ignindex"]["summoner_name"].mb_chars.downcase.gsub(' ', '')
@@ -362,7 +368,7 @@ class IgnindicesController < ApplicationController
         format.json { head :no_content } 
       end         
 
-    elsif params["commit"] == "Add Postal/Zip Code" or params["commit"] == "Search Postal/Zip Code"
+    elsif params["commit"] == "Add Postal/Zip Code" or params["commit"] == "Search Postal/Zip Code" or params["commit"] == "Search"
       reset_session_vars
       update_region_id(@ignindex, ignindex_params[:postal_code])
 
@@ -432,8 +438,8 @@ class IgnindicesController < ApplicationController
   end
 
   def create # runs on step 2 and 4 (if using @ignindex.new; runs on 'add' or 'update'
-
-    if params["commit"] == "Add Postal/Zip Code" or params["commit"] == "Search Postal/Zip Code"#no save action
+    Rails.logger.info "hit create controller"
+    if params["commit"] == "Add Postal/Zip Code" or params["commit"] == "Search Postal/Zip Code" or params["commit"] == "Search"#no save action
       reset_session_vars
 
       Rails.logger.info "params_psotal_code: #{ignindex_params[:postal_code]}"

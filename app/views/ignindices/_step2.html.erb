@@ -1,6 +1,6 @@
 <div class="row">
 	<div class="col-md-6">
-		<h1>Challenges in your area</h1>
+		<h1>Challenges in your area (<%= @region_postal %>)</h1>
 		<% if @tagged_for_prizing == true %>
 			<div class="well">
 				<h3>Cora Pizza Challenge</h3>
@@ -13,13 +13,13 @@
 		        </h5>
 		        Prizes
 	        	<ol>
-		        	<li>Completing Challenge during the week</li>
+		        	<li>Random Pizza prize (up to a Free Pizza) awarded Sundays @ 5pm</li>
 			        <ul>
-			        	<li>Random Pizza prize (up to a Free Pizza) awarded Sundays @ 5pm</li>
+			        	<li>Complet challenge during the week</li>
 			        </ul>
-		        	<li>Every win</li>
+		        	<li>Chance to win a Free Slice</li>
 		        	<ul>
-			        	<li>Chance to win a Free Slice</li>
+			        	<li>Every win</li>
 		        	</ul>
 	        	</ol>
 	        (<a href="/current_achievemnet">learn more</a>)

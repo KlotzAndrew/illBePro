@@ -54,27 +54,36 @@
       </h6>
 
       <div class="well">
-        <div class="progress basic-border">
-          <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= (@achievement.experience_earned/@achievement.experience_req.round(2)*100).round %>%; min-width: 2em;" >
-            <%= (@achievement.experience_earned/@achievement.experience_req.round(2)*100).round %>%
-          </div>
-        </div>      
+          <h5>Experience earned: <%= @achievement.experience_earned %>/<%= @achievement.experience_req %> </h5>
+          <div class="progress basic-border">
+            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= (@achievement.experience_earned/@achievement.experience_req.round(2)*100).round %>%; min-width: 2em;" >
+              <%= (@achievement.experience_earned/@achievement.experience_req.round(2)*100).round %>%
+            </div>
+          </div>      
 
-        <h5>Experience earned: <%= @achievement.experience_earned %>/<%= @achievement.experience_req %> </h5>
-        <h5>Games won: <%= @achievement.games_played %> </h5>
-        <h5>  
-        <% name_count = @achievement.can_spell_name.length %>
-        <% i = 0 %>
-        <% name_count.times do |x| %>
-        <% if @achievement.can_spell_name_open.include?(@achievement.can_spell_name[i]) %>
-          <%= @achievement.can_spell_name[i] %>
-        <% else %>
-          <strong><%= @achievement.can_spell_name[i] %></strong>
-        <% end %>
-        <% i = i += 1 %>
-        <% end %>
-         letters open: (<%= @achievement.can_spell_name_open %>) </h5>
-      </div>
+            
+        <div class="row text-center">
+            <div class="col-md-6">
+              <h5>  
+                <% name_count = @achievement.can_spell_name.length %>
+                <% i = 0 %>
+                <% name_count.times do |x| %>
+                <% if @achievement.can_spell_name_open.include?(@achievement.can_spell_name[i]) %>
+                  <%= @achievement.can_spell_name[i] %>
+                <% else %>
+                  <strong><%= @achievement.can_spell_name[i] %></strong>
+                <% end %>
+                <% i = i += 1 %>
+                <% end %>
+                 letters open: (<%= @achievement.can_spell_name_open %>) 
+              </h5>
+            </div>
+
+            <div class="col-md-6">
+              <h5>Games won: <%= @achievement.games_played %> </h5>
+            </div>
+        </div>
+        </div>
 
 
       <div class="well">

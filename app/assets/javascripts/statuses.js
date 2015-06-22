@@ -115,12 +115,12 @@ var challenge_timer = function(){
         }
     }
 
-  if ( (current_time/1000 - current_created_at) > 1200  ) { // if after 20 min, auto change button from pause to finish
-    if ( $('#after-20').hasClass("start-ghost") ) { //check if page was loaded befor 20, else nothing
-        $('#after-20').toggleClass("start-ghost");
-        $('#before-20').toggleClass("start-ghost");
-    }
-  }
+  // if ( (current_time/1000 - current_created_at) > 1200  ) { // if after 20 min, auto change button from pause to finish
+  //   if ( $('#after-20').hasClass("start-ghost") ) { //check if page was loaded befor 20, else nothing
+  //       $('#after-20').toggleClass("start-ghost");
+  //       $('#before-20').toggleClass("start-ghost");
+  //   }
+  // }
 
   if ( !$('#hit-pause').hasClass("start-ghost") ) {
       $('#challenge_timer').html(now1) // update total time left

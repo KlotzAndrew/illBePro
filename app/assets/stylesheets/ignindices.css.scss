@@ -31,6 +31,33 @@
 }
 
 .prize-well {
-	border-left: 2px solid blue;
-	border-radius:36px;
+	border-left: 3px solid #f1693c;
+	border-radius: 36px 0 0 36px;
 }
+
+.intro-square {
+  text-align: center;
+  margin-bottom: 15px;
+
+  border: 3px solid #4CBCB5;
+}
+
+
+.intro-diamond {
+  text-align: center;
+  margin-bottom: 15px;
+
+  border: 3px solid #f1693c;
+  border-radius: 36px;
+
+}
+
+/*0e91a1  - navbar/blue
+146c78  - navbar_active/blue
+f1693c  - unlock_button/orange
+d9edf7  - unlock_panel/blue
+
+B6D556  - content1/green
+4CBCB5  - content2/blue
+FCB813  - content3/orange
+*/

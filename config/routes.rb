@@ -34,7 +34,7 @@ Rails.application.routes.draw do
 # end
 
 # unauthenticated do
-  root to: "staticpages#landing_page"
+  root to: "ignindices#landing_page"
 # end
 
 

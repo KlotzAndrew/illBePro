@@ -58,4 +58,25 @@ class Ignindex < ActiveRecord::Base
 	end
   end	
 
+	def clear_duplcates #unresolved bug fixer
+		Ignindex.find(dont_run) #dont run
+		#finds duplicate summoner names (idk where bug is being created)
+		dup1 = []
+		Ignindex.all.each do |x|
+		  dup1 << x.summoner_id
+		end; nil
+		dup2 = dup1.select{|item| dup1.count(item) > 1}.uniq
+
+		#resets all duplicate values (user should re-validate w/o issue)
+		dup2.each do |x|
+		  Ignindex.where("summoner_id = ?", x).each do |y|
+		    y.update(
+		      :summoner_id => nil,
+		      :summoner_name_ref => nil,
+		      :summoner_validated => nil)
+		  end
+		end; nil
+	end
+
+
 end

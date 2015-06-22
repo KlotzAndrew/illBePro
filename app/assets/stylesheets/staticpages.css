@@ -29,18 +29,3 @@
 .teaser-body {
 	margin-top: 50px;
 }
-
-.intro-square {
-  text-align: center;
-
-  border: 2px solid green;
-}
-
-.intro-diamond {
-  text-align: center;
-
-  border: 2px solid red;
-  border-radius: 36px;
-
-
-}

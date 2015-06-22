@@ -433,7 +433,7 @@
       #   score.update(challenge_points: score.challenge_points - 1) 
       # end
       respond_to do |format|
-        format.html { redirect_to new_status_path, notice: 'Prized game was canceled' }
+        format.html { redirect_to new_status_path }
         format.json { head :no_content }
       end
     else
