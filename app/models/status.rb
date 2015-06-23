@@ -42,7 +42,7 @@ def challenge_init
   proc = rand(1..100)
   self.update(
     :value => 5400,
-    :points => 1,
+    :points => 0,
     :proc_value => proc,
     :kind => 5,
     :challenge_description => "Play a game to increase the chance your next challenge will be prized",

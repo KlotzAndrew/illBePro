@@ -317,8 +317,8 @@ class IgnindicesController < ApplicationController
         Rails.logger.info "name entered was nil"
         Rails.logger.info "params.legth: #{params["ignindex"]["summoner_name"].length}"
 
-      elsif !Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first.nil?      
-        
+      elsif !Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first.nil?
+
         #assign ignindex to current session
         @ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
         session[:ignindex_id] = @ignindex.id
@@ -374,7 +374,7 @@ class IgnindicesController < ApplicationController
 
       if user_signed_in?
         if current_user.id == @ignindex.user_id && @ignindex.summoner_validated == true
-          @ignindex.update(
+          @ignindex.update( 
             :region_id => @ignindex.region_id_temp,
             :postal_code => Region.find(@ignindex.region_id_temp).postal_code)
         end
@@ -478,7 +478,7 @@ class IgnindicesController < ApplicationController
         format.json { head :no_content } 
       end        
     elsif params[:commit] == "Add Summoner Name" # save action for ign
-      if params["ignindex"]["summoner_name"].length < 1
+      if params["ignindex"]["summoner_name"].length < 1 #filters nil entries
         Rails.logger.info "name entered was nil"
         Rails.logger.info "params.legth: #{params["ignindex"]["summoner_name"].length}"
       else

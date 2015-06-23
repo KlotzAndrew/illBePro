@@ -63,7 +63,7 @@ class Ignindex < ActiveRecord::Base
 		#finds duplicate summoner names (idk where bug is being created)
 		dup1 = []
 		Ignindex.all.each do |x|
-		  dup1 << x.summoner_id
+		dup1 << x.summoner_id
 		end; nil
 		dup2 = dup1.select{|item| dup1.count(item) > 1}.uniq
 
