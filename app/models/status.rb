@@ -586,6 +586,8 @@ end
                             end
                           end
                           
+                          ign_score = Ignindex.find(key_summoner[0].ignindex_id)
+                          Rails.logger.info "#{cron_st}: achievement refresh for #{ign_score.id}"
                           achievement_refresh(ign_score.id)
                           curent_ach = Achievement.find(ign_score.active_achievement)
                           if !curent_ach.nil?
@@ -808,6 +810,8 @@ end
                           
                           random_prize(cron_st, ign_score, clock_active_status)
 
+                          ign_score = Ignindex.find(key_summoner[0].ignindex_id)
+                          Rails.logger.info "#{cron_st}: achievement refresh for #{ign_score.id}"
                           achievement_refresh(ign_score.id)
                           curent_ach = Achievement.find(ign_score.active_achievement)
                           if !curent_ach.nil?
@@ -961,7 +965,7 @@ end
     Rails.logger.info "#{cron_st}: spelling_vandor_name finished"
   end
 
-  def achievement_refresh(session_ignindex_id) #input also takes current_user.ignindex_id
+  def self.achievement_refresh(session_ignindex_id) #input also takes current_user.ignindex_id
     Rails.logger.info "session_ignindex_id: #{session_ignindex_id}"
     gca_ign = Ignindex.where("id = ?", session_ignindex_id).first
     Rails.logger.info "gca_ign.id: #{gca_ign.id}"
