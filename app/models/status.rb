@@ -5,6 +5,7 @@ class Status < ActiveRecord::Base
 	# validates :user_id, presence: true
   validate :dr_who, :on => :create
   validate :one_fox_one_gun, :on => :create
+  belongs_to :ignindex
 
   after_create :challenge_init
 
