@@ -307,7 +307,11 @@ class IgnindicesController < ApplicationController
 
  
       #check if ignindex for summmoner aleady exists and assign
-      if !session[:summoner_name_ref_temp].blank? && !Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first.nil?
+      if session[:summoner_name_ref_temp].blank? 
+        Rails.logger.info "name entered was nil"
+        Rails.logger.info "params.legth: #{params["ignindex"]["summoner_name"].length}"
+
+      elsif !Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first.nil?      
         
         #assign ignindex to current session
         @ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
@@ -475,7 +479,10 @@ class IgnindicesController < ApplicationController
         session[:summoner_name_ref_temp] = params["ignindex"]["summoner_name"].mb_chars.downcase.gsub(' ', '')
 
         #check for existing && valid ignindex
-        if !session[:summoner_name_ref_temp].blank? && !Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first.nil?
+        if session[:summoner_name_ref_temp].blank?
+          Rails.logger.info "name entered was blank"
+          Rails.logger.info "params.legth: #{params["ignindex"]["summoner_name"].length}"
+        elsif !Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first.nil?
           @ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
           session[:ignindex_id] = @ignindex.id
           Rails.logger.info "using this ignindex.id: #{@ignindex.id}"

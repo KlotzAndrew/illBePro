@@ -101,7 +101,7 @@ end
               Rails.logger.info "#{cron_st}: #{summoner_hash}"
                 summoner_hash.each_pair do |summoner_hash_key,summoner_hash_value|
 
-                  Ignindex.find_by_summoner_name_ref(summoner_hash_key).update(summoner_id: summoner_hash["#{summoner_hash_key}"]["id"])
+                  Ignindex.where("summoner_name_ref = ?", summoner_hash_key).first.update(summoner_id: summoner_hash["#{summoner_hash_key}"]["id"])
                 
                     if Score.find_by_summoner_id(summoner_hash["#{x}"]["id"]).nil?
                       Score.create!(:summoner_id => summoner_hash["#{x}"]["id"], :summoner_name => summoner_hash["#{x}"]["name"])
@@ -145,7 +145,7 @@ end
 
           Rails.logger.info "#{cron_st}: find by: #{x}, update: #{summoner_hash["#{x}"]["id"]}"
 
-          Ignindex.find_by_summoner_name_ref(x).update(summoner_id: summoner_hash["#{x}"]["id"])
+          Ignindex.where("summoner_name_ref = ?", x).first.update(summoner_id: summoner_hash["#{x}"]["id"])
 
             if Score.find_by_summoner_id(summoner_hash["#{x}"]["id"]).nil?
               Score.create!(:summoner_id => summoner_hash["#{x}"]["id"], :summoner_name => summoner_hash["#{x}"]["name"])
@@ -189,7 +189,7 @@ end
           
           mastery_hash.each_pair do |key,value|
 
-            ign_for_mastery_hash = Ignindex.find_by_summoner_id(key)
+            ign_for_mastery_hash = Ignindex.where("summoner_id = ?", key).first
             ign_for_mastery_hash.update(mastery_1_name: "#{mastery_hash["#{key}"]["pages"][0]["name"]}")
             Rails.logger.info "#{cron_st}: 1st page name: #{mastery_hash["#{key}"]["pages"][0]["name"]}"
             Rails.logger.info "#{cron_st}: 1st page name should be: #{ign_for_mastery_hash.validation_string}"
@@ -272,7 +272,7 @@ end
         mastery_hash = JSON.parse(mastery_data)
         mastery_hash.each_pair do |key,value|
 
-          ign_for_mastery_hash = Ignindex.find_by_summoner_id(key)
+          ign_for_mastery_hash = Ignindex.where("summoner_id = ?", key).first
           ign_for_mastery_hash.update(mastery_1_name: "#{mastery_hash["#{key}"]["pages"][0]["name"]}")
           Rails.logger.info "#{cron_st}: 1st page name: #{mastery_hash["#{key}"]["pages"][0]["name"]}"
           Rails.logger.info "#{cron_st}: 1st page name should be: #{ign_for_mastery_hash.validation_string}"          
