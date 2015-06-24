@@ -124,15 +124,7 @@ var challenge_timer = function(){
 
 pause_guess = 0
 
-$(document).on('page:load', function() {
-    console.log("working? s")
-    is_page_status();
-})
 
-$(document).ready(function() {
-    console.log("working? s")
-    is_page_status();
-})
 
 
 var is_page_status = function(){
@@ -162,3 +154,13 @@ $(window).unload(function(){
     clearTimeout(checkint);
     console.log("cleard sttus timer");
 })
+
+// $(document).on('page:load', function() {
+//     console.log("working? s")
+//     is_page_status();
+// })
+
+// $(document).ready(function() {
+//     console.log("working? s")
+//     is_page_status();
+// })

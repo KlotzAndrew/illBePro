@@ -160,16 +160,6 @@ var ign_clocks = function(){
   }
 };
 
-$(document).on('page:load', function() {
-  console.log("working? i")
-  is_page_ignindex();
-})
-
-$(document).ready(function() {
-  console.log("working? i")
-  is_page_ignindex();
-})
-
 
 var is_page_ignindex = function(){
     current_page = $('#page_name').data("pagespec")
@@ -192,4 +182,16 @@ var is_page_ignindex = function(){
 $(window).unload(function(){
   clearTimeout(ignTimer)
   clearTimeout(ign_update_timeout)
+})
+
+$(document).on('page:load', function() {
+  console.log("working? i + s")
+  is_page_ignindex();
+  is_page_status();
+})
+
+$(document).ready(function() {
+  console.log("working? i + s")
+  is_page_ignindex();
+  is_page_status();
 })
