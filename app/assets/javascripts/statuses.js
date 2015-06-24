@@ -124,6 +124,17 @@ var challenge_timer = function(){
 
 pause_guess = 0
 
+$(document).on('page:load', function() {
+    console.log("working? s")
+    is_page_status();
+})
+
+$(document).ready(function() {
+    console.log("working? s")
+    is_page_status();
+})
+
+
 var is_page_status = function(){
     console.log("status setup running") 
     current_page = $('#page_name').data("pagespec")  

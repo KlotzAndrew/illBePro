@@ -160,6 +160,16 @@ var ign_clocks = function(){
   }
 };
 
+$(document).on('page:load', function() {
+  console.log("working? i")
+  is_page_ignindex();
+})
+
+$(document).ready(function() {
+  console.log("working? i")
+  is_page_ignindex();
+})
+
 
 var is_page_ignindex = function(){
     current_page = $('#page_name').data("pagespec")

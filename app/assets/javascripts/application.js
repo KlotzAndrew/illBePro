@@ -16,16 +16,3 @@
 //= require_tree .
 
 //= require introjs
-
-
-$(document).on('page:load', function() {
-	console.log("working?")
-	is_page_status();
-	is_page_ignindex();
-})
-
-$(document).ready(function() {
-	console.log("working?")
-	is_page_status();
-	is_page_ignindex();
-})
