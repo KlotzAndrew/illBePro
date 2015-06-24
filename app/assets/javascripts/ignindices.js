@@ -162,6 +162,7 @@ var ign_clocks = function(){
 
 
 var is_page_ignindex = function(){
+    console.log("ignindex setup running") 
     current_page = $('#page_name').data("pagespec")
     if (typeof ignTimer !== 'undefined') {
      clearTimeout(ignTimer); 

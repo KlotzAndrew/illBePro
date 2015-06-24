@@ -2,7 +2,7 @@ var offline_alert = function() {
     $('#new_chal_button').on("click", function(){
         alert("illBePro engine is temporarily offline! Check out our Facebook or Twitter page for updates!")
     })
-}
+};
 
 var start_challenge = function(){
     $('#show_chal').hide(); // hide challenge
@@ -13,19 +13,6 @@ var start_challenge = function(){
 
 };
 
-// var pause_button = function(){ 
-//     $('#hit-unpause').on("click", function(){
-//         console.log("hit-unpause clicked");
-//         $('#hit-unpause').toggleClass("start-ghost");
-//         $('#hit-pause').toggleClass("start-ghost");
-//     });
-
-//     $('#hit-pause').on("click", function(){
-//         console.log("hit-pause clicked");
-//         $('#hit-unpause').toggleClass("start-ghost");
-//         $('#hit-pause').toggleClass("start-ghost");
-//     });
-// };
 
 var finish_button = function(){
     $('#hit-unfinish').on("click", function(){
@@ -130,9 +117,11 @@ pause_guess = 0
 var is_page_status = function(){
     console.log("status setup running") 
     current_page = $('#page_name').data("pagespec")  
+    
     if (typeof statusTimer !== 'undefined') {
        clearTimeout(checkint); 
     } 
+
   if (current_page == "status_index") {
       console.log("this is status_index")
       challenge_timer()
