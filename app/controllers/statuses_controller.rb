@@ -196,6 +196,7 @@
 
           @game_history = @achievement.statuses.order(created_at: :desc)
 
+
         end
 
       end

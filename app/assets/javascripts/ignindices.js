@@ -1,21 +1,3 @@
-// var temp_user = function(){ // disabled
-//   $('#temp_geodeliver_button').on("click", function() {
-//     dataString = $('#temp_geodeliver_input').val()
-//       $.ajax({
-//         type: 'PUT',
-//         url:  '/ignindices/',
-//         data: dataString,
-//         dataType: "JSON",
-//         success: function(data) {
-//             console.log(data);
-//             console.log(dataString);
-//         }
-//       });
-
-//     // 
-//   })
-// }
-
 
 var auto_name_int;
 var auto_name = function(){
@@ -25,47 +7,11 @@ var auto_name = function(){
   },1000)
 }
 
-// var teaser_summoner = function(){
-//   $('#button_teaser_summoner').on("click", function() {
-//     $('#js_name').html($('#input_teaser_summoner').val())
-    
-//     $('#js_val').html('- Not Valid')
-//     $('#js_val').addClass('not-validated')
-//     $('#summoner_valid_panel').slideDown(1000)
-//     $('#js_validation_string').html("illbepro")
-//     $('#mastery_page_name').html("AP mid")
-//     $('#mastery_page_div').removeClass("start-ghost")
-//     $('#test_cd').data("timer", ( (new Date).getTime()/1000) )
-//     $('#check_loop').data("check", (new Date).getTime()/1000)
-//     clearTimeout(ignTimer)
-//     clearTimeout(ign_update_timeout)
-//     ign_clocks()     
-//   })
-// }
-
 var landing_search = function() {
-  console.log("ls ready")
-  
   $('#landing_search_button').on('ajax:success', function(event, data, status, xhr) {
-  console.log("ls hit")
-  window.location.replace("../setup")
-});
+    window.location.replace("../setup")
+  });
 
-//   $('#landing_search_button').submit(function() {  
-//     console.log("ls aim")
-//       var valuesToSubmit = $(this).serialize();
-//       $.ajax({
-//           type: "POST",
-//           url: $(this).attr('../ignindices#create'), //sumbits it to the given url of the form
-//           data: valuesToSubmit,
-//           dataType: "JSON" // you want a difference between normal and ajax-calls, and json is standard
-//       }).success(function(json){
-//           console.log("success", json);
-//           console.log("ls hit")
-//       });
-//       return false; // prevents normal behaviour
-//     console.log("ls fire")
-//   });
 }
 
 
@@ -214,37 +160,8 @@ var ign_clocks = function(){
   }
 };
 
-// can delete this, i think
-// $(window).load(function(){
-//   current_page = $('#page_name').data("pagespec")
-//   if (current_page == "ignindex_index") {
-//       console.log("this is ignindex_index")
-//       ign_clocks()
-//       ign_update()
-//     } else {
-//       console.log("this is not ignindex_index");
-//     }
-// });
 
-$(document).ready(function(){
-  landing_search();
-  current_page = $('#page_name').data("pagespec")
-    if (typeof ignTimer !== 'undefined') {
-     clearTimeout(ignTimer); 
-    } 
-  if (current_page == "ignindex_index") {
-      console.log("this is ignindex_index")
-      ign_clocks();
-      ign_update();
-      ajax_button_summoner_name();
-      ajax_button_validation_string();
-      teaser_summoner();
-      // auto_name();
-    } else {
-      console.log("this is not ignindex_index");
-    }  
-})
-$(document).on('page:load', function(){
+var is_page_ignindex = function(){
     current_page = $('#page_name').data("pagespec")
     if (typeof ignTimer !== 'undefined') {
      clearTimeout(ignTimer); 
@@ -260,7 +177,7 @@ $(document).on('page:load', function(){
     } else {
       console.log("this is not ignindex_index");
     }  
-})
+}
 
 $(window).unload(function(){
   clearTimeout(ignTimer)

@@ -79,10 +79,21 @@
                 <div class="col-md-12">
                   <div class="text-left">
                     <h4 class="text-center"><strong><%= @status.summoner_name %></strong> - <i>waiting for game results</i></h4>
-                    <h5>Result: </h5><h5 id="game_results"></h5>
-                    <h5>Champion: </h5><h5 id="game_champion"></h5> 
-                    <h5>K/D/A: </h5><h5 id="game_kda"></h5>
-                    <h5>Length: </h5><h5 id="game_length"></h5>
+                    <% if @status.game_1 == {} %>
+                      <h5>Result: <span id="game_results"></span></h5>
+                      <h5>Champion: <span id="game_champion"></span></h5> 
+                      <h5>K/D/A: <span id="game_kda"></span></h5>
+                      <h5>Length: <span id="game_length"></span></h5>                    
+                    <% else %>
+                      <% if @status.game_1[:win_loss] == "true" %>
+                      <h5>Result: <span id="game_results">Victory</span></h5>
+                      <% else %>
+                      <h5>Result: <span id="game_results">Defeat</span></h5>
+                      <% end %>
+                      <h5>Champion: <span id="game_champion"><%= @status.game_1[:champion_id] %></span></h5> 
+                      <h5>K/D/A: <span id="game_kda"><%= @status.game_1[:kills] %>-<%= @status.game_1[:deaths] %>-<%= @status.game_1[:assists] %></span></h5>
+                      <h5>Length: <span id="game_length"><%= @status.game_1[:matchDuration].to_i/60 %>m</span></h5>
+                    <% end %>
                   </div>
                 </div>          
                 

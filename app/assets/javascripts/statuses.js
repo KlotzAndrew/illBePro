@@ -10,26 +10,22 @@ var start_challenge = function(){
     $('#roll_prizes').hide(); // remove proc roller
     $('#show_chal').fadeIn(2500); // fadein hidden challenge
 
-    // if ( $('#page_name').hasClass("teaser-config") ) {
-    //     setTimeout(function(){
-    //         document.location.reload()
-    //     }, 60000)
-    // }
+
 };
 
-var pause_button = function(){ 
-    $('#hit-unpause').on("click", function(){
-        console.log("hit-unpause clicked");
-        $('#hit-unpause').toggleClass("start-ghost");
-        $('#hit-pause').toggleClass("start-ghost");
-    });
+// var pause_button = function(){ 
+//     $('#hit-unpause').on("click", function(){
+//         console.log("hit-unpause clicked");
+//         $('#hit-unpause').toggleClass("start-ghost");
+//         $('#hit-pause').toggleClass("start-ghost");
+//     });
 
-    $('#hit-pause').on("click", function(){
-        console.log("hit-pause clicked");
-        $('#hit-unpause').toggleClass("start-ghost");
-        $('#hit-pause').toggleClass("start-ghost");
-    });
-};
+//     $('#hit-pause').on("click", function(){
+//         console.log("hit-pause clicked");
+//         $('#hit-unpause').toggleClass("start-ghost");
+//         $('#hit-pause').toggleClass("start-ghost");
+//     });
+// };
 
 var finish_button = function(){
     $('#hit-unfinish').on("click", function(){
@@ -117,12 +113,6 @@ var challenge_timer = function(){
         }
     }
 
-  // if ( (current_time/1000 - current_created_at) > 1200  ) { // if after 20 min, auto change button from pause to finish
-  //   if ( $('#after-20').hasClass("start-ghost") ) { //check if page was loaded befor 20, else nothing
-  //       $('#after-20').toggleClass("start-ghost");
-  //       $('#before-20').toggleClass("start-ghost");
-  //   }
-  // }
 
   if ( !$('#hit-pause').hasClass("start-ghost") ) {
       $('#challenge_timer').html(now1) // update total time left
@@ -134,33 +124,8 @@ var challenge_timer = function(){
 
 pause_guess = 0
 
-$(document).ready(function(){
-    current_page = $('#page_name').data("pagespec")
-
-    if (typeof statusTimer !== 'undefined') {
-       clearTimeout(statusTimer); 
-    } 
-    if (current_page == "status_index") {
-        console.log("this is status_index")
-        challenge_timer()
-        pause_button()
-        finish_button()
-
-      if ( $('#cg-refresher').hasClass("cg-update-true") ) {
-        console.log("check game on doc ready")
-        // clearInterval(game_check_int)
-        check_game()
-      } else {
-        var checkint;
-      }
-    } else {
-      console.log("this is not status_index");
-    }  
-})
-
-
-// move to application.js, add page-specific stuff
-$(document).on('page:load', function(){ 
+var is_page_status = function(){
+    console.log("status setup running") 
     current_page = $('#page_name').data("pagespec")  
     if (typeof statusTimer !== 'undefined') {
        clearTimeout(checkint); 
@@ -168,7 +133,6 @@ $(document).on('page:load', function(){
   if (current_page == "status_index") {
       console.log("this is status_index")
       challenge_timer()
-      pause_button()
       finish_button()
         
      if ( $('#cg-refresher').hasClass("cg-update-true") ) {
@@ -180,22 +144,10 @@ $(document).on('page:load', function(){
     } else {
       console.log("this is not status_index");
     }  
-})  
+}
 
 $(window).unload(function(){
     clearTimeout(statusTimer);
     clearTimeout(checkint);
     console.log("cleard sttus timer");
 })
-
-// $(document).ready(challenge_timer) // triggers on pages it shouldnt be
-// $(document).on('page:load', challenge_timer);
-
-// $(document).ready(pause_button)
-// $(document).on('page:load', pause_button);
-
-// $(document).ready(finish_button)
-// $(document).on('page:load', finish_button);
-
-// $(document).ready(proc_number)
-// $(document).on('page:load', proc_number);
