@@ -16,7 +16,7 @@ class StaticpagesController < ApplicationController
         assign_2 = Prize.all.where("vendor = ?", "Cora Pizza").where("assignment = ?", 2).count
         @prize_sent = assign_1 + assign_2
         @prize_remaining = 100 - @prize_sent
-        @view_count = 4085
+        @view_count = 5398
       end
     end
   end
