@@ -439,7 +439,9 @@ class IgnindicesController < ApplicationController
 
   def create # runs on step 2 and 4 (if using @ignindex.new; runs on 'add' or 'update'
     Rails.logger.info "hit create controller"
-    if params["commit"] == "Add Postal/Zip Code" or params["commit"] == "Search Postal/Zip Code" or params["commit"] == "Search"#no save action
+    Rails.logger.info "params: #{params["commit"]}"
+    Rails.logger.info "params2: #{params}"
+    if params["commit"] == "Add Postal/Zip Code" or params["commit"] == "Search Postal/Zip Code" or params["commit"] == "Search" #no save action
       reset_session_vars
 
       Rails.logger.info "params_psotal_code: #{ignindex_params[:postal_code]}"
@@ -464,6 +466,31 @@ class IgnindicesController < ApplicationController
         end 
       end
       # redirect_to get_started_path
+    elsif params["commit"].nil? && !["ignindex"]["postal_code"].nil? #ajax comit for landingscreen form
+      reset_session_vars
+
+      Rails.logger.info "params_psotal_code: #{ignindex_params[:postal_code]}"
+      @ignindex = Ignindex.new(
+        :postal_code => ignindex_params[:postal_code])
+
+      Rails.logger.info "self.postal_code: #{@ignindex.postal_code}"
+      update_region_id(@ignindex, ignindex_params[:postal_code]) #gets region_id from postal code
+      
+      session[:region_id_temp] = @ignindex.region_id_temp
+      session[:postal_code_temp] = ignindex_params[:postal_code]
+      if @ignindex.region_id_temp.nil?
+        respond_to do |format|
+          format.html { redirect_to setup_path, alert: 'Sorry! That zip/postal code does not match anything on our map' }
+          format.json { head :no_content }
+        end 
+      else
+        session[:setup_progress] = 1
+        respond_to do |format|
+          format.html { redirect_to setup_path }
+          format.json { head :no_content } 
+        end 
+      end
+      # redirect_to get_started_path      
     elsif params["commit"] == "Continue Anyway" or params["commit"] == "Select"
       session[:setup_progress] = 2
       respond_to do |format|

@@ -24,6 +24,14 @@ class ScoresController < ApplicationController
           @achievements << block
         end
         @achievements = @achievements.sort_by{|a,b,c,d| [a,d]}.reverse
+
+      @currently_playing = []
+      Status.all.where("updated_at > ?", 2.hours.ago).each do |x|
+        if !@currently_playing.include?(x.summoner_name)
+          @currently_playing << x.summoner_name
+        end
+      end; nil
+    
     #   end
     # end
   end

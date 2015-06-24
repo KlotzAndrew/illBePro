@@ -25,23 +25,49 @@ var auto_name = function(){
   },1000)
 }
 
-var teaser_summoner = function(){
-  $('#button_teaser_summoner').on("click", function() {
-    $('#js_name').html($('#input_teaser_summoner').val())
+// var teaser_summoner = function(){
+//   $('#button_teaser_summoner').on("click", function() {
+//     $('#js_name').html($('#input_teaser_summoner').val())
     
-    $('#js_val').html('- Not Valid')
-    $('#js_val').addClass('not-validated')
-    $('#summoner_valid_panel').slideDown(1000)
-    $('#js_validation_string').html("illbepro")
-    $('#mastery_page_name').html("AP mid")
-    $('#mastery_page_div').removeClass("start-ghost")
-    $('#test_cd').data("timer", ( (new Date).getTime()/1000) )
-    $('#check_loop').data("check", (new Date).getTime()/1000)
-    clearTimeout(ignTimer)
-    clearTimeout(ign_update_timeout)
-    ign_clocks()     
-  })
+//     $('#js_val').html('- Not Valid')
+//     $('#js_val').addClass('not-validated')
+//     $('#summoner_valid_panel').slideDown(1000)
+//     $('#js_validation_string').html("illbepro")
+//     $('#mastery_page_name').html("AP mid")
+//     $('#mastery_page_div').removeClass("start-ghost")
+//     $('#test_cd').data("timer", ( (new Date).getTime()/1000) )
+//     $('#check_loop').data("check", (new Date).getTime()/1000)
+//     clearTimeout(ignTimer)
+//     clearTimeout(ign_update_timeout)
+//     ign_clocks()     
+//   })
+// }
+
+var landing_search = function() {
+  console.log("ls ready")
+  
+  $('#landing_search_button').on('ajax:success', function(event, data, status, xhr) {
+  console.log("ls hit")
+  window.location.replace("../setup")
+});
+
+//   $('#landing_search_button').submit(function() {  
+//     console.log("ls aim")
+//       var valuesToSubmit = $(this).serialize();
+//       $.ajax({
+//           type: "POST",
+//           url: $(this).attr('../ignindices#create'), //sumbits it to the given url of the form
+//           data: valuesToSubmit,
+//           dataType: "JSON" // you want a difference between normal and ajax-calls, and json is standard
+//       }).success(function(json){
+//           console.log("success", json);
+//           console.log("ls hit")
+//       });
+//       return false; // prevents normal behaviour
+//     console.log("ls fire")
+//   });
 }
+
 
 var ajax_button_validation_string = function() {
   $('#validation_code_submit').bind('ajax:success', function(evt, data, status, xhr) {
@@ -52,6 +78,8 @@ var ajax_button_validation_string = function() {
       success: function(data) { 
         console.log(data)
         $('#js_validation_string').html(data["ignindex"].validation_string)
+        $('#js_validation_string_intro').html(data["ignindex"].validation_string)
+        $('#how_to_going').slideDown()
         $('#test_cd').data("timer", data["ignindex"].validation_timer)
         clearTimeout(ignTimer)
         clearTimeout(ign_update_timeout)
@@ -114,6 +142,7 @@ var ign_update = function() {
             $('#mastery_page_div').toggleClass("start-ghost");
           }
           $('#mastery_page_name').html(mastery_1)
+          $('#mastery_page_name_intro').html(mastery_1)
         };
 
         if (data["valid"] == true) {
@@ -123,6 +152,8 @@ var ign_update = function() {
           $('#summoner_panel').removeClass("panel-danger")
           $('#summoner_panel').addClass("panel-success")
           $('#summoner_valid_panel').slideUp(3000) // get rid of clock
+          $('#how_to_going').slideUp(3000)
+          // get rid of how to-stuff
 
           // $('#how_to_going').addClass("start-ghost")
           $('#how_to_finished').removeClass("start-ghost")
@@ -196,6 +227,7 @@ var ign_clocks = function(){
 // });
 
 $(document).ready(function(){
+  landing_search();
   current_page = $('#page_name').data("pagespec")
     if (typeof ignTimer !== 'undefined') {
      clearTimeout(ignTimer); 

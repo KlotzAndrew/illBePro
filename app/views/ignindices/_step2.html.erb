@@ -1,9 +1,42 @@
 <div class="row">
 	<div class="col-md-6">
-		<h1>Challenges in your area (<%= @region_postal %>)</h1>
+		<h1>Pick a Challenge for (<%= @region_postal %>)</span></h1>
+		<% if @tagged_for_prizing == true %>
+			<div class="well prize-well " >
+				<h3 style="margin-top: 0px;">Cora Pizza Challenge</h3>
+				
+				<div class="row">
+					<div class="col-md-6">
+						<%= image_tag("cora1.jpg", size: "250x112") %> 
+					</div>
+					<div class="col-md-6 text-center" style="">
+					    <%= form_for @ignindex do |t| %>
+					      <%= t.submit "Select", class: "btn btn-lg btn-lprimary s2-chal" %>
+					    <% end %>			
+					</div>
+				</div>
+			</div>
+
+		<% else %>
+			<div class="well">
+				<h3 style="margin-top: 0px;">No Challenge Available</h3>
+	
+				<div class="row" style="margin-top: 40px;">
+					<div class="col-md-8">
+					 	<h5>Cora Pizza is offering challenges in Toronto</h5>
+					</div>
+					<div class="col-md-4 text-right">
+						 <span class="btn btn-lprimary">Learn More</span>
+					</div>
+				</div>
+			</div>	
+		<% end %>			
+	</div>
+
+	<div class="col-md-6" style="margin-top: 70px;">
 		<% if @tagged_for_prizing == true %>
 			<div class="well">
-				<h3>Cora Pizza Challenge</h3>
+				<h3 style="margin-top: 0px;">Cora Pizza Challenge</h3>
 		        <h5>
 		          Earn 10 experience points
 		          <ul>
@@ -23,32 +56,32 @@
 		        	</ul>
 	        	</ol>
 	        (<a href="/current_achievemnet">learn more</a>)
-			</div>	
-
+			</div>			
 		<% else %>
-			<h3>No prizes available: <strong><%= @region_postal %></strong></h3>
-		<% end %>			
-	</div>
+			<div class="well">
+				<h3 class="text-center" style="margin-top: 0px;">Cora Pizza Challenge</h3>
+		        
+		        <h5>
+		          <strong>Cora Pizza</strong> is offering challenges in these areas:<br/>
+		        </h5>
+		        <h5>
+		          (M6G, M6J, M5R, M5S, M5T, M5G) - Check them out!
 
-	<div class="col-md-6" style="margin-top: 70px;">
-		<% if @tagged_for_prizing == true %>
-			<div class="well prize-well " >
-				<h4>Cora Pizza Challenge</h4>
-				
-				<div class="row">
-					<div class="col-md-8">
-						<%= image_tag("cora1.jpg", size: "250x112") %> 
-					</div>
-					<div class="col-md-4">
-					    <%= form_for @ignindex do |t| %>
-					      <%= t.submit "Select", class: "btn btn-large btn-primary" %>
-					    <% end %>			
-					</div>
-				</div>
-			</div>
-
-		<% else %>
-			<h3>No prizes available: <strong><%= @region_postal %></strong></h3>
+		        </h5>
+		        <br/>
+		        Cora Pizza Prizes
+	        	<ol>
+		        	<li>For: completing challenge during the week</li>
+			        <ul>
+			        	<li>Random Pizza prize (up to a Free Pizza) awarded Sundays @ 5pm</li>
+			        </ul>
+		        	<li>For: every win</li>
+		        	<ul>
+			        	<li>Chance to win a Free Slice</li>
+		        	</ul>
+	        	</ol>
+	        <h5 class="text-center">(<a href="/current_achievemnet">learn more</a>)</h5>
+			</div>			
 		<% end %>	
 	</div>
 </div>

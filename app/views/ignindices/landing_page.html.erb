@@ -3,60 +3,66 @@
 	<div class="teaser-context">
 
 	<h1 class="text-center">Win  a Free Pizza for Playing League of Legends</h1>
+	<h5 class="text-center">Weekly rewards from your local Restaurants</h5>
 
-		<div class="col-md-12"  style="margin-top: 20px">
+		<div class="col-md-12"  style="margin-top: 40px">
 		  	<div class="col-md-6">
-		  		<div class="row" style="">
-				
-					<div class="col-md-6 col-md-offset-2 intro-square" style="margin-top: 15px;">
+
+		  		<div class="row" style="margin-bottom:20px;">
+					<div class="col-md-1 col-md-offset-3 intro-square2" style="margin-bottom: 0px;">
+						<h4>1</h4>
+					</div>
+					<div class="col-md-6 col-md-offset-0 intro-square" style="margin-bottom: 0px;">
 						<h4>Pick Challenge</h4>
 					</div>
 		  		</div>
 
-		  		<div class="row" style="">
-
-					<div class="col-md-6 col-md-offset-2 intro-square" style="margin-top: 15px;">
-						<h4>Press 'Play for Challenge'</h4>
+		  		<div class="row" style="margin-bottom:20px;">
+					<div class="col-md-1 col-md-offset-3 intro-diamond2" style="margin-bottom: 0px;">
+						<h4>2</h4>
+					</div>
+					<div class="col-md-6 col-md-offset-0 intro-diamond" style="margin-bottom: 0px;">
+						<h4>Play League</h4>
 					</div>
 		  		</div>	 
 
-		  		<div class="row" style="">
-			
-					<div class="col-md-6 col-md-offset-2 intro-diamond" style="margin-top: 15px;">
-						<h4>Play League</h4>
+		  		<div class="row" style="margin-bottom:20px;">
+					<div class="col-md-1 col-md-offset-3 intro-square2" style="margin-bottom: 0px;">
+						<h4>3</h4>
+					</div>			
+					<div class="col-md-6 col-md-offset-0 intro-square" style="margin-bottom: 0px;">
+						<h4>Win Pizza</h4>
 					</div>
 		  		</div>
 
-		  		<div class="row" style="">
-			
-					<div class="col-md-6 col-md-offset-2 intro-square" style="margin-top: 15px;">
-						<h4>Check Challenge</h4>
+		  		<div class="row" style="margin-bottom:20px;">
+					<div class="col-md-1 col-md-offset-3 intro-square2" style="margin-bottom: 0px;">
+						<h4>4</h4>
 					</div>
+					<div class="col-md-6 col-md-offset-0 intro-square" style="margin-bottom: 0px;">
+						<h4>Repeat</h4>
+					</div>
+
 		  		</div>		  		
 
 		  	</div>
 
-		    <div class="col-md-6">
+		    <div class="col-md-3 col-md-offset-1">
 		    	<div class="text-center">
 			    	<% if user_signed_in? %>
 				    	<%= button_to "Start Now", new_status_path, :class => "btn btn-lprimary home-button", :method => :get  %>
 			    	<% else %>
 
 			    		<div class="lwell">
-			    			<h3>See what you can win in your area</h3>
+			    			<h3 style="margin-top: 0px;">See what you can win in your area</h3>
 
-							<div class="row">
+							<%= form_for @ignindex, :html => { :id => '' } do |t| %>
+								<h5 class="text-left" style="margin-bottom: 0px; margin-top: 20px;">Postal/Zip Code</h5>
+								<%= t.text_field :postal_code, :placeholder => 'M5R', class: "form-control input-md" %>
+								<%= t.submit "Search", class: "btn btn-large btn-lprimary lp-search" %>
+							<% end %>
+						    <h6 class="">(CAN uses first 3-digits, US uses first 5-digits)</h6>
 
-								<div class="form-inline" style="margin-top:20px;">
-									<div class="form-group">
-									    <%= form_for @ignindex, :method => :post do |t| %>
-									      <%= t.text_field :postal_code, :placeholder => 'Postal/Zip Code', class: "form-control input-md" %>
-									      <%= t.submit "Search", class: "btn btn-large btn-primary" %>
-									    <% end %>
-									</div>
-								</div>
-							    <h6 class="">(CAN uses first 3-digits, US uses first 5-digits)</h6>
-							</div>
 
 			    		</div>
 

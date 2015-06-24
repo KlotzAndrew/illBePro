@@ -194,15 +194,17 @@
            show_prizes_2(@ignindex.region_id)
           end
 
+          @game_history = @achievement.statuses.order(created_at: :desc)
+
         end
 
       end
     else #user signed-in; this can be refractored
  
-      if Ignindex.find_by_user_id(current_user.id).nil?
+      if Ignindex.find_by_user_id(current_user.id).nil? #redirect
         redirect_to setup_path
         session[:setup_progress] = 0
-      elsif Ignindex.find_by_user_id(current_user.id).region_id.nil?
+      elsif Ignindex.find_by_user_id(current_user.id).region_id.nil? #redirect
         redirect_to zone_url, alert: 'You need a valid Postal Code!'
       else
         #setup progress?
@@ -262,6 +264,10 @@
         else 
          show_prizes_2(@ignindex.region_id)
         end
+
+        #get game history
+        @game_history = @achievement.statuses.order(created_at: :desc)
+
       end
  
     end
@@ -368,7 +374,7 @@
     Rails.logger.info "This is test log for proc #{@status.proc_value}"
     Rails.logger.info "This is test log for rolll #{@status.roll_status}"
     Rails.logger.info "This is test log for id #{@status.id}"
-    if @status.roll_status == 1 # this is broken right now
+    if @status.roll_status == 1 #UPDATE (using AJAX for calls, redirect making no sense)
       @status.update(roll_status: 1)
          respond_to do |format|
             format.html { redirect_to challenges_url, notice: 'Challenge getting started' }
@@ -377,11 +383,11 @@
           end      
     else
 
-      if (Time.now.to_i - @status.created_at.to_i) < 1200
+      if (Time.now.to_i - @status.created_at.to_i) < 1200 #DELETE (pause buttin is being removed)
         if @status.pause_timer == 0
           @status.update(pause_timer: Time.now.to_i)
           respond_to do |format|
-            format.html { redirect_to challenges_url, notice: 'Challenge Paused' }
+            format.html { redirect_to challenges_url }
             format.json { head :no_content }
             format.js { render :nothing => true}
           end
@@ -389,7 +395,7 @@
           @status.update(value: (@status.value + Time.now.to_i - @status.pause_timer))
           @status.update(pause_timer: 0)
           respond_to do |format|
-            format.html { redirect_to challenges_url, notice: 'Challenge Unpaused' }
+            format.html { redirect_to challenges_url }
             format.json { head :no_content }
             format.js { render :nothing => true } 
           end
@@ -421,7 +427,7 @@
       #   score.update(challenge_points: score.challenge_points - 1) 
       # end
       respond_to do |format|
-        format.html { redirect_to new_status_path, notice: 'Prized challenge was canceled' }
+        format.html { redirect_to new_status_path }
         format.json { head :no_content }
       end
     elsif @status.kind == 5

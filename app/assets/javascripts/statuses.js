@@ -67,22 +67,24 @@ var check_game = function(){
 
                     $('#v3_ingame').addClass("start-ghost")
                     $('#v3_outgame').removeClass("start-ghost")                
-
-                    champ = data.game_1["champion_id"]
                     kills = data.game_1["kills"]
                     deaths = data.game_1["deaths"]
                     assists = data.game_1["assists"]
-                    game_summary = "played as " + champ + " " + kills + "/" + deaths + "/" + assists
+                    game_summary = kills + "/" + deaths + "/" + assists
 
+                    duration = Math.round(data.game_1["matchDuration"]/60)
+
+                    $('#game_champion').html(data.game_1["champion_id"])
+                    $('#game_kda').html(game_summary)
+                    $('#game_length').html(duration)
 
                     if (data.win_value == 2) { // won game
-                        $('#v3_prize_results').html("Won your game")
-                        $('#v3_game_results').html(game_summary)
+                        $('#game_results').html("Victory")
                     } else { // loss or timeout
-                        $('#v3_prize_results').html("Lost your game")
-                        $('#v3_game_results').html(game_summary)
+                        $('#game_results').html("Defeat")
                     }
-                    $('#game_end_instructions').html("Every game has a random chance for a prize")
+
+                    // $('#game_end_instructions').html("Every game has a random chance for a prize")
 
                 }
                 clearInterval(checkint)
