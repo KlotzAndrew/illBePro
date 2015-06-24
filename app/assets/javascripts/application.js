@@ -18,7 +18,6 @@
 //= require introjs
 
 
-// RAILS_ENV=production bundle exec rake assets:precompile
 $(document).on('page:load', function() {
 	console.log("working?")
 	is_page_status();
