@@ -1,104 +1,229 @@
-     
-<div class="row">
-	<div class="teaser-context">
+<section id="top">
+	<div class="container">
+		<div class="teaser-context">
+			<h1 class="text-center" style="color: white;">Win  a Free Pizza for Playing League of Legends</h1>
+			<h4 class="text-center" style="color: white;">Rewards from your local Restaurants</h4>
+			<div class="col-md-12 col-md-offset-0"  style="margin-top: 40px">
 
-	<h1 class="text-center">Win  a Free Pizza for Playing League of Legends</h1>
-	<h5 class="text-center">Rewards from your local Restaurants</h5>
+			  		<div class="row" style="margin-bottom:20px;">
 
-		<div class="col-md-12"  style="margin-top: 40px">
-		  	<div class="col-md-6">
+						<div class="col-md-4 col-md-offset-4 intro-square2" style="margin-bottom: 0px;">
+							<h4>Play League</h4>
+						</div>
+			  		</div>	 
 
-		  		<div class="row" style="margin-bottom:20px;">
-					<div class="col-md-1 col-md-offset-3 intro-square2" style="margin-bottom: 0px;">
-						<h4>1</h4>
-					</div>
-					<div class="col-md-6 col-md-offset-0 intro-square" style="margin-bottom: 0px;">
-						<h4>Pick Challenge</h4>
-					</div>
-		  		</div>
+			  		<div class="row" style="margin-bottom:20px;">
+		
+						<div class="col-md-4 col-md-offset-4 intro-square2" style="margin-bottom: 0px;">
+							<h4>Win Pizza</h4>
+						</div>
+			  		</div>
 
-		  		<div class="row" style="margin-bottom:20px;">
-					<div class="col-md-1 col-md-offset-3 intro-diamond2" style="margin-bottom: 0px;">
-						<h4>2</h4>
-					</div>
-					<div class="col-md-6 col-md-offset-0 intro-diamond" style="margin-bottom: 0px;">
-						<h4>Play League</h4>
-					</div>
-		  		</div>	 
+			  		<div class="row" style="margin-bottom:20px;">
 
-		  		<div class="row" style="margin-bottom:20px;">
-					<div class="col-md-1 col-md-offset-3 intro-square2" style="margin-bottom: 0px;">
-						<h4>3</h4>
-					</div>			
-					<div class="col-md-6 col-md-offset-0 intro-square" style="margin-bottom: 0px;">
-						<h4>Win Pizza</h4>
-					</div>
-		  		</div>
-
-		  		<div class="row" style="margin-bottom:20px;">
-					<div class="col-md-1 col-md-offset-3 intro-square2" style="margin-bottom: 0px;">
-						<h4>4</h4>
-					</div>
-					<div class="col-md-6 col-md-offset-0 intro-square" style="margin-bottom: 0px;">
-						<h4>Repeat</h4>
-					</div>
-
-		  		</div>		  		
-
-		  	</div>
-
-		    <div class="col-md-3 col-md-offset-1">
-		    	<div class="text-center">
-			    	<% if user_signed_in? %>
-				    	<%= button_to "Start Now", new_status_path, :class => "btn btn-lprimary home-button", :method => :get  %>
-			    	<% else %>
-
-			    		<div class="lwell">
-			    			<h3 style="margin-top: 0px;">See what you can win in your area</h3>
-
-							<%= form_for @ignindex, :html => { :id => '' } do |t| %>
-								<h5 class="text-left" style="margin-bottom: 0px; margin-top: 20px;">Postal/Zip Code</h5>
-								<%= t.text_field :postal_code, :placeholder => 'M5R', class: "form-control input-md" %>
-								<%= t.submit "Search", class: "btn btn-large btn-lprimary lp-search" %>
-							<% end %>
-						    <h6 class="">(CAN uses first 3-digits, US uses first 5-digits)</h6>
-
-
-			    		</div>
-
-
-			    	<% end %>
-		    	</div>
-		    </div>
+						<div class="col-md-4 col-md-offset-4 intro-diamond2" style="margin-bottom: 0px;">
+							<h4>Get Started</h4>
+						</div>
+			  		</div>		  		
+			</div>
 		</div>
-
 	</div>
-</div>
+</section>
 
-<div class="row" style="border-top: 2px solid black; margin-top: 100px;">
-	<h1 class="page-header text-center">Cora Pizza in Toronto</h1>
-</div>
-<div class="row">
-	<div class="col-md-6">
-      <h4>
-        Starting June 15th Cora Pizza will be rewarding your in-game acheivements with pizza. <br/><br/>Cora Pizza loves gamers, and will be experimenting with rewarding your League of Legends games with pizza. So check them out!
-      </h4>	
-      <div class="text-center">
-      <%= link_to "Learn More", current_achievement_url, :class=>"btn btn-lprimary", :style=>"color:white;" %>
-      </div>
+<section id="setup">
+	<div class="setup-background">
+
+		<div class="container-fluid">
+			<div class="row text-center">
+
+				<h1 class="">Setup is 3 steps</h1>
+				
+				<div class="col-md-6 col-md-offset-3">
+
+					<div id="setup_progress_bar">
+						<div class="breadcrumb-trail">
+
+							<div class="breadcrumbs">
+							    <div class="breadcrumb-cell first">
+								   		<div id="bread_1" class="breadcrumb checked selectable">
+									    	<div class="breadcrumb-icon"></div>
+								    	<span class="breadcrumb-label">Postal Code</span>
+							     	</div>
+							    </div>
+
+							    <div class="breadcrumb-cell">
+										<div id="bread_2" class="breadcrumb active">
+										<div class="breadcrumb-icon"></div>			    	
+										<span class="breadcrumb-label">Choose Prize</span>
+									</div>
+							    </div> 
+								     						    
+
+							    <div class="breadcrumb-cell last">
+
+							   		<div id="bread_3" class="breadcrumb checked selectable">
+									<div class="breadcrumb-icon"></div>
+									<span class="breadcrumb-label">Summoner Name</span>
+									</div>
+							    </div>       
+
+						  </div>
+						</div>	
+					</div>			
+
+				</div>
+
+			</div>
+
+		</div>
 	</div>
-    <div class="col-md-6">
-      <a href="http://www.corapizza.com">
-        <%= image_tag("cora1.jpg", size: "500x225") %>    
-      </a>
-     <div class="text-center" style="margin-top: 40px">
-        <h4>656A Spadina Av</h4>
-        <h4>Toronto, ON M5S 2H7</h4>
-        <h4>(416) 922-1188</h4>
-        <h4>www.corapizza.com</h4>
+</section>
+
+<section id="playing">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Current Challenge
+					</div>
+					<div class="panel-body">
+						The real deal
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Playing for Challenge
+					</div>
+					<div class="panel-body">
+						The real deal
+					</div>					
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Win
+					</div>
+					<div class="panel-body">
+						The real deal
+					</div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section id="winning">
+  <div class="background-history">
+
+    <!-- sketch #6 -->
+    <div class="container">
+      <div class="" style="">
+        
+        <div class="row">
+          <div class="prize-panel">
+            <div class="prize-panel-heading">
+              <div class="row", style="">
+                <div class="col-md-6">
+                  <h1 class="text-left" style="color: white;"><strong>Cora Pizza</strong> - <i>League of Legends</i></h1>
+                </div>
+                
+                <div class="col-md-6 text-right">
+                  <h1>
+                  <div id="" class="btn btn-large btn-ldisabled">See Game History</div>
+                  </h1>
+                </div>
+              </div>
+            </div>
+
+            <div class="prize-panel-body">
+              <div class="row">
+                <div class="col-md-6 col-md-offset-0">
+
+                  <div class="coupon-box">
+                    <div class="row">
+                      <div class="col-md-8 col-md-offset-2">
+                        <div class="coupon-image see-me" style="background: white;">
+                          <div class="row">
+                            
+                            <div class="col-md-4">
+                              <%= image_tag("cora3.jpg", class: "reward-logo ") %>
+                            </div>
+                            
+                            <div class="col-md-8">
+                              <h3 class="text-center" style="margin-top: 15px;"> <strong><i><%= "$20 off" %></i></strong> </h3>
+                              <h3 class="text-center"><strong><i>Code: <%= "123abc" %></i></strong></h3>
+                            </div>  
+
+
+                          </div>
+                          <div class="row">
+                              <h5 class="text-center"><strong><i>Delivery or Walk-in</i></strong></h5>
+                            <h5  class="text-center">416-922-1188 - 656A Spadina Av.</h5>                                                            
+                            <h5 class="text-center">Expires 1/1/2016.</h5>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                  </div>
+
+                </div>
+
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="text-center">
+                      <%= image_tag("cora1.jpg", size: "500x225", class: "hist-image see-me") %>
+                    </div>
+                  </div>  
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div> 
+        
       </div>
     </div>
-</div>
+  </div>
+
+</section>
+
+<section id="sponsor">
+	<div class="container">
+	
+		<div class="row" style="">
+			<h1 class="page-header text-center">Cora Pizza in Toronto</h1>
+		</div>
+
+
+		<div class="row">
+			<div class="col-md-6">
+		      <h4>
+		        Starting June 15th Cora Pizza will be rewarding your in-game acheivements with pizza. <br/><br/>Cora Pizza loves gamers, and will be experimenting with rewarding your League of Legends games with pizza. So check them out!
+		      </h4>	
+		      <div class="text-center">
+		      <%= link_to "Learn More", current_achievement_url, :class=>"btn btn-lprimary", :style=>"color:white;" %>
+		      </div>
+			</div>
+		    <div class="col-md-6">
+		      <a href="http://www.corapizza.com">
+		        <%= image_tag("cora1.jpg", size: "500x225") %>    
+		      </a>
+		     <div class="text-center" style="margin-top: 40px">
+		        <h4>656A Spadina Av</h4>
+		        <h4>Toronto, ON M5S 2H7</h4>
+		        <h4>(416) 922-1188</h4>
+		        <h4>www.corapizza.com</h4>
+		      </div>
+		    </div>
+		</div>
+	</div>
+</section>
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

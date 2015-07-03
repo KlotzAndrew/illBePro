@@ -20,6 +20,20 @@
  *= require font-awesome
  */
 
+#top {
+  background: url("front-cover.jpg") no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+
+}
+
+#top .container {
+    height: inherit;
+    position: relative;
+}
+
 body {
     background-color: #f6f7f8;
 } 
@@ -278,15 +292,58 @@ fieldset[disabled] .btn-lprimary.active {
   background-color: #fff;
 }
 
+.btn-lprimary {
+  color: #fff;
+  background-color: #f1693c;
+  border-color: #C94727;
+}
+.btn-lprimary:hover,
+.btn-lprimary:focus,
+.btn-lprimary.focus,
+.btn-lprimary:active,
+.btn-lprimary.active,
+.open > .dropdown-toggle.btn-lprimary {
+  color: #fff;
+  background-color: #f48a66;
+  border-color: #C94727;
+}
+.btn-lprimary:active,
+.btn-lprimary.active,
+.open > .dropdown-toggle.btn-lprimary {
+  background-image: none;
+}
+.btn-lprimary.disabled,
+.btn-lprimary[disabled],
+fieldset[disabled] .btn-lprimary,
+.btn-lprimary.disabled:hover,
+.btn-lprimary[disabled]:hover,
+fieldset[disabled] .btn-lprimary:hover,
+.btn-lprimary.disabled:focus,
+.btn-lprimary[disabled]:focus,
+fieldset[disabled] .btn-lprimary:focus,
+.btn-lprimary.disabled.focus,
+.btn-lprimary[disabled].focus,
+fieldset[disabled] .btn-lprimary.focus,
+.btn-lprimary.disabled:active,
+.btn-lprimary[disabled]:active,
+fieldset[disabled] .btn-lprimary:active,
+.btn-lprimary.disabled.active,
+.btn-lprimary[disabled].active,
+fieldset[disabled] .btn-lprimary.active {
+  background-color: #337ab7;
+  border-color: #2e6da4;
+}
+.btn-lprimary .badge {
+  color: #337ab7;
+  background-color: #fff;
+}
+
 .setup-background {
   background-color: #0E91A1;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  height: 150px;
-  position: absolute;
-    left: 0;
-
-  width: 100%;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
 
 
@@ -317,7 +374,7 @@ fieldset[disabled] .btn-lprimary.active {
 }
 
 .breadcrumb-trail {
-     color: #fff;
+    color: #fff;
     display: inline-block;
     padding: 30px 11px 0;
     width: 560px;

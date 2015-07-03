@@ -1,53 +1,86 @@
+<div class="">
+
 <% if @uu_summoner_validated == true %>
   <% if @prize_description == nil %>
 
-    <h3 class="text-center">History</h3>
+    <h1 class="text-center"><u>History</u></h1>
     <div class="row">
      <% @history.each do |x| %> 
-      <div class="col-md-12">
-    
-        <div class="well">
-        
-          <div class="row">
-            <div class="col-md-6">  
+     <% 3.times do |y| %>
+      <div class="background-history">
 
-              <div class="text-center">
-              <h2>Cora Pizza</h2>
-
-                <div class="coupon-image">
-                  <div class="row">
-                    <div class="col-md-4">
-                      <%= image_tag("cora3.jpg", class: "reward-logo text-center") %>
+        <!-- sketch #6 -->
+        <div class="container">
+          <div class="" style="">
+            
+            <div class="row">
+              <div class="prize-panel">
+                <div class="prize-panel-heading">
+                  <div class="row", style="">
+                    <div class="col-md-6">
+                      <h1 class="text-left" style="color: white;"><strong>Cora Pizza</strong> - <i>League of Legends</i></h1>
                     </div>
-                    <div class="col-md-8">
-                      <h3 class="text-center" style="margin-top: 40px;"> <strong><%= x.description %></strong> </h3>
-                      <h3 class="text-center"><strong>Code: <%= x.reward_code %></strong></h3>
+                    
+                    <div class="col-md-6 text-right">
+                      <h1>
+                      <div id="" class="btn btn-large btn-ldisabled">See Game History</div>
+                      </h1>
                     </div>
-                  </div>
                   </div>
                 </div>
 
+                <div class="prize-panel-body">
+                  <div class="row">
+                    <div class="col-md-6 col-md-offset-0">
+
+                      <div class="coupon-box">
+                        <div class="row">
+                          <div class="col-md-8 col-md-offset-2">
+                            <div class="coupon-image see-me" style="background: white;">
+                              <div class="row">
+                                
+                                <div class="col-md-4">
+                                  <%= image_tag("cora3.jpg", class: "reward-logo ") %>
+                                </div>
+                                
+                                <div class="col-md-8">
+                                  <h3 class="text-center" style="margin-top: 15px;"> <strong><i><%= x.description %></i></strong> </h3>
+                                  <h3 class="text-center"><strong><i>Code: <%= x.reward_code %></i></strong></h3>
+                                </div>  
+
+
+                              </div>
+                              <div class="row">
+                                  <h5 class="text-center"><strong><i>Delivery or Walk-in</i></strong></h5>
+                                <h5  class="text-center">416-922-1188 - 656A Spadina Av.</h5>                                                            
+                                <h5 class="text-center">Expires 1/1/2016.</h5>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="row">
+                        <div class="text-center">
+                          <%= image_tag("cora1.jpg", size: "500x225", class: "hist-image see-me") %>
+                        </div>
+                      </div>  
+                    </div>
+                  </div>
+                </div>
               </div>
 
-            <div class="col-md-6">
-              <div class="text-center">
-                 <%= image_tag("cora1.jpg", size: "500x225", class: "tony-image") %>
-              </div>
-
-              <div class="text-center">
-                <h3>
-                  Address: 656A Spadina Av.
-                </h3>
-                <h3>
-                  Phone: 416-922-1188
-                </h3>
-              </div>
-            </div>
+            </div> 
+            
           </div>
-
         </div>
-
       </div>
+      <% end %>
       <% end %>
     </div>
 
@@ -64,9 +97,35 @@
       <div class="col-md-12">
     
         <div class="well">
+          <h1><%= @prize_vendor %> - <i>pending</> </h1>
         
           <div class="row">
             <div class="col-md-6">  
+
+              <div class="coupon-image" style="background: white;">
+                <div class="row">
+                  
+                  <div class="col-md-4">
+                    <%= image_tag("cora3.jpg", class: "reward-logo ") %>
+                  </div>
+                  
+                  <div class="col-md-8">
+                    <h3 class="text-center" style="margin-top: 40px;"> <strong><%= @prize_description %></strong> </h3>
+                    <h3 class="text-center"><strong>Code: <%= x.reward_code %></strong></h3>
+                  </div>
+
+                </div>
+              </div>
+
+              <div style="color: white;" class="text-center">
+                <h3>
+                  656A Spadina Av.
+                </h3>
+                <h3>
+                  416-922-1188
+                </h3>
+              </div>
+
 
               <div class="text-center">
                 <div class="">
@@ -118,7 +177,7 @@
 <% else %>
 <h1 class="text-center" style="margin-bottom: 200px;"><strong>Add Summoner Name to see history</strong></h1>
 <% end %>
-
+</div>
 
 
 <script>

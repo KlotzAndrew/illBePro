@@ -1,12 +1,11 @@
-<div class="container-fluid">
+<div class="">
 	<div class="setup-background">
 
-		<div class="row">
+		<div class="row text-center">
 
-			<h1 class="text-center">Welcome! Let's get you ready to win some pizza</h1>
+			<h1 class="">Welcome! Let's get you ready to win some pizza</h1>
 			
 			<div class="col-md-6 col-md-offset-3">
-
 
 				<div id="setup_progress_bar">
 					<div class="breadcrumb-trail">
@@ -59,8 +58,6 @@
 					</div>	
 				</div>			
 
-
-
 			</div>
 
 		</div>
@@ -68,7 +65,7 @@
 	</div>
 </div>
 
-<div class="absolute-margin">
+<div class="container">
 	<% if @setup_progress == 0 %>
 		<%= render 'ignindices/step1' %>
 	<% elsif @setup_progress == 1 %>
