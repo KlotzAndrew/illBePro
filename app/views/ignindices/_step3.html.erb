@@ -131,7 +131,7 @@
 
               <div class="col-md-4">
 
-                <div class="gen-button">
+                <div id="button-gen-val-code" class="gen-button">
                 <%= form_for @ignindex, remote: true, :html => { :id => 'validation_code_submit' } do |t| %>
                   <%= t.submit "Generate Validation Code", class: "btn btn-large btn-lprimary" %>
                 <% end %>

@@ -17,6 +17,8 @@ var landing_search = function() {
 
 var ajax_button_validation_string = function() {
   $('#validation_code_submit').bind('ajax:success', function(evt, data, status, xhr) {
+    console.log("new code requested")
+  // $('#button-gen-val-code').on("click", function(){
     $.ajax({
       url: "/ignindices/" + $("#ign").data("id"),
       type: "GET",
@@ -35,6 +37,8 @@ var ajax_button_validation_string = function() {
     })
   })
 }
+
+
 
 var ajax_button_summoner_name = function() {
   $('#summoner_name_submit').bind('ajax:success', function(evt, data, status, xhr) {
@@ -173,7 +177,7 @@ var is_page_ignindex = function(){
       ign_update();
       ajax_button_summoner_name();
       ajax_button_validation_string();
-      teaser_summoner();
+      // teaser_summoner();
       // auto_name();
     } else {
       console.log("this is not ignindex_index");
