@@ -1,8 +1,11 @@
 <section id="top" >
 	<div class="container" >
-		<div class="teaser-context" >
-			<h1 class="text-center" style="color: white;">Win  a Free Pizza for Playing League of Legends</h1>
-			<h4 class="text-center" style="color: white;">Rewards from your local Restaurants</h4>
+		<div class="teaser-context  text-center" >
+			<div class="custom-header">
+				<h1 class="text-center" style="color: white;"><strong>Win  a Free Pizza for Playing League of Legends</strong></h1>
+				<h4 class="text-center" style="color: white;">Rewards from your local Restaurants</h4>
+			</div>
+
 			<div class="col-md-12 col-md-offset-0"  style="margin-top: 40px">
 
 			  		<div class="row" style="margin-bottom:20px;">
@@ -21,8 +24,7 @@
 
 			  		<div class="row" style="margin-bottom:150px;">
 
-						<div class="col-md-4 col-md-offset-4 intro-diamond2" style="margin-bottom: 0px;">
-							<h4>Get Started</h4>
+			  			<%= link_to "Get Started", setup_path, :class=>"col-md-4 col-md-offset-4 btn btn-large btn-lprimary ", :style=>"color:white; font-size: 20px;" %>		
 						</div>
 			  		</div>		  		
 			</div>
@@ -86,10 +88,10 @@
 	<div class="setup-background-2">
 		<h1 class="text-center" style="color:white;" >Earn more for games you are already playing</h1>
 	</div>
-	<div class="row" >
+	<div class="row" style="margin-top: 20px;" >
 		<div class="container">
 			<div class="col-md-4">
-				<div class="panel panel-default">
+				<div class="panel panel-success">
 					<div class="panel-heading">
 						<h3 style="marign-top: 0px;">The Challenge</h3>
 					</div>
@@ -99,7 +101,7 @@
 				</div>
 			</div>
 			<div class="col-md-4">
-				<div class="panel panel-default">
+				<div class="panel panel-success">
 					<div class="panel-heading">
 						<h3>Play for Challenge</h3>
 					</div>
@@ -109,9 +111,9 @@
 				</div>
 			</div>
 			<div class="col-md-4">
-				<div class="panel panel-default">
+				<div class="panel panel-success">
 					<div class="panel-heading">
-						<h3>Win!</h3>
+						<h3>Win & Repeat</h3>
 					</div>
 					<div class="panel-body">
 						<%= image_tag("lol-victory2.png", size: "", class: "resize_fit_center") %>
@@ -124,10 +126,10 @@
 
 <section id="winning">
 	<div class="setup-background-2">
-		<h1 class="text-center" style="color:white;" >Complete Challenge and get prize</h1>
+		<h1 class="text-center" style="color:white;" >Complete Challenges and get prizes</h1>
 	</div>
 
-  <div class="background-history">
+  <div class="background-history2">
 
     <!-- sketch #6 -->
     <div class="container">
@@ -204,18 +206,28 @@
 </section>
 
 <section id="sponsor">
-	<div class="container">
+
+	<div class="setup-background-2">
+		<h1 class="text-center" style="color:white;" >Featuring Local Restaurants</h1>
+	</div>
 	
+	<div class="container">
+
 		<div class="row" style="">
-			<h1 class="page-header text-center">Cora Pizza in Toronto</h1>
+			<h1 class="text-left">Cora Pizza in Toronto</h1>
 		</div>
 
 
 		<div class="row">
 			<div class="col-md-6">
+		      <h4>Cora Pizza is currently offering Weekly Challenges to these areas in Toronto: M6G, M6J, M5R, M5S, M5T, M5G</h4><br/>
 		      <h4>
-		        Starting June 15th Cora Pizza will be rewarding your in-game acheivements with pizza. <br/><br/>Cora Pizza loves gamers, and will be experimenting with rewarding your League of Legends games with pizza. So check them out!
-		      </h4>	
+		        Cora Pizza loves gamers, and will be experimenting with rewarding your League of Legends games with pizza. Starting June 15th Cora Pizza will be rewarding your in-game acheivements with pizza.
+		      </h4>
+		    </br>
+		      <h4>
+		        Since 1984, Cora Pizza's family-owned business has been satisfying Toronto appetites. Located Downtown Toronto, Cora Pizza offers gourmet specialty pizzas that are guaranteed to please your taste buds! 
+		      </h4>
 		      <div class="text-center">
 		      <%= link_to "Learn More", current_achievement_url, :class=>"btn btn-lprimary", :style=>"color:white;" %>
 		      </div>
