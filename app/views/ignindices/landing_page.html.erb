@@ -1,6 +1,6 @@
-<section id="top">
-	<div class="container">
-		<div class="teaser-context">
+<section id="top" >
+	<div class="container" >
+		<div class="teaser-context" >
 			<h1 class="text-center" style="color: white;">Win  a Free Pizza for Playing League of Legends</h1>
 			<h4 class="text-center" style="color: white;">Rewards from your local Restaurants</h4>
 			<div class="col-md-12 col-md-offset-0"  style="margin-top: 40px">
@@ -19,7 +19,7 @@
 						</div>
 			  		</div>
 
-			  		<div class="row" style="margin-bottom:20px;">
+			  		<div class="row" style="margin-bottom:150px;">
 
 						<div class="col-md-4 col-md-offset-4 intro-diamond2" style="margin-bottom: 0px;">
 							<h4>Get Started</h4>
@@ -31,84 +31,90 @@
 </section>
 
 <section id="setup">
-	<div class="setup-background">
+		<div class="setup-background">
 
-		<div class="container-fluid">
-			<div class="row text-center">
+			<div class="container-fluid">
+				<div class="row text-center">
 
-				<h1 class="">Setup is 3 steps</h1>
-				
-				<div class="col-md-6 col-md-offset-3">
+					<h1 class="">Setup is super easy</h1>
+					
+					<div class="col-md-6 col-md-offset-3">
 
-					<div id="setup_progress_bar">
-						<div class="breadcrumb-trail">
+						<div id="setup_progress_bar">
+							<div class="breadcrumb-trail">
 
-							<div class="breadcrumbs">
-							    <div class="breadcrumb-cell first">
-								   		<div id="bread_1" class="breadcrumb checked selectable">
-									    	<div class="breadcrumb-icon"></div>
-								    	<span class="breadcrumb-label">Postal Code</span>
-							     	</div>
-							    </div>
+								<div class="breadcrumbs">
+								    <div class="breadcrumb-cell first">
+									   		<div id="bread_1" class="breadcrumb checked selectable">
+										    	<div class="breadcrumb-icon"></div>
+									    	<span class="breadcrumb-label">1) Postal Code</span>
+								     	</div>
+								    </div>
 
-							    <div class="breadcrumb-cell">
-										<div id="bread_2" class="breadcrumb active">
-										<div class="breadcrumb-icon"></div>			    	
-										<span class="breadcrumb-label">Choose Prize</span>
-									</div>
-							    </div> 
-								     						    
+								    <div class="breadcrumb-cell">
+											<div id="bread_2" class="breadcrumb checked selectable">
+											<div class="breadcrumb-icon"></div>			    	
+											<span class="breadcrumb-label">2) Choose Prize</span>
+										</div>
+								    </div> 
+									     						    
 
-							    <div class="breadcrumb-cell last">
+								    <div class="breadcrumb-cell last">
 
-							   		<div id="bread_3" class="breadcrumb checked selectable">
-									<div class="breadcrumb-icon"></div>
-									<span class="breadcrumb-label">Summoner Name</span>
-									</div>
-							    </div>       
+								   		<div id="bread_3" class="breadcrumb active">
+										<div class="breadcrumb-icon"></div>
+										<span class="breadcrumb-label">3) Summoner Name</span>
+										</div>
+								    </div>       
 
-						  </div>
-						</div>	
-					</div>			
+							  </div>
+							</div>	
+						</div>			
+
+					</div>
 
 				</div>
 
 			</div>
-
 		</div>
+		<div class="container">
+		<%= render 'staticpages/teaser_step3' %>
 	</div>
 </section>
 
 <section id="playing">
-	<div class="row">
-		<div class="col-md-12">
+	<div class="setup-background-2">
+		<h1 class="text-center" style="color:white;" >Earn more for games you are already playing</h1>
+	</div>
+	<div class="row" >
+		<div class="container">
 			<div class="col-md-4">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						Current Challenge
+						<h3 style="marign-top: 0px;">The Challenge</h3>
 					</div>
 					<div class="panel-body">
-						The real deal
+						<%= render 'staticpages/teaser_challenge' %>
 					</div>
 				</div>
 			</div>
 			<div class="col-md-4">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						Playing for Challenge
+						<h3>Play for Challenge</h3>
 					</div>
 					<div class="panel-body">
-						The real deal
+						<%= render 'staticpages/teaser_gamerunning' %>
 					</div>					
 				</div>
 			</div>
 			<div class="col-md-4">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						Win
+						<h3>Win!</h3>
 					</div>
 					<div class="panel-body">
-						The real deal
+						<%= image_tag("lol-victory2.png", size: "", class: "resize_fit_center") %>
 					</div>					
 				</div>
 			</div>
@@ -117,6 +123,10 @@
 </section>
 
 <section id="winning">
+	<div class="setup-background-2">
+		<h1 class="text-center" style="color:white;" >Complete Challenge and get prize</h1>
+	</div>
+
   <div class="background-history">
 
     <!-- sketch #6 -->

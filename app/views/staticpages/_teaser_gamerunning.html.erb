@@ -1,0 +1,75 @@
+
+<div id="" class="">
+
+  <div class="container-fluid">
+
+    <h3 class="text-center">
+         Go Play League & Come back for Results
+    </h3>
+    <div class="row">
+
+      <div class="col-md-12 text-center">
+
+        <div class="row well">
+
+          <div id="" class="">
+            <div class="col-md-12">
+              <div class="text-left">
+                <h4 class="text-center"><strong>Hide on bush</strong> - <i>waiting for game results</i></h4>
+                  <h5>Result: <span id="game_results"></span></h5>
+                  <h5>Champion: <span id="game_champion"></span></h5> 
+                  <h5>K/D/A: <span id="game_kda"></span></h5>
+                  <h5>Length: <span id="game_length"></span></h5>
+              </div>
+            </div>          
+            
+
+            <div id="v3_ingame">
+              <div class="col-md-12" style="margin-top: 20px">
+                <div class="col-md-8 text-left">
+
+                  <div id="current_created_at" data-current_created=""> </div>
+                  <div id="after-20" class="">
+
+                    <div id="" class="btn btn-default">Get Game Results</div>
+
+                  </div>
+
+                </div>
+
+                <div class="col-md-2 ">
+                  <div class="">
+                      <div id="" class="btn btn-default">Cancel</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-12">
+                <div class="col-md-6">
+                  <h5 class="text-left">Started @: <%= Time.now.in_time_zone("Eastern Time (US & Canada)").strftime("%I:%M") %></h5>
+                </div>
+
+                <div class="col-md-6">
+                  <div id="cg_id" data-status_id="" >
+                    <div id="cg-refresher" class=""></div>
+                    <h5 class="text-right">
+                      Expires in:
+                      <span id="challenge_timer" data-chal_time_value="" >
+                      88 min
+                      <span>
+                    </h5>
+                  </div>
+                </div>                  
+              </div>
+            </div>
+
+          </div>
+
+
+        </div>
+         
+      </div>
+  
+    </div>
+  </div>
+</div>
