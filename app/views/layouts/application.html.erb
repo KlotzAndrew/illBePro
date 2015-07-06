@@ -31,7 +31,7 @@
 				<ul class="nav navbar-nav list-inline col-sm-3 col-sm-4 text-center ">
 					<li><a href="/leaderboard">Leaders</a></li>
 					<% if user_signed_in? %>
-			
+						<li><a href="/statuses/new">Play</a></li>
 					<% else %>
 	                  
 		                <% if session[:setup_progress] < 3 %>
