@@ -5,6 +5,7 @@
 }
 
 .custom-header {
+  margin-top: 40px;
   background: rgba(22, 22, 22, 0.75) none repeat scroll 0% 0%;
   display: inline-block;
   min-height: 20px;
