@@ -1,0 +1,51 @@
+<div class="container-fluid">
+
+	<div class="row">
+		<div class="col-md-12 col-md-offset-0">
+			<h3>Enter your postal code - so we can match you with a restaurant that can deliver to you</h3> 
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-6">
+			<% if @ignindex.errors.any? %>
+			  <div id="error_explanation">
+			    <h2><%= pluralize(@ignindex.errors.count, "error") %> prohibited this ignindex from being saved:</h2>
+			 
+			    <ul>
+			    <% @ignindex.errors.full_messages.each do |msg| %>
+			      <li><%= msg %></li>
+			    <% end %>
+			    </ul>
+			  </div>
+			<% end %>
+
+			<div class="panel-heading">
+	            <div class="form-inline">
+	              <div class="form-group">
+					    <input type="text" id="" placeholder="Postal/Zip Code" class="form-control input-md"></input>
+					    <div id="" class="btn btn-large btn-lprimary">Add Postal/Zip Code</div>
+					</div>
+				</div>
+
+
+			    <h6>*US uses first 5-digits</h6>
+			    <h6>*CAN uses first 3-digits</h6>
+			</div>
+			<h5>
+				(Cora's delivers to these postal codes: M6G, M6J, M5R, M5S, M5T, M5G)
+			</h5>
+			<%= button_to "Learn More", current_achievement_path, :class => "btn btn-success green-button-long", :method => :get  %>
+		</div>
+
+		<div class="col-md-6">
+
+			<div class="col-md-12">
+					<%= image_tag("cora1.jpg", class: "brand-banner", size: "500x225") %>
+			</div>		
+			<div class="col-md-12 text-center">
+		  		
+			</div>
+		</div>
+	</div>
+</div>

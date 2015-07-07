@@ -19,54 +19,62 @@
 </section>
 
 <section id="setup">
-		<div class="setup-background">
+	<div class="setup-background">
 
-			<div class="container-fluid">
-				<div class="row text-center">
+		<div class="container-fluid">
+			<div class="row text-center">
 
-					<h1 class="">Setup is super easy</h1>
-					
-					<div class="col-md-6 col-md-offset-3">
+				<h1 class="">Setup is super easy</h1>
+				
+				<div class="col-md-6 col-md-offset-3">
 
-						<div id="setup_progress_bar">
-							<div class="breadcrumb-trail">
+					<div id="setup_progress_bar">
+						<div class="breadcrumb-trail">
 
-								<div class="breadcrumbs">
-								    <div class="breadcrumb-cell first">
-									   		<div id="bread_1" class="breadcrumb checked selectable">
-										    	<div class="breadcrumb-icon"></div>
-									    	<span class="breadcrumb-label">1) Postal Code</span>
-								     	</div>
-								    </div>
+							<div class="breadcrumbs">
+							    <div class="breadcrumb-cell first">
+								   		<div id="bread_1" class="breadcrumb active">
+									    	<div class="breadcrumb-icon"></div>
+								    	<span class="breadcrumb-label">1) Postal Code</span>
+							     	</div>
+							    </div>
 
-								    <div class="breadcrumb-cell">
-											<div id="bread_2" class="breadcrumb checked selectable">
-											<div class="breadcrumb-icon"></div>			    	
-											<span class="breadcrumb-label">2) Choose Prize</span>
-										</div>
-								    </div> 
-									     						    
+							    <div class="breadcrumb-cell">
+										<div id="bread_2" class="breadcrumb">
+										<div class="breadcrumb-icon"></div>			    	
+										<span class="breadcrumb-label">2) Choose Prize</span>
+									</div>
+							    </div> 
+								     						    
 
-								    <div class="breadcrumb-cell last">
+							    <div class="breadcrumb-cell last">
 
-								   		<div id="bread_3" class="breadcrumb active">
-										<div class="breadcrumb-icon"></div>
-										<span class="breadcrumb-label">3) Summoner Name</span>
-										</div>
-								    </div>       
+							   		<div id="bread_3" class="breadcrumb">
+									<div class="breadcrumb-icon"></div>
+									<span class="breadcrumb-label">3) Summoner Name</span>
+									</div>
+							    </div>       
 
-							  </div>
-							</div>	
-						</div>			
-
-					</div>
+						  </div>
+						</div>	
+					</div>			
 
 				</div>
 
 			</div>
+
 		</div>
-		<div class="container">
-		<%= render 'staticpages/teaser_step3' %>
+	</div>
+	<div class="row">
+		<div id="lp-s1" class="container">
+			<%= render 'staticpages/teaser_step1' %>
+		</div>
+		<div id="lp-s2" class="container start-ghost">
+			<%= render 'staticpages/teaser_step2' %>
+		</div>
+		<div id="lp-s3" class="container start-ghost">
+			<%= render 'staticpages/teaser_step3' %>
+		</div>				
 	</div>
 </section>
 
