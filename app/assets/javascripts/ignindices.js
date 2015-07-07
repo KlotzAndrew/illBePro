@@ -188,10 +188,12 @@ $(document).on('page:load', function() {
   console.log("working? i + s")
   is_page_ignindex();
   is_page_status();
+  is_page_landing_page();
 })
 
 $(document).ready(function() {
   console.log("working? i + s")
   is_page_ignindex();
   is_page_status();
+  is_page_landing_page();
 })
