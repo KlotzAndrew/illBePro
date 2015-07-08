@@ -2,6 +2,8 @@ class IgnindicesController < ApplicationController
   before_action :set_ignindex, only: [:show, :edit, :update, :destroy]
 
   helper_method :show_prizes
+  skip_before_action :verify_authenticity_token
+
 
   # before_filter :authenticate_user!
 
@@ -170,6 +172,7 @@ class IgnindicesController < ApplicationController
   end
 
   def reset_session_vars
+    reset_session
       session[:setup_progress] = 0
       session[:postal_code_temp] = nil
       session[:region_id_temp] = nil

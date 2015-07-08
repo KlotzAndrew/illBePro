@@ -1,4 +1,13 @@
 
+var challenge_hover_highlight = function(){
+  $('#challenge-s-cora1').hover(function(){
+    $('#challenge-i-cora1').addClass("highlight-prize-info");
+    }, function(){
+    $('#challenge-i-cora1').removeClass("highlight-prize-info");
+  }); 
+}
+
+
 var auto_name_int;
 var auto_name = function(){
   var auto_name_int = window.setInterval(function(){
@@ -110,7 +119,7 @@ var ign_update = function() {
 
           } else {
 
-          var jsval = '- Not valid';
+          var jsval = '(Not Valid)';
 
             if (grab > (current_time/1000 - 300) ) {
               var ign_update_timeout = setTimeout( ign_update, 30000);
@@ -189,6 +198,8 @@ $(document).on('page:load', function() {
   is_page_ignindex();
   is_page_status();
   is_page_landing_page();
+
+  challenge_hover_highlight();
 })
 
 $(document).ready(function() {
@@ -196,4 +207,6 @@ $(document).ready(function() {
   is_page_ignindex();
   is_page_status();
   is_page_landing_page();
+
+  challenge_hover_highlight();
 })

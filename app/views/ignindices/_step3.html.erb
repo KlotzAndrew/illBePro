@@ -7,20 +7,27 @@
 <div class="container-fluid" style="margin-top:0px;">
 
   <div class="row">
-      <h1>Add Summoner Name & Rename 1st Mastery Page</h1>
+    <div class="row" style="margin-bottom: 20px;">
+      <div class="col-md-12 col-md-offset-0">
+        <h1>3) Validate Summoner</h1> t:<%= @ignindex.region_id %>
+        <h3 style="margin-top:0px;">
+        Rename a mastery page to let us know this is your summoner
+        </h3>
+      </div>
+    </div>  
 
     <div class="col-md-6 col-md-offset-0">
 
-      <h3 id="summoner_name_text" class="">
+      <h3 id="summoner_name_text" class="text-center">
         <% if @ignindex.summoner_name.nil?  or @ignindex.summoner_name == ""%>
           <span id="js_name">
-            <i>Summoner Name</i>
+            <i>Add Summoner Name</i>
           </span>
           <span id="js_val"></span>
         <% else %>
           <% if @uu_summoner_validated == true %>
             <span id="js_name">
-              <%= @ignindex.summoner_name %>
+              <strong><%= @ignindex.summoner_name %></strong>
             </span>
             <span id="js_val" class="validated">
                - Valid
@@ -28,10 +35,10 @@
 
           <% else %>
             <span id="js_name">
-              <%= @ignindex.summoner_name %>
+              <strong><%= @ignindex.summoner_name %></strong>
             </span>
             <span id="js_val" class="not-validated">
-               - Not Valid
+               (Not Valid)
             </span>    
           <% end %>
         <% end %>
@@ -45,6 +52,10 @@
       
         <div class="panel-heading">
       
+                <%= form_for @ignindex, remote: true, :html => { :id => 'summoner_name_submit' } do |t| %>
+                  <%= t.text_field :summoner_name, :placeholder => 'Summoner name', :id => "summoner_input", class: "form-control input-md" %>
+                  <%= t.submit "Add Summoner Name", class: "btn btn-large btn-lprimary" %>
+            <% end %>
           <div class="text-center">
             <div class="form-inline">
               <div class="form-group">
@@ -185,34 +196,33 @@
 
     <% else %>
       <% if @ignindex.validation_timer.nil? %>
-    <div id="how_to_going" class="col-md-6 lwell col-md-offset-0 start-ghost" style="margin-top: 20px;margin-bottom: 0px;">
+    <div id="how_to_going" class="col-md-6 col-md-offset-0 start-ghost" style="margin-top: 20px;margin-bottom: 0px;">
       <% else %>
-    <div id="how_to_going" class="col-md-6 lwell col-md-offset-0 " style="margin-top: 20px;margin-bottom: 0px;">      
+    <div id="how_to_going" class="col-md-6 col-md-offset-0 " style="margin-top: 20px;margin-bottom: 0px;"> 
       <% end %>        
-      <h3 class="text-center" style="margin-top: 0px;">Rename 1st mastery page and wait 1-2 min</h3>
-      <div class="col-md-5" style="margin-top: 0px;">
-        <h4 class="text-center" style="margin-top:0px"><u>Currently</u></h4>
-        <% if @ignindex.mastery_1_name.nil? %>
-        <h3 class="text-center" id="mastery_page_name_intro" style="font-weight: bold;">Checking...</h3>
-        <% else %>
-        <h3 class="text-center" id="mastery_page_name_intro" style="font-weight: bold;"><%= @ignindex.mastery_1_name %></h3>
-        <% end %>
-        <%= image_tag("mastery_question2.jpg", size: "200x266") %>
+      <h3 class="text-center" style="margin-top: 0px;"><strong>Rename 1st Mastery Page</strong></h3>
+      <div class="row">
+        <div class="col-md-6" style="margin-top: 0px;">
+          <h4 class="text-center" style="margin-top:0px"><u>Currently</u></h4>
+          <% if @ignindex.mastery_1_name.nil? %>
+          <h3 class="text-center" id="mastery_page_name_intro" style="font-weight: bold;">Checking...</h3>
+          <% else %>
+          <h3 class="text-center" id="mastery_page_name_intro" style="font-weight: bold;"><%= @ignindex.mastery_1_name %></h3>
+          <% end %>
+        </div>
+       
+        <div class="col-md-6" style="margin-top: 0px;">
+          <h4 class="text-center" style="margin-top:0px"><u>Should be</u></h4>
+          <% if @ignindex.validation_string.nil? %>
+          <h3 class="text-center" id="js_validation_string_intro" style="font-weight: bold;">n/a</h3>
+          <% else %>
+          <h3 class="text-center" id="js_validation_string_intro" style="font-weight: bold;"><%= @ignindex.validation_string %></h3>
+          <% end %>
+        </div>
       </div>
-     
-      <div class="col-md-1">
-        <h1>></h1>
-        <h1 style="margin-top: 100px;">></h1>
-      </div>
-     
-      <div class="col-md-5" style="margin-top: 0px;">
-        <h4 class="text-center" style="margin-top:0px"><u>Should be</u></h4>
-        <% if @ignindex.validation_string.nil? %>
-        <h3 class="text-center" id="js_validation_string_intro" style="font-weight: bold;">n/a</h3>
-        <% else %>
-        <h3 class="text-center" id="js_validation_string_intro" style="font-weight: bold;"><%= @ignindex.validation_string %></h3>
-        <% end %>
-        <%= image_tag("mastery_pizza-abc2.jpg", size: "200x266") %>
+      <div class="row text-center">
+        <h4>Wait 1-2 Minutes to Update</h4>
+        <h5>(we auto check League every 60s for a match)</h5>
       </div>
 
     </div>    

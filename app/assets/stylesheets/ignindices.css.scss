@@ -30,9 +30,14 @@
 	margin-top: 40px;
 }
 
-.prize-well {
+.highlight-prize {
 	border-left: 3px solid #f1693c;
 	border-radius: 36px 0 0 36px;
+}
+
+.highlight-prize-info {
+  border: 1px solid #f1693c;
+  border-radius: 36px 36px 36px 36px;
 }
 
 .intro-square {
@@ -80,7 +85,9 @@
 
 .s2-chal {
 	width: 200px;
+  vertical-align: middle;
 }
+
 
 /*0e91a1  - navbar/blue
 146c78  - navbar_active/blue

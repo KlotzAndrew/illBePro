@@ -3,18 +3,20 @@ var previewSetupTimer;
 var current_step = 1
 var cycle_preview = true
 var preview_steps_cycle = function(){
-	if (cycle_preview == true) {
-		if (current_step == 1) {
-			preview_12();
-		} else if (current_step == 2) {
-			preview_23();
-		} else if (current_step == 3) {
-			preview_31();
-		} else {
-			console.log("unknown step")
-		}
+	if ($('#page_name').data("pagespec") == "landing_page") {
 		if (cycle_preview == true) {
-			var previewSetupTimer = setTimeout( preview_steps_cycle, 5000);		
+			if (current_step == 1) {
+				preview_12();
+			} else if (current_step == 2) {
+				preview_23();
+			} else if (current_step == 3) {
+				preview_31();
+			} else {
+				console.log("unknown step")
+			}
+			if (cycle_preview == true) {
+				var previewSetupTimer = setTimeout( preview_steps_cycle, 10000);		
+			}
 		}
 	}
 }
@@ -186,7 +188,8 @@ var stop_setup_preview = function(){
 };
 
 var is_page_landing_page = function(){
-    console.log("landing_page setup running") 
+    console.log("landing_page setup running")
+    clearTimeout(previewSetupTimer); 
     current_page = $('#page_name').data("pagespec")    
   if (current_page == "landing_page") {
 		console.log("this is landing_page")
@@ -197,7 +200,6 @@ var is_page_landing_page = function(){
     }  
 }
 
-
 $(window).unload(function(){
-  clearTimeout(previewSetupTimer)
+  clearTimeout(previewSetupTimer);
 })
