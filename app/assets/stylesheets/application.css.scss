@@ -13,7 +13,8 @@
  *= require_tree .
  *= require_self
  
-*= require introjs
+ *= require jquery-ui
+ *= require introjs
 
  *= require font-awesome
  */

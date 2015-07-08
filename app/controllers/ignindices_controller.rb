@@ -359,6 +359,9 @@ class IgnindicesController < ApplicationController
 
         Rails.logger.info "matching validation summoner_id: #{User.find(current_user.id).summoner_id}"
         Rails.logger.info "matching validation summoner_id: #{@ignindex.validation_timer}"
+        #WIP this redirects to 'show', not good
+      # else
+      #   redirect_to setup_path
       end
 
       Rails.logger.info "session sum name: #{session[:summoner_name_ref_temp]}"

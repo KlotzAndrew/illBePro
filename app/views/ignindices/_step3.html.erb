@@ -9,7 +9,7 @@
   <div class="row">
     <div class="row" style="margin-bottom: 20px;">
       <div class="col-md-12 col-md-offset-0">
-        <h1>3) Validate Summoner</h1> t:<%= @ignindex.region_id %>
+        <h1>3) Validate Summoner</h1>
         <h3 style="margin-top:0px;">
         Rename a mastery page to let us know this is your summoner
         </h3>
@@ -51,11 +51,7 @@
       <% end %>
       
         <div class="panel-heading">
-      
-                <%= form_for @ignindex, remote: true, :html => { :id => 'summoner_name_submit' } do |t| %>
-                  <%= t.text_field :summoner_name, :placeholder => 'Summoner name', :id => "summoner_input", class: "form-control input-md" %>
-                  <%= t.submit "Add Summoner Name", class: "btn btn-large btn-lprimary" %>
-            <% end %>
+  
           <div class="text-center">
             <div class="form-inline">
               <div class="form-group">
