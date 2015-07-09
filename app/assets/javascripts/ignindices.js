@@ -38,8 +38,10 @@ var s2_refresh_button = function(){
   })
 }
 
-var s2_refresh_click = function(){
-
+var s2_spinner_visible = function(){
+  if ($('#s2-check-spinner').hasClass("fa fa-spinner fa-pulse")) {
+    $('#s2-check-spinner').removeClass("fa fa-spinner fa-pulse");
+  }
 }
 
 var challenge_hover_highlight = function(){
@@ -183,21 +185,16 @@ var ign_clocks = function(){
   grab2 = $('#check_loop').data("check") // clockwork estimate
   current_time = (new Date).getTime()
 
-  // this sets timeout to 0, if there is no timer running
-  // if ( (grab - (current_time/1000) + 300) < 0 ) { 
-  //   now1 = "0m 0s"
-  //   } else {
-      now1 = parseInt((grab - (current_time/1000) + 600)/60) + "m "// + parseInt((grab - (current_time/1000) + 300)%60) + "s"
-  //   }
-
+  now1 = "expires in: " + parseInt((grab - (current_time/1000) + 600)/60) + "m "// + parseInt((grab - (current_time/1000) + 300)%60) + "s"
+  
   $('#test_cd').html(now1) // update total time left
   
   now2 = parseInt(60 - ((current_time/1000 - grab2) % 60))
   $('#check_loop').html(now2) // update estimate of clockwork
-  
-  console.log("ign timers updated")
+
   if (grab > (current_time/1000 - 600)) {
     if ($('#page_name').data("pagespec") == "ignindex_index") {
+      s2_panel2_green();
       ignTimer = setTimeout( ign_clocks, 1000);
     } else {
       // $('#validation_code_div').toggleClass("start-ghost")
@@ -205,12 +202,28 @@ var ign_clocks = function(){
     }
   } else { 
     // set timers to 0, if there is no active validation
-    now1 = ""
+    s2_panel2_red();
+    now1 = "Expired!"
+    $('#s2-check-spinner').removeClass("fa fa-spinner fa-pulse")
     now2 = 0
     $('#test_cd').html(now1)
     $('#check_loop').html(now2)
   }
 };
+
+var s2_panel2_green = function(){
+  if ($('#s2-should-be').hasClass("panel-danger")) {
+    $('#s2-should-be').removeClass("panel-danger");
+    $('#s2-should-be').addClass("panel-success");
+  }
+}
+
+var s2_panel2_red = function(){
+    if ($('#s2-should-be').hasClass("panel-success")) {
+      $('#s2-should-be').removeClass("panel-success");
+      $('#s2-should-be').addClass("panel-danger");
+  }
+}
 
 
 var is_page_ignindex = function(){

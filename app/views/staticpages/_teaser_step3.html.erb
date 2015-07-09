@@ -1,26 +1,35 @@
+<div data-pagespec="ignindex_index" id="page_name">
+</div>
+
 <div class="container-fluid" style="margin-top:0px;">
 
   <div class="row">
-      <h1>3) Add Summoner Name & Rename 1st Mastery Page</h1>
+    <div class="row" style="margin-bottom: 20px;">
+      <div class="col-md-12 col-md-offset-0">
+        <h1>3) Validate Summoner</h1>
+        <h3 style="margin-top:0px;">
+        Rename a mastery page to let us know this is your summoner
+        </h3>
+      </div>
+    </div>  
 
     <div class="col-md-6 col-md-offset-0">
 
-      <h3 id="summoner_name_text" class="">
-
-            <span id="js_name">
-              Hide on bush
+      <h3 id="summoner_name_text" class="text-center">
+            <span id="">
+              <strong>Hide on Bush</strong>
             </span>
-            <span id="js_val" class="not-validated">
-               - Not Valid
+            <span id="" class="not-validated">
+               (Not Valid)
             </span>    
-
       </h3>
           
 
-      <div id="summoner_panel" class="panel panel-danger">
+      <div id="summoner_panel" class="panel panel-success">
 
-        <div class="panel-heading">
       
+        <div class="panel-heading">
+  
           <div class="text-center">
             <div class="form-inline">
               <div class="form-group">
@@ -35,77 +44,71 @@
                       </ul>
                     </span>            
           
-                    <div id="" class="btn btn-large btn-primary">Update Summoner Name</div>
+                    <div id="" class="btn btn-large btn-primary">Change Summoner Name</div>
 
               </div>
             </div>
           </div>        
         </div>
 
-
-        <div id="summoner_valid_panel" class="panel-body">
-          <div id="ign_hide_1" class="row">
-            <div>
-
-              <div id="validation_code_div" class="col-md-7 col-md-offset-0">
-                  <div class="well">   
-                    <h5>Should be: <strong id="">pizza-abc</strong></h5>
-                      <h5 id="">Currently is: 
-                        <strong id="">mid-AP</strong>
-                      </h5>
-                    <h5>
-                      Expires in:
-                        <span id="test_cd" data-timer="<%= @ignindex.validation_timer %>">5m
-                        </span>
-                    </h5>
-                    <h6>(next check in ~
-                      <span id="check_loop" data-check="">
-                        30
-                      </span> seconds)
-                    </h6>      
-                  </div>                
-              </div>
-
-              <div class="col-md-4">
-
-                <div id="button-gen-val-code" class="gen-button">
-                   <div id="" class="btn btn-large btn-lprimary">Generate Validation Code</div>
-                </div>                
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-
       </div>
     </div>
 
-   		<div id="how_to_going" class="col-md-6 lwell col-md-offset-0 " style="margin-top: 20px;margin-bottom: 0px;">      
-      
-	    <h3 class="text-center" style="margin-top: 0px;">Rename 1st mastery page and wait 1-2 min</h3>
-	      <div class="col-md-5" style="margin-top: 0px;">
-	        <h4 class="text-center" style="margin-top:0px"><u>Currently</u></h4>
-	        <h3 class="text-center" id="mastery_page_name_intro" style="font-weight: bold;">midAP</h3>
-	        <%= image_tag("mastery_question2.jpg", size: "200x266") %>
-	      </div>
-	     
-	      <div class="col-md-1">
-	        <h1>></h1>
-	        <h1 style="margin-top: 100px;">></h1>
-	      </div>
-	     
-	      <div class="col-md-5" style="margin-top: 0px;">
-	        <h4 class="text-center" style="margin-top:0px"><u>Should be</u></h4>
+    <div id="how_to_going" class="col-md-6 col-md-offset-0 " style="margin-top: 20px;margin-bottom: 0px;"> 
+       
+      <h3 class="text-center" style="margin-top: 0px; color:red;"><strong><span class="">Rename 1st Mastery Page</span></strong></h3>
+      <div class="well">
+        <div class="row">
+          <div class="col-md-6" style="margin-top: 0px;">
+            <h4 class="text-center" style="margin-top:0px"><u>Currently</u></h4>
+            <div id="s2-currently-is" class="panel panel-danger">
+              <div class="panel-heading">
 
-	        <h3 class="text-center" id="" style="font-weight: bold;">pizza-abc</h3>
+                <h4 class="text-left" id="mastery_page_name_intro" style="font-weight: bold;">APmid</h4>
 
-	        <%= image_tag("mastery_pizza-abc2.jpg", size: "200x266") %>
-	      </div>
+              </div>
+              <div class="panel-body">
+                <h5 style="margin-top: 0px; margin-bottom:0px; padding:0px;"><i id="s2-check-spinner" class="fa fa-spinner fa-pulse"></i> 
+                  checks in <span id="check_loop" data-check=""></span>23s
+                </h5>
+              </div>
+            </div>
+          </div>
+         
+          <div class="col-md-6" style="margin-top: 0px;">
+            <h4 class="text-center" style="margin-top:0px"><u>Should be</u></h4>
+            <div class="col-md-10">
+                <div id="s2-should-be" class="panel panel-success">
+                  <div class="panel-heading">
 
-	    </div>    
+                    <h4 class="text-left" id="js_validation_string_intro" style="font-weight: bold;">pizza-bepro</h4>
+
+                  </div>
+                  <div class="panel-body">
+                    <h5 style="margin-top: 0px; margin-bottom:0px; padding:0px;">
+                      <span id="test_cd" data-timer="">
+                        expires in: 9m
+                      </span>                    
+                    </h5>
+                  </div>
+                </div>
+            </div>
+            <div class="col-md-2" style="margin-top:15px;">
+              <i id="" class="fa fa-refresh fa-2x"></i>
+            </div>
+          </div>
+        </div>
+        <div class=" text-center">
+          <h5>(Rename and Wait)</h5>
+        </div>
+      </div>
+
+    </div>    
+  
+
  
     
   </div>
 
 </div>
+ 

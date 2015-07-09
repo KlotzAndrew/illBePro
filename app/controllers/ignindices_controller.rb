@@ -308,7 +308,7 @@ class IgnindicesController < ApplicationController
 
   def update # used on step 2 and 4 (if using @ignindex.where("...").first.not.nil?)
     Rails.logger.info "triggering add/update on ignindex#update"
-    if params[:commit] == "Add Summoner Name" or params[:commit] == "Update Summoner Name" 
+    if params[:commit] == "Add Summoner Name" or params[:commit] == "Change Summoner Name" 
 
       session[:summoner_name_temp] = params["ignindex"]["summoner_name"]
       session[:summoner_name_ref_temp] = params["ignindex"]["summoner_name"].mb_chars.downcase.gsub(' ', '')
@@ -543,8 +543,8 @@ class IgnindicesController < ApplicationController
           @ignindex.save
           session[:ignindex_id] = @ignindex.id
         end
-        # @ignindex.refresh_validation
-        # session[:last_validation] = @ignindex.validation_timer
+        @ignindex.refresh_validation
+        session[:last_validation] = @ignindex.validation_timer
 
         if user_signed_in?
           Rails.logger.info "this should trigger user adding ignindex#create"
