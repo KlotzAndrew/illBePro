@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   resources :prizes
 
+  get 'achievements', to: 'achievements#index', as: :achievements
+
   resources :scores
   get 'leaderboard', to: 'scores#leaderboard'
 
