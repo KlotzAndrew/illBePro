@@ -1,4 +1,47 @@
 
+var s2_refresh_button = function(){
+  $('#s2-refresh').hover(function(){
+    $('#s2-refresh').addClass("active-blue");
+  }, function(){
+    $('#s2-refresh').removeClass("active-blue");
+  })
+
+  $('#s2-refresh').on("click", function() {
+    console.log("it clicked")
+
+    $.ajax({
+     url: "/ignindices/" + $("#ign").data("id"),
+     type: "PUT",
+     data: {"commit" : "Generate Validation Code" },
+     dataType: "json",
+     success: function(data) {
+        console.log("it submitted!");
+       }
+     });
+
+    $.ajax({
+      url: "/ignindices/" + $("#ign").data("id"),
+      type: "GET",
+      dataType: "json",
+      success: function(data) { 
+        console.log(data)
+        $('#js_validation_string').html(data["ignindex"].validation_string)
+        $('#js_validation_string_intro').html(data["ignindex"].validation_string)
+        $('#how_to_going').slideDown()
+        $('#test_cd').data("timer", data["ignindex"].validation_timer)
+        clearTimeout(ignTimer)
+        clearTimeout(ign_update_timeout)
+        ign_clocks()
+        ign_update()
+      }
+    })
+  })
+}
+
+var s2_refresh_click = function(){
+
+}
+
 var challenge_hover_highlight = function(){
   $('#challenge-s-cora1').hover(function(){
     $('#challenge-i-cora1').addClass("highlight-prize-info");
@@ -121,7 +164,7 @@ var ign_update = function() {
 
           var jsval = '(Not Valid)';
 
-            if (grab > (current_time/1000 - 300) ) {
+            if (grab > (current_time/1000 - 600) ) {
               var ign_update_timeout = setTimeout( ign_update, 30000);
             }
 
@@ -144,7 +187,7 @@ var ign_clocks = function(){
   // if ( (grab - (current_time/1000) + 300) < 0 ) { 
   //   now1 = "0m 0s"
   //   } else {
-      now1 = parseInt((grab - (current_time/1000) + 300)/60) + "m " + parseInt((grab - (current_time/1000) + 300)%60) + "s"
+      now1 = parseInt((grab - (current_time/1000) + 600)/60) + "m "// + parseInt((grab - (current_time/1000) + 300)%60) + "s"
   //   }
 
   $('#test_cd').html(now1) // update total time left
@@ -153,7 +196,7 @@ var ign_clocks = function(){
   $('#check_loop').html(now2) // update estimate of clockwork
   
   console.log("ign timers updated")
-  if (grab > (current_time/1000 - 300)) {
+  if (grab > (current_time/1000 - 600)) {
     if ($('#page_name').data("pagespec") == "ignindex_index") {
       ignTimer = setTimeout( ign_clocks, 1000);
     } else {
@@ -200,6 +243,7 @@ $(document).on('page:load', function() {
   is_page_landing_page();
 
   challenge_hover_highlight();
+  s2_refresh_button();
 })
 
 $(document).ready(function() {
@@ -209,4 +253,5 @@ $(document).ready(function() {
   is_page_landing_page();
 
   challenge_hover_highlight();
+  s2_refresh_button();
 })

@@ -70,12 +70,12 @@ end
     val_st = Time.now.to_i
 
     Ignindex.where("validation_timer > ?", 0 ).each do |x|
-      if x.validation_timer < (Time.now.to_i - 300)
+      if x.validation_timer < (Time.now.to_i - 600)
         Rails.logger.info "#{x.summoner_name} ran out of time"
         Ignindex.find_by_id(x.id).update(validation_timer: nil)
         Ignindex.find_by_id(x.id).update(validation_string: nil)
       else
-        Rails.logger.info "#{cron_st}: #{x.summoner_name} still has #{300 + x.validation_timer - Time.now.to_i} seconds!"
+        Rails.logger.info "#{cron_st}: #{x.summoner_name} still has #{600 + x.validation_timer - Time.now.to_i} seconds!"
         if x.summoner_id.nil?
           Rails.logger.info "#{cron_st}: #{x.summoner_name} summoner.id is nill"
           mass_count += 1

@@ -79,7 +79,7 @@
           </div>        
         </div>
 
-      <% if !@uu_summoner_validated && @ignindex.summoner_name != nil %>
+<!--       <% if !@uu_summoner_validated && @ignindex.summoner_name != nil %>
         <div id="summoner_valid_panel" class="panel-body">
           <div id="ign_hide_1" class="row">
             <div>
@@ -99,7 +99,7 @@
                     <% end %>
                     <h5>
                       Expires in:
-                        <span id="test_cd" data-timer="<%= @ignindex.validation_timer %>">
+                        <span id="test_cd2" data-timer="<%= @ignindex.validation_timer %>">
                           <%= ((300 - (Time.now.to_i - @ignindex.validation_timer))/60) %> more minutes!
                         </span>
                     </h5>
@@ -123,7 +123,7 @@
                     <% end %>
                     <h5>
                       Expires in:
-                        <span id="test_cd" data-timer="<%= @ignindex.validation_timer %>">
+                        <span id="test_cd2" data-timer="<%= @ignindex.validation_timer %>">
                           
                         </span>
                     </h5>
@@ -138,11 +138,7 @@
 
               <div class="col-md-4">
 
-                <div id="button-gen-val-code" class="gen-button">
-                <%= form_for @ignindex, remote: true, :html => { :id => 'validation_code_submit' } do |t| %>
-                  <%= t.submit "Generate Validation Code", class: "btn btn-large btn-lprimary" %>
-                <% end %>
-                </div>                
+           
               </div>
 
             </div>
@@ -169,7 +165,7 @@
 
                     <h5>
                       Expires in:
-                        <span id="test_cd" data-timer="">
+                        <span id="test_cd2" data-timer="">
                         </span>
                     </h5>
                     <h6>(next check in ~
@@ -182,7 +178,7 @@
             </div>
           </div>
         </div>        
-      <% end %>
+      <% end %> -->
 
       </div>
     </div>
@@ -196,29 +192,58 @@
       <% else %>
     <div id="how_to_going" class="col-md-6 col-md-offset-0 " style="margin-top: 20px;margin-bottom: 0px;"> 
       <% end %>        
-      <h3 class="text-center" style="margin-top: 0px;"><strong>Rename 1st Mastery Page</strong></h3>
-      <div class="row">
-        <div class="col-md-6" style="margin-top: 0px;">
-          <h4 class="text-center" style="margin-top:0px"><u>Currently</u></h4>
-          <% if @ignindex.mastery_1_name.nil? %>
-          <h3 class="text-center" id="mastery_page_name_intro" style="font-weight: bold;">Checking...</h3>
-          <% else %>
-          <h3 class="text-center" id="mastery_page_name_intro" style="font-weight: bold;"><%= @ignindex.mastery_1_name %></h3>
-          <% end %>
+      <h3 class="text-center" style="margin-top: 0px; color:red;"><strong><span class="">Rename 1st Mastery Page</span></strong></h3>
+      <div class="well">
+        <div class="row">
+          <div class="col-md-6" style="margin-top: 0px;">
+            <h4 class="text-center" style="margin-top:0px"><u>Currently</u></h4>
+            <div class="panel panel-danger">
+              <div class="panel-heading">
+                <% if @ignindex.mastery_1_name.nil? %>
+                <h4 class="text-left" id="mastery_page_name_intro" style="font-weight: bold;"><i>unknown</i></h4>
+                <% else %>
+                <h4 class="text-left" id="mastery_page_name_intro" style="font-weight: bold;"><%= @ignindex.mastery_1_name %></h4>
+                <% end %>
+              </div>
+              <div class="panel-body">
+                <h5 style="margin-top: 0px; margin-bottom:0px; padding:0px;"><i class="fa fa-spinner fa-pulse"></i> 
+                  checks in <span id="check_loop" data-check="<%= @ignindex.updated_at.to_i %>"></span>s
+                </h5>
+              </div>
+            </div>
+          </div>
+         
+          <div class="col-md-6" style="margin-top: 0px;">
+            <h4 class="text-center" style="margin-top:0px"><u>Should be</u></h4>
+            <div class="col-md-10">
+                <div id="s2-should-be" class="panel panel-danger">
+                  <div class="panel-heading">
+                    <% if @ignindex.validation_string.nil? %>
+                    <h4 class="text-left" id="js_validation_string_intro" style="font-weight: bold;">n/a</h4>
+                    <% else %>
+                    <h4 class="text-left" id="js_validation_string_intro" style="font-weight: bold;"><%= @ignindex.validation_string %></h4>
+                    <% end %>
+                  </div>
+                  <div class="panel-body">
+                    <h5 style="margin-top: 0px; margin-bottom:0px; padding:0px;">
+                      <span>
+                        expires in:
+                      </span>
+                      <span id="test_cd" data-timer="<%= @ignindex.validation_timer %>">
+                        <%= ((300 - (Time.now.to_i - @ignindex.validation_timer))/60) %> m
+                      </span>                    
+                    </h5>
+                  </div>
+                </div>
+            </div>
+            <div class="col-md-2" style="margin-top:15px;">
+              <i id="s2-refresh" class="fa fa-refresh fa-2x"></i>
+            </div>
+          </div>
         </div>
-       
-        <div class="col-md-6" style="margin-top: 0px;">
-          <h4 class="text-center" style="margin-top:0px"><u>Should be</u></h4>
-          <% if @ignindex.validation_string.nil? %>
-          <h3 class="text-center" id="js_validation_string_intro" style="font-weight: bold;">n/a</h3>
-          <% else %>
-          <h3 class="text-center" id="js_validation_string_intro" style="font-weight: bold;"><%= @ignindex.validation_string %></h3>
-          <% end %>
+        <div class=" text-center">
+          <h5>(Rename and Wait)</h5>
         </div>
-      </div>
-      <div class="row text-center">
-        <h4>Wait 1-2 Minutes to Update</h4>
-        <h5>(we auto check League every 60s for a match)</h5>
       </div>
 
     </div>    
@@ -237,3 +262,4 @@
   </div>
 
 </div>
+ 
