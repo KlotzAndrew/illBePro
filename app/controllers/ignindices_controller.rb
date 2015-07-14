@@ -2,7 +2,7 @@ class IgnindicesController < ApplicationController
   before_action :set_ignindex, only: [:show, :edit, :update, :destroy]
 
   helper_method :show_prizes
-  skip_before_action :verify_authenticity_token
+  # skip_before_action :verify_authenticity_token
 
 
   # before_filter :authenticate_user!
@@ -54,8 +54,10 @@ class IgnindicesController < ApplicationController
     end
   end
 
-  def get_setup
 
+
+
+  def get_setup
     #_1 step1
     @setup_navbar_toggle = true
     session[:setup_progress] ||= 0
@@ -89,11 +91,18 @@ class IgnindicesController < ApplicationController
         redirect_to setup_path
         reset_session_vars
       else
-        show_prizes(session[:region_id_temp])
-        show_prizes_v2(session[:region_id_temp])
+        @achievement = Achievement.new
+
+        region = Region.find(session[:region_id_temp])
+        
+        @region_postal = region.postal_code
+
+        @challenges_global = Challenge.where("global = ?", true).map { |x| x }
+        @challenges_local = region.challenges.map { |x| x }
       end    
     elsif session[:setup_progress] == 2 or session[:setup_progress] == 3
       @setup_progress = 2
+      @league_api_ping = Staticpage.find(1).league_api_ping
 
       session[:region_id_temp] ||= nil
 
@@ -307,6 +316,7 @@ class IgnindicesController < ApplicationController
 
 
   def update # used on step 2 and 4 (if using @ignindex.where("...").first.not.nil?)
+    Rails.logger.info "start_val: #{session[:last_validation]}"
     Rails.logger.info "triggering add/update on ignindex#update"
     if params[:commit] == "Add Summoner Name" or params[:commit] == "Change Summoner Name" 
 
@@ -421,8 +431,16 @@ class IgnindicesController < ApplicationController
       end
     elsif params["commit"] == "Generate Validation Code"
       Rails.logger.info "triggers update for: new 'gen validation code'"
+
       @ignindex.refresh_validation
       session[:last_validation] = @ignindex.validation_timer
+      
+      # @ignindex.refresh_validation
+      Rails.logger.info "session before: #{session[:last_validation]}"
+      # session[:last_validation] = nil
+      # session[:last_validation] = Ignindex.find(params["id"].to_i).validation_timer
+      Rails.logger.info "session after: #{session[:last_validation]}"
+      Rails.logger.info "ignindex.validation_timer: #{Ignindex.find(params["id"].to_i).validation_timer}"
 
       #assign validator to user
       if user_signed_in?
@@ -438,9 +456,11 @@ class IgnindicesController < ApplicationController
         Rails.logger.info "matching validation summoner_id: #{User.find(current_user.id).summoner_id}"
         Rails.logger.info "matching validation summoner_id: #{@ignindex.validation_timer}"
       end
+      redirect_to setup_path
     else
       #error?
     end
+    Rails.logger.info "end_val: #{session[:last_validation]}"
   end
 
   def create # runs on step 2 and 4 (if using @ignindex.new; runs on 'add' or 'update'

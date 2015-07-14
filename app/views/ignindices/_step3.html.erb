@@ -1,7 +1,7 @@
 <div data-pagespec="ignindex_index" id="page_name">
 </div>
 
- <div id="ign" data-id="<%= @ignindex.id %>">
+<div id="ign" data-id="<%= @ignindex.id %>">
 </div>
 
 <div class="container-fluid" style="margin-top:0px;">
@@ -18,28 +18,20 @@
 
     <div class="col-md-6 col-md-offset-0">
 
-      <h3 id="summoner_name_text" class="text-center">
+      <h3 id="summoner_name_text" class="text-left">
         <% if @ignindex.summoner_name.nil?  or @ignindex.summoner_name == ""%>
           <span id="js_name">
             <i>Add Summoner Name</i>
           </span>
-          <span id="js_val"></span>
         <% else %>
-          <% if @uu_summoner_validated == true %>
-            <span id="js_name">
-              <strong><%= @ignindex.summoner_name %></strong>
-            </span>
-            <span id="js_val" class="validated">
-               - Valid
-            </span>     
-
+          <span id="js_name">
+            <strong><%= @ignindex.summoner_name %></strong>
+          </span>
+          (<i id="toggle_change_summoner" class="fa fa-pencil fa-1"></i>)
+          <% if @uu_summoner_validated %>
+          <span id="js_val"> - Valid</span>
           <% else %>
-            <span id="js_name">
-              <strong><%= @ignindex.summoner_name %></strong>
-            </span>
-            <span id="js_val" class="not-validated">
-               (Not Valid)
-            </span>    
+          <span id="js_val"> - Not Valid Yet</span>
           <% end %>
         <% end %>
       </h3>
@@ -47,9 +39,8 @@
       <% if @ignindex.summoner_name.nil? %>
       <div id="summoner_panel" class="panel panel-danger">
       <% else %>
-      <div id="summoner_panel" class="panel panel-success">
+      <div id="summoner_panel" class="panel panel-success start-ghost">
       <% end %>
-      
         <div class="panel-heading">
   
           <div class="text-center">
@@ -60,7 +51,7 @@
                 
                    <span class="dropdown">
                       <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        NA
+                        North America
                         <span class="caret"></span>
                       </button>
                       <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
@@ -78,20 +69,16 @@
             </div>
           </div>        
         </div>
-
       </div>
     </div>
 
+
+
     <% if @uu_summoner_validated %> 
     <div id="how_to_finished" class="col-md-4 lwell col-md-offset-1 text-center" style="margin-top: 40px; margin-bottom: 20px;">
-
     <% else %>
-      <% if @ignindex.validation_timer.nil? %>
-    <div id="how_to_going" class="col-md-6 col-md-offset-0 start-ghost" style="margin-top: 20px;margin-bottom: 0px;">
-      <% else %>
-    <div id="how_to_going" class="col-md-6 col-md-offset-0 " style="margin-top: 20px;margin-bottom: 0px;"> 
-      <% end %>        
-      <h3 class="text-center" style="margin-top: 0px; color:red;"><strong><span class="">Rename 1st Mastery Page</span></strong></h3>
+    <div id="how_to_going" class="col-md-6 col-md-offset-0 " style="margin-top: 20px;margin-bottom: 0px;">   
+      <h3 class="text-left" style="margin-top: 0px; color:red;"><strong>1st Mastery Page - <span class="">(Rename & Wait)</span></strong></h3>
       <div class="well">
         <div class="row">
           <div class="col-md-6" style="margin-top: 0px;">
@@ -106,7 +93,7 @@
               </div>
               <div class="panel-body">
                 <h5 style="margin-top: 0px; margin-bottom:0px; padding:0px;"><i id="s2-check-spinner" class="fa fa-spinner fa-pulse"></i> 
-                  checks in <span id="check_loop" data-check="<%= @ignindex.updated_at.to_i %>"></span>s
+                  checks in <span id="check_loop" data-check="<%= @league_api_ping %>"></span>s
                 </h5>
               </div>
             </div>
@@ -114,7 +101,7 @@
          
           <div class="col-md-6" style="margin-top: 0px;">
             <h4 class="text-center" style="margin-top:0px"><u>Should be</u></h4>
-            <div class="col-md-10">
+            <div class="col-md-12">
                 <div id="s2-should-be" class="panel panel-danger">
                   <div class="panel-heading">
                     <% if @ignindex.validation_string.nil? %>
@@ -132,13 +119,16 @@
                   </div>
                 </div>
             </div>
-            <div class="col-md-2" style="margin-top:15px;">
-              <i id="s2-refresh" class="fa fa-refresh fa-2x"></i>
-            </div>
+<!--             <div class="col-md-2" style="margin-top:15px;">
+              <i id="s2-refresh" class="fa fa-refresh fa-2x active-blue"></i>
+            </div> -->
           </div>
+
         </div>
         <div class=" text-center">
-          <h5>(Rename and Wait)</h5>
+          <%= form_for @ignindex do |t| %>
+            <%= t.submit "Generate Validation Code", class: "btn btn-large btn-primary" %>
+          <% end %>
         </div>
       </div>
 

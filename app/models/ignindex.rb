@@ -4,6 +4,7 @@ class Ignindex < ActiveRecord::Base
 	has_many :statuses
 	belongs_to :region
 	has_many :achievements
+	has_many :prizes
 
 	def refresh_summoner
 		# self.update(summoner_validated: false)
@@ -59,6 +60,7 @@ class Ignindex < ActiveRecord::Base
   end	
 
 	def clear_duplcates #unresolved bug fixer
+		Rails.logger.info "DUPLICATE SUMMONER ISSUE"
 		Ignindex.find(dont_run) #dont run
 		#finds duplicate summoner names (idk where bug is being created)
 		dup1 = []

@@ -3,11 +3,18 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 
+.profile-box {
+	background-image: linear-gradient(to bottom, #E8E8E8 0px, #0A636E 100%);
+}
+
+.profile-picture {
+	border: 2px solid;
+	border-color: gold;
+}
+
 .spelling-name {
-	font-family: Source Sans Pro;
+	
 	color: red;
-	font-weight: bold;
-	font-size: 24px;
 }
 
 .tony-image {

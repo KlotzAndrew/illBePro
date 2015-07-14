@@ -3,7 +3,7 @@ class Prize < ActiveRecord::Base
 has_many :prize_regions
 has_many :regions, through: :prize_regions
 
-
+has_one :ignindex
 has_one :user
 
 # after_save :update_regions

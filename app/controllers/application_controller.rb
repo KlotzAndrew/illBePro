@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
  before_filter :configure_permitted_parameters, if: :devise_controller?
  before_filter :set_variables
 
-helper_method :challenge_onboarding, :prize_onboarding
+ helper_method :challenge_onboarding, :prize_onboarding
 
 def set_variables
   if user_signed_in?

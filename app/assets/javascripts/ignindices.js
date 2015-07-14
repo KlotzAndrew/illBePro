@@ -1,9 +1,21 @@
+var open_summoner = function(){
+  $('#toggle_change_summoner').hover(function(){
+    $('#toggle_change_summoner').addClass("active-blue");
+  }, function(){
+    $('#toggle_change_summoner').removeClass("active-blue");
+  })
+
+  $('#toggle_change_summoner').on("click", function(){
+    $('#summoner_panel').toggleClass("start-ghost")
+  })
+
+}
 
 var s2_refresh_button = function(){
   $('#s2-refresh').hover(function(){
-    $('#s2-refresh').addClass("active-blue");
-  }, function(){
     $('#s2-refresh').removeClass("active-blue");
+  }, function(){
+    $('#s2-refresh').addClass("active-blue");
   })
 
   $('#s2-refresh').on("click", function() {
@@ -125,7 +137,7 @@ var ajax_button_summoner_name = function() {
 };
 
 var ign_update_timeout;
-
+var valid_status = false
 var ign_update = function() {
   val_timer = $('#test_cd').data("timer")
   if (val_timer > 0) { 
@@ -164,11 +176,11 @@ var ign_update = function() {
 
           } else {
 
-          var jsval = '(Not Valid)';
+          var jsval = '- Not Valid Yet';
 
-            if (grab > (current_time/1000 - 600) ) {
-              var ign_update_timeout = setTimeout( ign_update, 30000);
-            }
+            // if (grab > (current_time/1000 - 600) ) {
+            //   var ign_update_timeout = setTimeout( ign_update, 30000);
+            // }
 
           }
         $('#ign2').html(data.summoner_name);
@@ -191,6 +203,11 @@ var ign_clocks = function(){
   
   now2 = parseInt(60 - ((current_time/1000 - grab2) % 60))
   $('#check_loop').html(now2) // update estimate of clockwork
+
+  if (now2 < 1) {
+    $('#s2-currently-is').effect("bounce", 2000)
+    ign_update();
+  };
 
   if (grab > (current_time/1000 - 600)) {
     if ($('#page_name').data("pagespec") == "ignindex_index") {
@@ -257,6 +274,7 @@ $(document).on('page:load', function() {
 
   challenge_hover_highlight();
   s2_refresh_button();
+  open_summoner();
 })
 
 $(document).ready(function() {
@@ -267,4 +285,5 @@ $(document).ready(function() {
 
   challenge_hover_highlight();
   s2_refresh_button();
+  open_summoner();
 })

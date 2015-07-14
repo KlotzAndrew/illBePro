@@ -47,15 +47,16 @@ def challenge_init
     :kind => 5,
     :challenge_description => "Play a game to increase the chance your next challenge will be prized",
     :pause_timer => 0,
-    :trigger_timer => 0)
-
-  self.update(pause_timer: 0)
-  self.update(trigger_timer: 0)
+    :trigger_timer => 0,
+    :pause_timer => 0,
+    :trigger_time => 0)
 end
 
 
   def self.api_call
     Rails.logger.info "*****STARTING CLOCKWORK*****"
+    Staticpage.find(1).update(
+      :league_api_ping => Time.now.to_i)
     cron_st = Time.now.to_i
     time_holder = 3900
     times_run = 0
@@ -545,7 +546,8 @@ end
                           ign_score = Ignindex.find(key_summoner[0].ignindex_id)
                           curent_ach = Achievement.find(ign_score.active_achievement)
                           if !curent_ach.nil?
-                            experience_gain(cron_st, curent_ach, clock_active_status)
+                            achievement_play(cron_st, curent_ach, clock_active_status)
+                            # experience_gain(cron_st, curent_ach, clock_active_status)
                           end
 
                           Rails.logger.info "#{cron_st}: updated lost first for #{key_summoner[0].summoner_id}"
@@ -591,7 +593,8 @@ end
                           achievement_refresh(ign_score.id)
                           curent_ach = Achievement.find(ign_score.active_achievement)
                           if !curent_ach.nil?
-                            experience_gain(cron_st, curent_ach, clock_active_status)
+                            achievement_play(cron_st, curent_ach, clock_active_status)
+                            # experience_gain(cron_st, curent_ach, clock_active_status)
                             # spelling_vandor_name(cron_st, curent_ach, clock_active_status)
                           end
 
@@ -786,7 +789,8 @@ end
                           ign_score = Ignindex.find(key_summoner[0].ignindex_id)
                           curent_ach = Achievement.find(ign_score.active_achievement)
                           if !curent_ach.nil?
-                            experience_gain(cron_st, curent_ach, clock_active_status)
+                            achievement_play(cron_st, curent_ach, clock_active_status)
+                            # experience_gain(cron_st, curent_ach, clock_active_status)
                           end
 
                           Rails.logger.info "#{cron_st}: updated lost first for #{key_summoner[0].summoner_id}"
@@ -815,7 +819,8 @@ end
                           achievement_refresh(ign_score.id)
                           curent_ach = Achievement.find(ign_score.active_achievement)
                           if !curent_ach.nil?
-                            experience_gain(cron_st, curent_ach, clock_active_status)
+                            achievement_play(cron_st, curent_ach, clock_active_status)
+                            # experience_gain(cron_st, curent_ach, clock_active_status)
                             # spelling_vandor_name(cron_st, curent_ach, clock_active_status)
                           end
                                                                              
@@ -896,12 +901,46 @@ end
     Rails.logger.info "#{cron_st}: finished for random prize"
   end
 
+  def self.achievement_play(cron_st, ach, status)
+    Rails.logger.info "#{cron_st}: achievement_up, status.win_value #{status.win_value}"
+
+    if status.win_value == 2 # game won, all challenges use this so far
+      ach.update(
+        :wins_recorded => ach.wins_recorded += 1)
+      Rails.logger.info "#{cron_st}: from game won (#{status.win_value}) ach_win #{ach_win}"
+    else
+      Rails.logger.info "#{cron_st}: from game won (#{status.win_value}) ach_win #{ach_win}"
+    end
+
+    if ach.can_spell_name_open.length > 0 #this achievement is available
+      spell_letter(cron_st, ach, status)
+    end
+
+    Rails.logger.info "#{cron_st}: finished ach experience update"
+  
+  end
+
+  def self.spell_letter(cron_st, ach, status)
+      Rails.logger.info "#{cron_st}: ach spelling has length: #{ach.can_spell_name_open}"
+      champion_letter = status.game_1[:champion_id][0]
+      Rails.logger.info "#{cron_st}: champion_letter: #{champion_letter}"
+      if ach.can_spell_name_open.include?(champion_letter)
+        ach.update(
+          :can_spell_name_open => ach.can_spell_name_open.sub(champion_letter, "")) 
+        Rails.logger.info "#{cron_st}: ach spelling has new length: #{ach.can_spell_name_open}"
+        Rails.logger.info "double check w/ table: #{Achievement.find(ach.id).can_spell_name_open}"
+      else 
+        "#{cron_st}: ach spelling has same length"
+      end
+      Rails.logger.info "#{cron_st}: spelling_vandor_name finished"    
+  end
+
   def self.experience_gain(cron_st, ach, status)
     Rails.logger.info "#{cron_st}: experience_gain, status.win_value #{status.win_value}"
     ach_win = 0
     ach_exp = 0
 
-    if ach.can_spell_name_open.length > 0 #this achievement is enabled
+    if ach.can_spell_name_open.length > 0 #this achievement is available
       Rails.logger.info "#{cron_st}: ach spelling has length: #{ach.can_spell_name_open}"
 
       champion_letter = status.game_1[:champion_id][0]

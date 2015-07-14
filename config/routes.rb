@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
   resources :prizes
+  resources :achievements
 
-  get 'achievements', to: 'achievements#index', as: :achievements
+  # get 'achievements', to: 'achievements#index', as: :achievements
 
   resources :scores
   get 'leaderboard', to: 'scores#leaderboard'
@@ -31,13 +32,13 @@ Rails.application.routes.draw do
   get 'challenges', to: 'statuses#index', as: :challenges
   
 
-# authenticated :user do
-#   root to: 'staticpages#homepage', as: :authenticated_root
-# end
+authenticated :user do
+  root to: 'statuses#new', as: :authenticated_root
+end
 
-# unauthenticated do
+unauthenticated do
   root to: "ignindices#landing_page"
-# end
+end
 
 
 

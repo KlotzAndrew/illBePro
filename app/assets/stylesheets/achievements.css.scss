@@ -1,3 +1,16 @@
 // Place all the styles related to the achievements controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+
+#current-challenges {
+  background: url("front-cover4.jpg") no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+#new-challenges {
+	background-color: #0A636E;
+}

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150604152136) do
+ActiveRecord::Schema.define(version: 20150713205442) do
 
   create_table "achievements", force: true do |t|
     t.string   "description"
@@ -25,6 +25,35 @@ ActiveRecord::Schema.define(version: 20150604152136) do
     t.boolean  "require_wins",        default: false
     t.string   "can_spell_name"
     t.string   "can_spell_name_open"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "challenge_id"
+    t.integer  "region_id"
+    t.boolean  "has_prizing",         default: false
+    t.integer  "wins_required",       default: 0
+    t.integer  "wins_recorded"
+    t.string   "name"
+    t.string   "merchant"
+  end
+
+  create_table "challenge_regions", force: true do |t|
+    t.integer  "region_id",    null: false
+    t.integer  "challenge_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "challenges", force: true do |t|
+    t.string   "merchant"
+    t.integer  "kind"
+    t.boolean  "available"
+    t.integer  "expiery"
+    t.string   "name"
+    t.boolean  "global"
+    t.boolean  "global_prizing"
+    t.boolean  "local_prizing"
+    t.string   "can_spell_name"
+    t.integer  "wins_required"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -140,6 +169,14 @@ ActiveRecord::Schema.define(version: 20150604152136) do
     t.integer  "challenge_points", default: 0
     t.integer  "last_prize_time",  default: 0
     t.integer  "prize_id"
+  end
+
+  create_table "staticpages", force: true do |t|
+    t.integer  "league_api_ping", default: 1
+    t.string   "league_notes"
+    t.string   "news"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "statuses", force: true do |t|
