@@ -20,7 +20,9 @@
       </div>
       <div class="col-md-6">
 
+        <% if active != 3 %>
         <h2 style="margin-top: 0px; margin-bottom: 5px;"><u><%= x.name %></u></h2>
+        <% end %>
         <h4 style="margin-top: 0px; margin-bottom: 30px;">
             <i>
             <% if x.has_prizing %>
