@@ -14,8 +14,9 @@ Rails.application.routes.draw do
   get 'get_started', to: 'ignindices#get_started', as: :get_started
   get 'games', to: 'ignindices#games', as: :games
   get 'setup', to: "ignindices#get_setup", as: :setup
-  get 'reset_setup', to: "ignindices#reset_setup", as: :reset_setup
   get 'zone', to: "ignindices#zone"
+  get 'setup_1', to: "ignindices#setup_1", as: :setup_1
+  get 'setup_2', to: "ignindices#setup_2", as: :setup_2
   
   resources :profiles
 

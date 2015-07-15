@@ -115,6 +115,41 @@
   end  
 
   def new
+    if !user_signed_in?
+      redirect_to new_user_session_path, flash: {alert: "You need to be logged in!"}      
+    else #user signed-in; this can be refractored
+    
+    @status = Status.new
+    @ignindex = Ignindex.where("user_id = ?", current_user.id).first
+      if @ignindex.nil? #redirect
+        redirect_to setup_path
+        session[:setup_progress] = 1
+      elsif @ignindex.region_id.nil? #redirect
+        redirect_to zone_url, alert: 'You need a valid Postal Code!'
+      else
+        #setup progress?
+        if current_user.setup_progress != 0
+          @status_setup_display = false
+        else
+          @status_setup_display = true
+          @setup_progress = 4
+        end
+
+        @achievement = Achievement.where("id = ?", @ignindex.active_achievement).first
+        if @achievement.nil?
+          @achievement = Achievement.new
+        end
+
+
+        #get game history
+        # @game_history = @achievement.statuses.order(created_at: :desc)
+
+      end
+ 
+    end
+  end
+
+  def new_old
     Rails.logger.info "User sign-in status: #{user_signed_in?}"
     if !user_signed_in? #unauthenticate partial sign-in
 
@@ -123,7 +158,7 @@
 
       elsif Ignindex.find(session[:ignindex_id]).last_validation != session[:last_validation]
         
-        session[:setup_progress] = 0
+        session[:setup_progress] = 1
         redirect_to setup_path, notice: "redirected you, summoner not validated"
 
       else
@@ -151,7 +186,7 @@
         if current_ign.last_validation < 90.minutes.ago.to_i && last_game_created < 90.minutes.ago.to_i
           current_ign.update(
             :last_validation => 0)
-          session[:setup_progress] = 0
+          session[:setup_progress] = 1
           redirect_to setup_path, notice: "Your validation timed out! Re-validate to keep playing."
 
         else
@@ -204,7 +239,7 @@
  
       if Ignindex.find_by_user_id(current_user.id).nil? #redirect
         redirect_to setup_path
-        session[:setup_progress] = 0
+        session[:setup_progress] = 1
       elsif Ignindex.find_by_user_id(current_user.id).region_id.nil? #redirect
         redirect_to zone_url, alert: 'You need a valid Postal Code!'
       else

@@ -38,7 +38,7 @@ class AchievementsController < ApplicationController
 	def create
 		@achievement = Achievement.new
 
-		if params["commit"] == "Add"
+		if params["commit"] == "Select"
 			findIgnindex
 			canAdd(@ignindex, params["achievement"]["challenge_id"], @achievement)
 		elsif params["commit"] == "Activate"

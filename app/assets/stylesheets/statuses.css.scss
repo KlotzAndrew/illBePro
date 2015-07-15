@@ -4,7 +4,7 @@
 
 
 .profile-box {
-	background-image: linear-gradient(to bottom, #E8E8E8 0px, #0A636E 100%);
+	background-image: linear-gradient(to bottom, #0A636E 0px, #e8e8e8 150%);
 }
 
 .profile-picture {
@@ -23,9 +23,16 @@
 }
 
 .start-game-button {
-	margin-top: 25px;
+	margin-top: 0px;
 	width: 500px;	
 	height: 100px;
+}
+
+.start-game-button-inactive {
+	margin-top: 0px;
+	width: 500px;	
+	height: 100px;
+	background-color: grey;
 }
 
 .finish-button {

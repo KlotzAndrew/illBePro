@@ -1,118 +1,30 @@
 <div class="container-fluid">
-
-	<div class="row">
-		<div class="row" style="margin-bottom: 20px;">
-			<div class="col-md-12 col-md-offset-0">
-				<h1>2) Pick a Challenge for (<%= @region_postal %>)</h1>
-				<h3 style="margin-top:0px;">
-				Select from the prize/challenges in your area
-				</h3>
-			</div>
-		</div>	
-
+	<div class="well leaderbox" style="margin-top: 25px;">
 		<div class="row">
-			<% @challenges_global.each do |x| %>
-				<%= render 'achievements/new_block', :x => x %>
-					    <%= form_for @ignindex do |t| %>
-					      <%= t.submit "Select", class: "btn btn-lg btn-lprimary s2-chal" %>
-					    <% end %>				
-			<% end %>
+			<div class="row" style="margin-bottom: 20px;">
+				<div class="col-md-12 col-md-offset-0">
+					<h1>2) Pick a Challenge in your area</h1>
+					<h3 style="margin-top:0px;">
+					Select from the challenges in (<%= @region_postal %>)
+					</h3>
+				</div>
+			</div>	
 
-			<% @challenges_local.each do |x| %>
-				<%= render 'achievements/new_block', :x => x %>
-				    <%= form_for @ignindex do |t| %>
-				      <%= t.submit "Select", class: "btn btn-lg btn-lprimary s2-chal" %>
-				    <% end %>				
-			<% end %>
+			<div class="row">
+				<% if !@challenges_local.nil? %>
+					<% @challenges_local.each do |x| %>
+						<%= render 'challenges_available', :x => x, :active => 1 %>		
+					<% end %>
+				<% end %>
+			</div>
+
+			<div class="row">
+				<% if !@challenges_global.nil? %>
+					<% @challenges_global.each do |x| %>
+						<%= render 'challenges_available', :x => x, :active => 1 %>			
+					<% end %>
+				<% end %>
+			</div>			
 		</div>
-
-		<div class="row">
-			<div class="col-md-6">		
-				<% if @tagged_for_prizing == true %>
-					<div id="challenge-s-cora1" class="well highlight-prize" >
-						<h3 style="margin-top: 0px;">Cora Pizza Challenge</h3>
-						
-						<div class="row">
-							<div class="col-md-6">
-								<%= image_tag("cora1.jpg", class: "brand-banner",size: "250x112") %> 
-							</div>
-							<div class="col-md-6 text-center" style="">
-							    <%= form_for @ignindex do |t| %>
-							      <%= t.submit "Select", class: "btn btn-lg btn-lprimary s2-chal" %>
-							    <% end %>			
-							</div>
-						</div>
-					</div>
-
-				<% else %>
-					<div id="" class="well">
-						<h3 style="margin-top: 0px;">No Challenge Available</h3>
-			
-						<div class="row" style="margin-top: 40px;">
-							<div class="col-md-8">
-							 	<h5>Cora Pizza is offering challenges in Toronto</h5>
-							</div>
-							<div class="col-md-4 text-right">
-								 <%= link_to "Learn More", current_achievement_url, :class=>"btn btn-lprimary", :style=>"color:white;" %>
-							</div>
-						</div>
-					</div>	
-				<% end %>			
-			</div>
-
-			<div class="col-md-6" style="margin-top: 0px;">
-				<% if @tagged_for_prizing == true %>
-					<div id="challenge-i-cora1" class="well">
-						<h3 style="margin-top: 0px;">
-							<u>Cora Pizza Challenge</u>
-						</h3>
-				        <h5>
-				          Earn 10 experience points
-				          <ul>
-				            <li>1exp per win</li>
-				            <li>2exp per win with champions whose name starts with any letter from "CORA" (e.g. <strong>C</strong>orki, <strong>O</strong>laf, <strong>R</strong>yze, <strong>A</strong>she)</li>
-				          </ul>
-				        </h5>
-				        Prizes
-			        	<ol>
-				        	<li>Random Pizza prize (up to a Free Pizza) awarded Sundays @ 5pm</li>
-					        <ul>
-					        	<li>Complet challenge during the week</li>
-					        </ul>
-				        	<li>Chance to win a Free Slice</li>
-				        	<ul>
-					        	<li>Every win</li>
-				        	</ul>
-			        	</ol>
-			        (<a href="/current_achievement">learn more</a>)
-					</div>			
-				<% else %>
-					<div class="well">
-						<h3 class="text-center" style="margin-top: 0px;">Cora Pizza Challenge</h3>
-				        
-				        <h5>
-				          <strong>Cora Pizza</strong> is offering challenges in these areas:<br/>
-				        </h5>
-				        <h5>
-				          (M6G, M6J, M5R, M5S, M5T, M5G) - Check them out!
-
-				        </h5>
-				        <br/>
-				        Cora Pizza Prizes
-			        	<ol>
-				        	<li>For: completing challenge during the week</li>
-					        <ul>
-					        	<li>Random Pizza prize (up to a Free Pizza) awarded Sundays @ 5pm</li>
-					        </ul>
-				        	<li>For: every win</li>
-				        	<ul>
-					        	<li>Chance to win a Free Slice</li>
-				        	</ul>
-			        	</ol>
-			        <h5 class="text-center">(<a href="/current_achievement">learn more</a>)</h5>
-					</div>			
-				<% end %>	
-			</div>
-		</div>	
 	</div>
 </div>

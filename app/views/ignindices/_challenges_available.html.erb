@@ -1,11 +1,19 @@
+<% active ||= 0 %>
 <div class="col-md-10 col-md-offset-1">
   <div class="well">
     <div class="row">
       <div class="col-md-1">
+        <% if active == 1 %>
+          <%= simple_form_for @ignindex do |f| %>
+            <%= f.input :challenge_id, :as => :hidden, :input_html => { :value => x.id } %>
+            <%= f.button :submit, "Select", class: "btn btn-lprimary", style: "margin-top: 65px;" %>
+          <% end %>      
+        <% else %> 
         <%= simple_form_for @achievement do |f| %>
-          <%= f.input :challenge_id, :as => :hidden, :input_html => { :value => x.id } %>
-          <%= f.button :submit, "Select", class: "btn btn-lprimary", style: "margin-top: 65px;" %>
-        <% end %>      
+            <%= f.input :challenge_id, :as => :hidden, :input_html => { :value => x.id } %>
+            <%= f.button :submit, "Select", class: "btn btn-lprimary", style: "margin-top: 65px;" %>
+          <% end %>         
+        <% end %> 
       </div>
       <div class="col-md-5">
           <h2 style="margin-top: 0px; margin-bottom: 5px;"><u><%= x.name %></u></h2>
@@ -47,7 +55,7 @@
         <div class="row text-right" style="margin-right:20px">
           <h2 class="" style="margin-top: 0px; margin-bottom: 5px; margin-right: 0px;">
             <i><%= x.merchant %></i>
-          </h2>          
+          </h2>
           <% if x.merchant == "Cora Pizza" %>
             <%= image_tag("cora1.jpg", size: "375x168", class: "brand-banner") %>
           <% else %>

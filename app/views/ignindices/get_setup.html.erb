@@ -1,5 +1,5 @@
-<div class="">
-	<div class="setup-background">
+<div class="setup-background">
+	<div class="container-fluid">
 
 		<div class="row text-center">
 
@@ -12,12 +12,12 @@
 
 						<div class="breadcrumbs">
 						    <div class="breadcrumb-cell first">
-						    	<% if @setup_progress == 0 %>
+						    	<% if @setup_progress == 1 %>
 									<div id="bread_1" class="breadcrumb active">				    	
 										<div class="breadcrumb-icon"></div>
 						    	<% else %>
 							   		<div id="bread_1" class="breadcrumb checked selectable">
-									<a href="/reset_setup">
+									<a href="/setup_1">
 								    	<div class="breadcrumb-icon"></div>
 									</a>
 						    	<% end %>
@@ -26,12 +26,12 @@
 						    </div>
 
 						    <div class="breadcrumb-cell">
-						    	<% if @setup_progress == 1 %>
+						    	<% if @setup_progress == 2 %>
 									<div id="bread_2" class="breadcrumb active">
 									<div class="breadcrumb-icon"></div>			    	
 						    	<% elsif @setup_progress > 1 %>
 							   		<div id="bread_2" class="breadcrumb checked selectable">
-									<a href="/reset_setup">
+									<a href="/setup_2">
 								    	<div class="breadcrumb-icon"></div>
 									</a>							   			
 						   		<% else %>
@@ -44,7 +44,7 @@
 							     						    
 
 						    <div class="breadcrumb-cell last">
-						    	<% if @setup_progress == 2 %>
+						    	<% if @setup_progress == 3 %>
 								<div id="bread_3" class="breadcrumb active">				    	
 						   		<% else %>
 						   		<div id="bread_3" class="breadcrumb">
@@ -65,16 +65,18 @@
 	</div>
 </div>
 
-<div class="container">
-	<% if @setup_progress == 0 %>
-		<%= render 'ignindices/step1' %>
-	<% elsif @setup_progress == 1 %>
-		<%= render 'ignindices/step2' %>
-	<% elsif @setup_progress == 2 or @setup_progress == 3%>
-		<%= render 'ignindices/step3' %>
-	<% else %>
-	<% end %>
-</div>
+<section id="top">
+	<div class="container" style="min-height: 450px;">
+		<% if @setup_progress == 1 %>
+			<%= render 'ignindices/step1' %>
+		<% elsif @setup_progress == 2 %>
+			<%= render 'ignindices/step2' %>
+		<% elsif @setup_progress == 3 %>
+			<%= render 'ignindices/step3' %>
+		<% else %>
+		<% end %>
+	</div>
+</section>
 
 
 <script>

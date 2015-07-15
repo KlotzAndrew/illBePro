@@ -1,25 +1,27 @@
-<div class="row">
-  <div class="col-md-4 col-md-offset-4">
-		<div class="devise-border-form">
-			<%= simple_form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: "well"}) do |f| %>
-				<fieldset class="text-center">
-					<legend >Log in</legend>
-				 	<%= f.email_field :email, :autofocus => true, :placeholder => 'Email' %>
-				 	<%= f.password_field :password, :placeholder => 'Password' %>
-					<% if devise_mapping.rememberable? %>
-					   	<div style="display:inline" class="col-sm-offset-1 col-sm-10">
-					   		<%= f.input :remember_me, as: :boolean, inline_label: 'Remember me', label: false %>
-					   	</div>
+<section id="leaderboard">
+	<div class="container" style="min-height: 600px;">
+		<div class="row">
+		  <div class="col-md-4 col-md-offset-4">
+				<div class="devise-border-form">
+					<%= simple_form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: "well"}) do |f| %>
+						<fieldset class="text-center">
+							<legend >Log in</legend>
+						 	<%= f.email_field :email, :autofocus => true, :placeholder => 'Email' %>
+						 	<%= f.password_field :password, :placeholder => 'Password' %>
+							<% if devise_mapping.rememberable? %>
+							   	<div style="display:inline" class="col-sm-offset-1 col-sm-10">
+							   		<%= f.input :remember_me, as: :boolean, inline_label: 'Remember me', label: false %>
+							   	</div>
+							<% end %>
+						  <div class="text-center"><%= f.submit "Log in", :class=>"btn btn-primary" %></div>
+					<%= render "devise/shared/links" %>
+						</fieldset>
 					<% end %>
-				  <div class="text-center"><%= f.submit "Log in", :class=>"btn btn-primary" %></div>
-			<%= render "devise/shared/links" %>
-				</fieldset>
-			<% end %>
-
+				</div>
+			</div>
 		</div>
 	</div>
-
-</div>
+</section>
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

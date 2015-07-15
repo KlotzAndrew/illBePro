@@ -207,32 +207,26 @@ end
             Rails.logger.info "User.find_by_summoner_id(ign_for_mastery_hash.validation_timer).nil?: #{User.find_by_summoner_id(ign_for_mastery_hash.validation_timer).nil?}"
             
             #WIP attach_user
-            attach_user = nil
             add_a_user = nil
-            if User.find_by_summoner_id(ign_for_mastery_hash.validation_timer).nil? #check if any user has vaidator
-              Rails.logger.info "attach_user 1: #{attach_user}"
-              add_a_user = nil
+            user = User.where("summoner_id = ?", ign_for_mastery_hash.validation_timer).first
+            if user.nil? #check if any user has vaidator
+              Rails.logger.info "#{cron_st}: attach_user nope:}"
             else
-              attach_user = User.find_by_summoner_id(ign_for_mastery_hash.validation_timer)
-              attach_user.update(
+              user.update(
                 :ignindex_id => ign_for_mastery_hash.id)
-              Rails.logger.info "attach_user 2: #{attach_user}"
+              Rails.logger.info "#{cron_st}: attach_user yes:"
+              Rails.logger.info "#{cron_st}: ign_for_mastery_hash.id: #{ign_for_mastery_hash.id}"
 
-               add_a_user = attach_user.id
+              add_a_user = user.id
             end
 
-            Rails.logger.info "attach_user end: #{attach_user}"
-
             ign_for_mastery_hash.update(
-              :last_validation => ign_for_mastery_hash.validation_timer)
-
-            ign_for_mastery_hash.update(
+              :last_validation => ign_for_mastery_hash.validation_timer,
               :summoner_validated => true,
               :validation_timer => nil,
               :validation_string => nil,
               :user_id => add_a_user,
-              :region_id => ign_for_mastery_hash.region_id_temp,
-              :active_achievement => nil)
+              :region_id => ign_for_mastery_hash.region_id_temp)
             Rails.logger.info "#{cron_st}: key validated"
 
               # user = User.find(ign_for_mastery_hash.user_id)
@@ -289,36 +283,27 @@ end
             Rails.logger.info "ign_for_mastery_hash.validation_timer: #{ign_for_mastery_hash.validation_timer}"
             Rails.logger.info "User.find_by_summoner_id(ign_for_mastery_hash.validation_timer).nil?: #{User.find_by_summoner_id(ign_for_mastery_hash.validation_timer).nil?}"
             
-            attach_user = nil
+            #WIP attach_user
             add_a_user = nil
-            Rails.logger.info "#{cron_st}: ign_for_mastery_hash.validation_timer #{ign_for_mastery_hash.validation_timer}"
-            Rails.logger.info "#{cron_st}: ign_for_mastery_hash.validation_timer #{User.find_by_summoner_id(ign_for_mastery_hash.validation_timer)}"
-            if User.find_by_summoner_id(ign_for_mastery_hash.validation_timer).nil? #check if any user has vaidator
-              Rails.logger.info "attach_user 1: #{attach_user}"
-              add_a_user =  nil
-
+            user = User.where("summoner_id = ?", ign_for_mastery_hash.validation_timer).first
+            if user.nil? #check if any user has vaidator
+              Rails.logger.info "#{cron_st}: attach_user nope: "
             else
-              attach_user = User.find_by_summoner_id(ign_for_mastery_hash.validation_timer)
-              attach_user.update(
+              user.update(
                 :ignindex_id => ign_for_mastery_hash.id)
-              Rails.logger.info "attach_user 2: #{attach_user}"
+              Rails.logger.info "#{cron_st}: attach_user yes:"
+              Rails.logger.info "#{cron_st}: ign_for_mastery_hash.id: #{ign_for_mastery_hash.id}"
 
-              add_a_user = attach_user.id
+              add_a_user = user.id
             end
 
-            Rails.logger.info "attach_user end: #{attach_user}"
-
             ign_for_mastery_hash.update(
-              :last_validation => ign_for_mastery_hash.validation_timer)
-
-
-            ign_for_mastery_hash.update(
+              :last_validation => ign_for_mastery_hash.validation_timer,
               :summoner_validated => true,
               :validation_timer => nil,
               :validation_string => nil,
               :user_id => add_a_user,
-              :region_id => ign_for_mastery_hash.region_id_temp,
-              :active_achievement => nil)
+              :region_id => ign_for_mastery_hash.region_id_temp)
             Rails.logger.info "#{cron_st}: key validated"
 
             # user = User.find(ign_for_mastery_hash.user_id)
@@ -935,55 +920,55 @@ end
       Rails.logger.info "#{cron_st}: spelling_vandor_name finished"    
   end
 
-  def self.experience_gain(cron_st, ach, status)
-    Rails.logger.info "#{cron_st}: experience_gain, status.win_value #{status.win_value}"
-    ach_win = 0
-    ach_exp = 0
+  # def self.experience_gain(cron_st, ach, status)
+  #   Rails.logger.info "#{cron_st}: experience_gain, status.win_value #{status.win_value}"
+  #   ach_win = 0
+  #   ach_exp = 0
 
-    if ach.can_spell_name_open.length > 0 #this achievement is available
-      Rails.logger.info "#{cron_st}: ach spelling has length: #{ach.can_spell_name_open}"
+  #   if ach.can_spell_name_open.length > 0 #this achievement is available
+  #     Rails.logger.info "#{cron_st}: ach spelling has length: #{ach.can_spell_name_open}"
 
-      champion_letter = status.game_1[:champion_id][0]
-      Rails.logger.info "#{cron_st}: champion_letter: #{champion_letter}"
-      if ach.can_spell_name_open.include?(champion_letter)
-        ach.update(
-          :can_spell_name_open => ach.can_spell_name_open.sub(champion_letter, "")) 
-        ach_exp = ach_exp += 1
-        Rails.logger.info "#{cron_st}: ach spelling has new length: #{ach.can_spell_name_open}"
-        Rails.logger.info "#{cron_st}: from game won (#{status.win_value}) ach_win #{ach_win}, ach_exp #{ach}"
-        Rails.logger.info "double check w/ table: #{Achievement.find(ach.id).can_spell_name_open}"
-      else 
-        "#{cron_st}: ach spelling has new same length"
-      end
+  #     champion_letter = status.game_1[:champion_id][0]
+  #     Rails.logger.info "#{cron_st}: champion_letter: #{champion_letter}"
+  #     if ach.can_spell_name_open.include?(champion_letter)
+  #       ach.update(
+  #         :can_spell_name_open => ach.can_spell_name_open.sub(champion_letter, "")) 
+  #       ach_exp = ach_exp += 1
+  #       Rails.logger.info "#{cron_st}: ach spelling has new length: #{ach.can_spell_name_open}"
+  #       Rails.logger.info "#{cron_st}: from game won (#{status.win_value}) ach_win #{ach_win}, ach_exp #{ach}"
+  #       Rails.logger.info "double check w/ table: #{Achievement.find(ach.id).can_spell_name_open}"
+  #     else 
+  #       "#{cron_st}: ach spelling has new same length"
+  #     end
 
-      Rails.logger.info "#{cron_st}: spelling_vandor_name finished"
-    end
+  #     Rails.logger.info "#{cron_st}: spelling_vandor_name finished"
+  #   end
 
-    if status.win_value == 2 # game won
-      ach_win = 1
-      ach_exp = ach_exp += 1
-      Rails.logger.info "#{cron_st}: from game won (#{status.win_value}) ach_win #{ach_win}, ach_exp #{ach_exp}"
-    else
-      Rails.logger.info "#{cron_st}: from game won (#{status.win_value}) ach_win #{ach_win}, ach_exp #{ach_exp}"
-    end
+  #   if status.win_value == 2 # game won
+  #     ach_win = 1
+  #     ach_exp = ach_exp += 1
+  #     Rails.logger.info "#{cron_st}: from game won (#{status.win_value}) ach_win #{ach_win}, ach_exp #{ach_exp}"
+  #   else
+  #     Rails.logger.info "#{cron_st}: from game won (#{status.win_value}) ach_win #{ach_win}, ach_exp #{ach_exp}"
+  #   end
 
-    Rails.logger.info "#{cron_st}: increasing experience from: #{ach.experience_earned} by #{ach_exp}"
-    Rails.logger.info "#{cron_st}: increasing games from: #{ach.games_played} by #{ach_win}"
-    ach.update(
-      :experience_earned => ach.experience_earned += ach_exp,
-      :games_played => ach.games_played += ach_win)
-    Rails.logger.info "#{cron_st}: finished ach experience update"
+  #   Rails.logger.info "#{cron_st}: increasing experience from: #{ach.experience_earned} by #{ach_exp}"
+  #   Rails.logger.info "#{cron_st}: increasing games from: #{ach.games_played} by #{ach_win}"
+  #   ach.update(
+  #     :experience_earned => ach.experience_earned += ach_exp,
+  #     :games_played => ach.games_played += ach_win)
+  #   Rails.logger.info "#{cron_st}: finished ach experience update"
 
-    Rails.logger.info "#{cron_st}: achievement win status: #{ach.experience_req >= ach.experience_earned}"
-    if ach.experience_earned >= ach.experience_req   #acheivement is won
-      ach.update(
-        :result => 2)
-      ach.ignindex.update(
-        :active_achievement => nil,
-        :ign_challenge_points => ach.ignindex.ign_challenge_points += 1)
-    end
-    Rails.logger.info "#{cron_st}: experience_gain finished"
-  end  
+  #   Rails.logger.info "#{cron_st}: achievement win status: #{ach.experience_req >= ach.experience_earned}"
+  #   if ach.experience_earned >= ach.experience_req   #acheivement is won
+  #     ach.update(
+  #       :result => 2)
+  #     ach.ignindex.update(
+  #       :active_achievement => nil,
+  #       :ign_challenge_points => ach.ignindex.ign_challenge_points += 1)
+  #   end
+  #   Rails.logger.info "#{cron_st}: experience_gain finished"
+  # end  
 
   def self.spelling_vandor_name(cron_st, ach, status, ach_exp)
     Rails.logger.info "#{cron_st}: ach spelling has length: #{ach.can_spell_name_open}"

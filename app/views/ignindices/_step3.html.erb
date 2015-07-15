@@ -6,7 +6,7 @@
 
 <div class="container-fluid" style="margin-top:0px;">
 
-  <div class="row">
+  <div class="well leaderbox" style="margin-top: 25px;">
     <div class="row" style="margin-bottom: 20px;">
       <div class="col-md-12 col-md-offset-0">
         <h1>3) Validate Summoner</h1>
@@ -16,135 +16,140 @@
       </div>
     </div>  
 
-    <div class="col-md-6 col-md-offset-0">
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
 
-      <h3 id="summoner_name_text" class="text-left">
-        <% if @ignindex.summoner_name.nil?  or @ignindex.summoner_name == ""%>
-          <span id="js_name">
-            <i>Add Summoner Name</i>
-          </span>
-        <% else %>
-          <span id="js_name">
-            <strong><%= @ignindex.summoner_name %></strong>
-          </span>
-          (<i id="toggle_change_summoner" class="fa fa-pencil fa-1"></i>)
-          <% if @uu_summoner_validated %>
-          <span id="js_val"> - Valid</span>
+        <h3 id="summoner_name_text" class="text-center">
+          <% if @ignindex.summoner_name.nil?  or @ignindex.summoner_name == ""%>
+            <span id="js_name">
+              <i>Add Summoner Name</i>
+            </span>
           <% else %>
-          <span id="js_val"> - Not Valid Yet</span>
+            <span id="js_name">
+              <strong><%= @ignindex.summoner_name %></strong>
+            </span>
+            (<i id="toggle_change_summoner" class="fa fa-pencil fa-1"></i>)
+            <% if @ignindex.summoner_validated %>
+            <span id="js_val"> - Valid</span>
+            <% else %>
+            <span id="js_val"> - Not Valid Yet</span>
+            <% end %>
           <% end %>
+        </h3>
+            
+        <% if @ignindex.summoner_name.nil? %>
+        <div id="summoner_panel" class="panel panel-danger">
+        <% else %>
+        <div id="summoner_panel" class="panel panel-success start-ghost">
         <% end %>
-      </h3>
-          
-      <% if @ignindex.summoner_name.nil? %>
-      <div id="summoner_panel" class="panel panel-danger">
-      <% else %>
-      <div id="summoner_panel" class="panel panel-success start-ghost">
-      <% end %>
-        <div class="panel-heading">
-  
-          <div class="text-center">
-            <div class="form-inline">
-              <div class="form-group">
-                <%= form_for @ignindex, remote: true, :html => { :id => 'summoner_name_submit' } do |t| %>
-                  <%= t.text_field :summoner_name, :placeholder => 'Summoner name', :id => "summoner_input", class: "form-control input-md" %>
-                
-                   <span class="dropdown">
-                      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        North America
-                        <span class="caret"></span>
-                      </button>
-                      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                        <li><a href="#">North America</a></li>
-                      </ul>
-                    </span>            
-          
-                  <% if @ignindex.summoner_name.nil? or @ignindex.summoner_name == ""%>
-                    <%= t.submit "Add Summoner Name", class: "btn btn-large btn-lprimary" %>
-                  <% else %>
-                    <%= t.submit "Change Summoner Name", class: "btn btn-large btn-primary" %>
-                  <% end %>
-                <% end %>
-              </div>
-            </div>
-          </div>        
-        </div>
-      </div>
-    </div>
-
-
-
-    <% if @uu_summoner_validated %> 
-    <div id="how_to_finished" class="col-md-4 lwell col-md-offset-1 text-center" style="margin-top: 40px; margin-bottom: 20px;">
-    <% else %>
-    <div id="how_to_going" class="col-md-6 col-md-offset-0 " style="margin-top: 20px;margin-bottom: 0px;">   
-      <h3 class="text-left" style="margin-top: 0px; color:red;"><strong>1st Mastery Page - <span class="">(Rename & Wait)</span></strong></h3>
-      <div class="well">
-        <div class="row">
-          <div class="col-md-6" style="margin-top: 0px;">
-            <h4 class="text-center" style="margin-top:0px"><u>Currently</u></h4>
-            <div id="s2-currently-is" class="panel panel-danger">
-              <div class="panel-heading">
-                <% if @ignindex.mastery_1_name.nil? %>
-                <h4 class="text-left" id="mastery_page_name_intro" style="font-weight: bold;"><i>unknown</i></h4>
-                <% else %>
-                <h4 class="text-left" id="mastery_page_name_intro" style="font-weight: bold;"><%= @ignindex.mastery_1_name %></h4>
-                <% end %>
-              </div>
-              <div class="panel-body">
-                <h5 style="margin-top: 0px; margin-bottom:0px; padding:0px;"><i id="s2-check-spinner" class="fa fa-spinner fa-pulse"></i> 
-                  checks in <span id="check_loop" data-check="<%= @league_api_ping %>"></span>s
-                </h5>
-              </div>
-            </div>
-          </div>
-         
-          <div class="col-md-6" style="margin-top: 0px;">
-            <h4 class="text-center" style="margin-top:0px"><u>Should be</u></h4>
-            <div class="col-md-12">
-                <div id="s2-should-be" class="panel panel-danger">
-                  <div class="panel-heading">
-                    <% if @ignindex.validation_string.nil? %>
-                    <h4 class="text-left" id="js_validation_string_intro" style="font-weight: bold;">n/a</h4>
-                    <% else %>
-                    <h4 class="text-left" id="js_validation_string_intro" style="font-weight: bold;"><%= @ignindex.validation_string %></h4>
-                    <% end %>
-                  </div>
-                  <div class="panel-body">
-                    <h5 style="margin-top: 0px; margin-bottom:0px; padding:0px;">
-                      <span id="test_cd" data-timer="<%= @ignindex.validation_timer %>">
-                        
-                      </span>                    
-                    </h5>
-                  </div>
-                </div>
-            </div>
-<!--             <div class="col-md-2" style="margin-top:15px;">
-              <i id="s2-refresh" class="fa fa-refresh fa-2x active-blue"></i>
-            </div> -->
-          </div>
-
-        </div>
-        <div class=" text-center">
-          <%= form_for @ignindex do |t| %>
-            <%= t.submit "Generate Validation Code", class: "btn btn-large btn-primary" %>
-          <% end %>
-        </div>
-      </div>
-
-    </div>    
-  
-    <div id="how_to_finished" class="col-md-4 lwell col-md-offset-1 text-center start-ghost" style="margin-top: 40px; margin-bottom: 20px;">
-    <% end %>
-
-    <%= form_for @ignindex do |t| %>
-        <span id="">
-      <%= t.submit "Continue", class: "btn btn-large btn-lprimary" %>
-        </span>
-    <% end %>
-    </div>
- 
+          <div class="panel-heading">
     
+            <div class="text-center">
+              <div class="form-inline">
+                <div class="form-group">
+                  <%= form_for @ignindex, remote: true, :html => { :id => 'summoner_name_submit' } do |t| %>
+                    <%= t.text_field :summoner_name, :placeholder => 'Summoner name', :id => "summoner_input", class: "form-control input-md" %>
+                  
+                     <span class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                          North America
+                          <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                          <li><a href="#">North America</a></li>
+                        </ul>
+                      </span>            
+            
+                    <% if @ignindex.summoner_name.nil? or @ignindex.summoner_name == ""%>
+                      <%= t.submit "Add Summoner Name", class: "btn btn-large btn-lprimary" %>
+                    <% else %>
+                      <%= t.submit "Change Summoner Name", class: "btn btn-large btn-primary" %>
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
+            </div>        
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <% if @ignindex.summoner_validated %> 
+      <div id="how_to_finished" class="col-md-6 lwell col-md-offset-3 text-center" style="margin-top: 40px; margin-bottom: 20px;">
+      <% else %>
+      <div id="how_to_going" class="col-md-6 col-md-offset-3 " style="margin-top: 20px;margin-bottom: 0px;">   
+        <div class="well">
+          <h3 class="text-center" style="margin-top: 0px; color:red;"><strong>1st Mastery Page - <span class="">(Rename & Wait)</span></strong></h3>
+          <div class="row">
+            <div class="col-md-6" style="margin-top: 0px;">
+              <h4 class="text-center" style="margin-top:0px"><u>Currently</u></h4>
+              <div id="s2-currently-is" class="panel panel-danger">
+                <div class="panel-heading">
+                  <% if @ignindex.mastery_1_name.nil? %>
+                  <h4 class="text-left" id="mastery_page_name_intro" style="font-weight: bold;"><i>unknown</i></h4>
+                  <% else %>
+                  <h4 class="text-left" id="mastery_page_name_intro" style="font-weight: bold;"><%= @ignindex.mastery_1_name %></h4>
+                  <% end %>
+                </div>
+                <div class="panel-body">
+                  <h5 style="margin-top: 0px; margin-bottom:0px; padding:0px;"><i id="s2-check-spinner" class="fa fa-spinner fa-pulse"></i> 
+                    checks in <span id="check_loop" data-check="<%= @league_api_ping %>"></span>s
+                  </h5>
+                </div>
+              </div>
+            </div>
+           
+            <div class="col-md-6" style="margin-top: 0px;">
+              <h4 class="text-center" style="margin-top:0px"><u>Should be</u></h4>
+              <div class="col-md-12">
+                  <div id="s2-should-be" class="panel panel-danger">
+                    <div class="panel-heading">
+                      <% if @ignindex.validation_string.nil? %>
+                      <h4 class="text-left" id="js_validation_string_intro" style="font-weight: bold;">n/a</h4>
+                      <% else %>
+                      <h4 class="text-left" id="js_validation_string_intro" style="font-weight: bold;"><%= @ignindex.validation_string %></h4>
+                      <% end %>
+                    </div>
+                    <div class="panel-body">
+                      <h5 style="margin-top: 0px; margin-bottom:0px; padding:0px;">
+                        <span id="test_cd" data-timer="<%= @ignindex.validation_timer %>">
+                          
+                        </span>                    
+                      </h5>
+                    </div>
+                  </div>
+              </div>
+            </div>
+
+          </div>
+          <div class=" text-center">
+            <%= form_for @ignindex do |t| %>
+              <%= t.submit "Generate Validation Code", class: "btn btn-large btn-primary" %>
+            <% end %>
+          </div>
+        </div>
+
+      </div>    
+    
+      <div id="how_to_finished" class="col-md-6 lwell col-md-offset-3 text-center start-ghost" style="margin-top: 40px; margin-bottom: 20px;">
+      <% end %>
+
+      <%= form_for @ignindex do |t| %>
+          <span id="">
+        <%= t.submit "Continue", class: "btn btn-large btn-lprimary" %>
+          </span>
+      <% end %>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row">
+
+
+
+
   </div>
 
 </div>

@@ -1,57 +1,74 @@
 <div class="container-fluid">
 
-	<div class="row" style="margin-bottom: 20px;">
-		<div class="col-md-12 col-md-offset-0">
-			<h1>1) Enter your postal code</h1>
-			<h3 style="margin-top:0px;">
-			So we can match you with a restaurant that can deliver to you
-			</h3>
+	<% if @ignindex.errors.any? %>
+	  <div id="error_explanation">
+	    <h2><%= pluralize(@ignindex.errors.count, "error") %> prohibited this ignindex from being saved:</h2>
+	 
+	    <ul>
+	    <% @ignindex.errors.full_messages.each do |msg| %>
+	      <li><%= msg %></li>
+	    <% end %>
+	    </ul>
+	  </div>
+	<% end %>
+
+	<div class="well leaderbox" style="margin-top: 25px;">
+		<div class="row" style="margin-bottom: 20px; ">
+			<div class="col-md-12 col-md-offset-0">
+				<h1>1) Enter your postal code</h1>
+				<h3 style="margin-top:0px;">
+				So we can match you with a restaurant that can deliver prizes to you
+				</h3>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+
+				<div class="text-center">
+					<div class="form-inline">
+						<div class="form-group">
+				    <%= form_for @ignindex do |t| %>
+				      <%= t.text_field :postal_code, :placeholder => 'Postal/Zip Code', class: "form-control input-md" %>
+				        <span id="">
+				      <%= t.submit "Add Postal/Zip Code", class: "btn btn-large btn-lprimary" %>
+				        </span>
+				    <% end %>
+					    </div>
+				   	</div>
+
+				    <h6 style="">*Canada uses first 3-digits, *US uses first 5-digits</h6>
+				</div>
+
+			</div>
+
 		</div>
 	</div>
 
-	<div class="row">
-		<div class="col-md-6">
-			<% if @ignindex.errors.any? %>
-			  <div id="error_explanation">
-			    <h2><%= pluralize(@ignindex.errors.count, "error") %> prohibited this ignindex from being saved:</h2>
-			 
-			    <ul>
-			    <% @ignindex.errors.full_messages.each do |msg| %>
-			      <li><%= msg %></li>
-			    <% end %>
-			    </ul>
-			  </div>
-			<% end %>
+	<div class="well leaderbox" style="margin-top: 25px;">
 
-			<div class="">
-				<div class="form-inline">
-					<div class="form-group">
-			    <%= form_for @ignindex do |t| %>
-			      <%= t.text_field :postal_code, :placeholder => 'Postal/Zip Code', class: "form-control input-md" %>
-			        <span id="">
-			      <%= t.submit "Add Postal/Zip Code", class: "btn btn-large btn-lprimary" %>
-			        </span>
-			    <% end %>
-				    </div>
-			   	</div>
-
-			    <h6>*US uses first 5-digits</h6>
-			    <h6>*CAN uses first 3-digits</h6>
+			<div class="row">
+				<h2 style="margin-top:0px; margin-left: 15px;"><u>Featured Restaurant</u></h2>
 			</div>
-			<h5>
-				(Cora's delivers to these postal codes: M6G, M6J, M5R, M5S, M5T, M5G)
-			</h5>
-			<%= button_to "Learn More", current_achievement_path, :class => "btn btn-success green-button-long", :method => :get  %>
-		</div>
 
-		<div class="col-md-6">
+			<div class="row">
+				<div class="col-md-6">
+						<%= image_tag("cora1.jpg", class: "brand-banner", size: "500x225") %>
+				</div>		
 
-			<div class="col-md-12">
-					<%= image_tag("cora1.jpg", class: "brand-banner", size: "500x225") %>
+				<div class="col-md-6 text-left">
+				<h3 style="margin-top:0px;"><u>Cora Pizza</u></h3>
+		          
+		          <h5 class="brand-details">656A Spadina Av</h5>
+		          <h5 class="brand-details">Toronto, ON M5S 2H7</h5>
+		          <h5 class="brand-details">(416) 922-1188</h5>
+		          <h5 class="brand-details">www.corapizza.com</h5>
+		          <br/>			
+				<h5 class="brand-details">Cora's delivers to these postal codes: </h5>
+				<h5 class="brand-details">M6G, M6J, M5R, M5S, M5T, M5G</h5>
+				
+				<%= button_to "Learn More", current_achievement_path, :class => "btn btn-success green-button-long", :method => :get  %>	  		
+				</div>
 			</div>		
-			<div class="col-md-12 text-center">
-		  		
-			</div>
-		</div>
 	</div>
 </div>

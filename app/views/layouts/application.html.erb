@@ -30,13 +30,13 @@
 				<a class="navbar-brand" href="/"><strong>i'llBePro</strong></a>
 		
 				<ul class="nav navbar-nav list-inline col-sm-3 col-sm-4 text-center ">
-					<li><a href="/leaderboard">Leaders</a></li>
+					<li><a href="/leaderboard">LeaderBoard</a></li>
                     <li><a href="/scores">History</a></li>
 				</ul>
 
 
 				<% if user_signed_in? %>
-					<ul class="nav navbar-nav list-inline col-md-3  navbar-right" >
+					<ul class="nav navbar-nav list-inline col-md-3 navbar-right" >
 
 						<% if @ign_id_full.nil? %>
 
@@ -81,7 +81,6 @@
 					<button type="button" class="btn btn-info navbar-btn" data-toggle="modal" data-target="#myModal">
 					  How-To video
 					</button>		            	
-
 				<% end %>
 				</ul>
 
@@ -107,24 +106,24 @@
 	</div>
 
 
-
-
-<div class="nav-breaker">
-</div>
-
 <footer class="footer"> 
-  	<div class="container">
+  	<div class="">
 
-  			<ul class="nav navbar-nav list-inline col-xs-6 col-sm-6 text-center">		
-				<li class="custom-footer"><a href="/about">About</a></li>
-				<li class="custom-footer"><a href="/faq">FAQ</a></li>
-				<li class="custom-footer"><a href="/contact">Contact</a></li>
-				<li class="custom-footer"><a href="/privacy">Privacy</a></li>
-			</ul>
-			<ul class="nav navbar-nav col-xs-auto col-sm-3 list-unstyled navbar-right">
-				<li><a href="https://www.facebook.com/pages/illBePro/398138583682058"><i class="fa fa-facebook-square fa-2x"></i></a></li>
-				<li class=""><p class="text-center">Tangible Gameworks</br> Copyright (c) 2015</p></li>
-			</ul>
+  		<nav class="navbar navbar-inverse navbar-bottom no-border" style="margin-bottom: 0px;" role="navigation">
+  			<div class="container">
+	  			<ul class="nav navbar-nav list-inline col-xs-6 col-sm-6 text-center">		
+					<li class="custom-footer"><a href="/about">About</a></li>
+					<li class="custom-footer"><a href="/faq">FAQ</a></li>
+					<li class="custom-footer"><a href="/contact">Contact</a></li>
+					<li class="custom-footer"><a href="/privacy">Privacy</a></li>
+				</ul>
+				<ul class="nav navbar-nav col-xs-auto col-sm-3 list-unstyled navbar-right">
+					<li><a href="https://www.facebook.com/pages/illBePro/398138583682058"><i class="fa fa-facebook-square fa-2x"></i></a></li>
+					<li class=""><a href="#">illBePro Copyright (c) 2015</p></a></li>
+				</ul>
+  			</div>
+  
+		</nav>
 
   	</div>
 </footer>
