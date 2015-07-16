@@ -89,7 +89,12 @@ class IgnindicesController < ApplicationController
           if !Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first.nil?
             @ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
             session[:ignindex_id] = @ignindex.id
-          end          
+          end 
+          if @ignindex.user_id == current_user.id
+            @uu_summoner_validated = true
+          else 
+            is_unauth_summoner_valid(@ignindex, session[:last_validation])
+          end
         end
         @league_api_ping = Staticpage.find(1).league_api_ping
       end
