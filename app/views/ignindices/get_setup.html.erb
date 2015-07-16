@@ -4,71 +4,71 @@
 
 		<div class="container" style="margin-top:25px;">
 			<div class="col-md-8 col-md-offset-2">
-			<div class="setup-background">
-				<div class="container-fluid">
+				<div class="setup-background">
+					<div class="container-fluid">
 
 
-					<div class="row text-center">
+						<div class="row text-center">
 
-						
-						<div class="col-md-12 col-md-offset-0">
+							
+							<div class="col-md-12 col-md-offset-0">
 
-							<div id="setup_progress_bar">
-								<div class="breadcrumb-trail">
+								<div id="setup_progress_bar">
+									<div class="breadcrumb-trail">
 
-									<div class="breadcrumbs">
-									    <div class="breadcrumb-cell first">
-									    	<% if @setup_progress == 1 %>
-												<div id="bread_1" class="breadcrumb active">				    	
+										<div class="breadcrumbs">
+										    <div class="breadcrumb-cell first">
+										    	<% if @setup_progress == 1 %>
+													<div id="bread_1" class="breadcrumb active">				    	
+														<div class="breadcrumb-icon"></div>
+										    	<% else %>
+											   		<div id="bread_1" class="breadcrumb checked selectable">
+													<a href="/setup_1">
+												    	<div class="breadcrumb-icon"></div>
+													</a>
+										    	<% end %>
+											    	<span class="breadcrumb-label">Postal</span>
+										     	</div>
+										    </div>
+
+										    <div class="breadcrumb-cell">
+										    	<% if @setup_progress == 2 %>
+													<div id="bread_2" class="breadcrumb active">
+													<div class="breadcrumb-icon"></div>			    	
+										    	<% elsif @setup_progress > 1 %>
+											   		<div id="bread_2" class="breadcrumb checked selectable">
+													<a href="/setup_2">
+												    	<div class="breadcrumb-icon"></div>
+													</a>							   			
+										   		<% else %>
+										   		<div id="bread_2" class="breadcrumb">
 													<div class="breadcrumb-icon"></div>
-									    	<% else %>
-										   		<div id="bread_1" class="breadcrumb checked selectable">
-												<a href="/setup_1">
-											    	<div class="breadcrumb-icon"></div>
-												</a>
-									    	<% end %>
-										    	<span class="breadcrumb-label">Postal</span>
-									     	</div>
-									    </div>
+										    	<% end %>
+													<span class="breadcrumb-label">Challenge</span>
+												</div>
+										    </div> 
+											     						    
 
-									    <div class="breadcrumb-cell">
-									    	<% if @setup_progress == 2 %>
-												<div id="bread_2" class="breadcrumb active">
-												<div class="breadcrumb-icon"></div>			    	
-									    	<% elsif @setup_progress > 1 %>
-										   		<div id="bread_2" class="breadcrumb checked selectable">
-												<a href="/setup_2">
-											    	<div class="breadcrumb-icon"></div>
-												</a>							   			
-									   		<% else %>
-									   		<div id="bread_2" class="breadcrumb">
+										    <div class="breadcrumb-cell last">
+										    	<% if @setup_progress == 3 %>
+												<div id="bread_3" class="breadcrumb active">				    	
+										   		<% else %>
+										   		<div id="bread_3" class="breadcrumb">
+										    	<% end %>
 												<div class="breadcrumb-icon"></div>
-									    	<% end %>
-												<span class="breadcrumb-label">Challenge</span>
-											</div>
-									    </div> 
-										     						    
+												<span class="breadcrumb-label">Verify</span>
+												</div>
+										    </div>       
 
-									    <div class="breadcrumb-cell last">
-									    	<% if @setup_progress == 3 %>
-											<div id="bread_3" class="breadcrumb active">				    	
-									   		<% else %>
-									   		<div id="bread_3" class="breadcrumb">
-									    	<% end %>
-											<div class="breadcrumb-icon"></div>
-											<span class="breadcrumb-label">Verify</span>
-											</div>
-									    </div>       
+									  </div>
+									</div>	
+								</div>			
 
-								  </div>
-								</div>	
-							</div>			
-
+							</div>
 						</div>
-					</div>
 
+					</div>
 				</div>
-			</div>
 			</div>
 		</div>
 

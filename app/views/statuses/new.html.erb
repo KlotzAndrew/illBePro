@@ -1,4 +1,4 @@
-<div class="container" style="margin-top: 25px;">
+<div class="container" style="margin-top: 25px; min-height:600px">
   <div class="row">
     <div class="">
       <ul class="nav nav-tabs ">
@@ -40,15 +40,19 @@
             <div class="form-actions">
               <div class="text-center">
                 <div>
-                  <% if @achievement.id.nil? %>
-                    <div class="btn btn-lg start-game-button-inactive">
-                      <div style="margin-top:25px;">Play for Challenge
-                      </div>
-                    </div>
+                  <% if @ignindex.id.nil? %>
+                     <%= link_to "Add Summoner", setup_path, :class=>"btn start-game-button btn-lprimary", :style=>"color:white; font-size: 30px" %> 
                   <% else %>
-                    <%= simple_form_for(@status, html: {class: 'form-hoizontal'}) do |f| %>
-                      <%= f.hidden_field :kind, :value=>5 %>
-                      <%= f.button :submit, "Play for Challenge", class: "btn btn-lg btn-lprimary start-game-button" %>
+                    <% if @achievement.id.nil? %>
+                      <div class="btn btn-lg start-game-button-inactive">
+                        <div style="margin-top:25px;">Play for Challenge
+                        </div>
+                      </div>
+                    <% else %>
+                      <%= simple_form_for(@status, html: {class: 'form-hoizontal'}) do |f| %>
+                        <%= f.hidden_field :kind, :value=>5 %>
+                        <%= f.button :submit, "Play for Challenge", class: "btn btn-lg btn-lprimary start-game-button" %>
+                      <% end %>
                     <% end %>
                   <% end %>
                 </div>
@@ -59,10 +63,14 @@
       </div>      
     </div>
     <div class="row" style="margin-top: 0px">
-      <% if @achievement.id.nil? %>
-        <%= render 'achievements/current_block', :x => @achievement, :active => 3 %>
+      <% if @ignindex.id.nil? %>
+
       <% else %>
-        <%= render 'achievements/current_block', :x => @achievement, :active => 2 %>
+        <% if @achievement.id.nil? %>
+          <%= render 'achievements/current_block', :x => @achievement, :active => 3 %>
+        <% else %>
+          <%= render 'achievements/current_block', :x => @achievement, :active => 2 %>
+        <% end %>
       <% end %>
     </div>    
   </div>

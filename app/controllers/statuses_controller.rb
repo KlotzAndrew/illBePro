@@ -122,31 +122,31 @@
     @status = Status.new
     @ignindex = Ignindex.where("user_id = ?", current_user.id).first
       if @ignindex.nil? #redirect
-        redirect_to setup_path
+        # redirect_to setup_path
+
+        faker_values
         session[:setup_progress] = 1
       elsif @ignindex.region_id.nil? #redirect
-        redirect_to zone_url, alert: 'You need a valid Postal Code!'
+        faker_values
+        # redirect_to zone_url, alert: 'You need a valid Postal Code!'
       else
-        #setup progress?
-        if current_user.setup_progress != 0
-          @status_setup_display = false
-        else
-          @status_setup_display = true
-          @setup_progress = 4
-        end
 
         @achievement = Achievement.where("id = ?", @ignindex.active_achievement).first
         if @achievement.nil?
           @achievement = Achievement.new
         end
 
-
-        #get game history
         # @game_history = @achievement.statuses.order(created_at: :desc)
 
       end
  
     end
+  end
+
+  def faker_values
+    @ignindex = Ignindex.new
+    @achievement = Achievement.new
+    @ignindex.summoner_name = "No Summoner Name"
   end
 
   def new_old
