@@ -7,8 +7,6 @@ class Status < ActiveRecord::Base
   validate :one_fox_one_gun, :on => :create
   belongs_to :ignindex
 
-  after_create :challenge_init
-
   serialize :game_1, Hash
   serialize :game_2, Hash
   serialize :game_3, Hash
@@ -16,42 +14,25 @@ class Status < ActiveRecord::Base
   serialize :game_5, Hash
 
 
-def dr_who #this makes sure summoner is valid + region is entered
-  w = Ignindex.find(self.ignindex_id)
-  if w.summoner_validated != true
-    errors.add(:you_need, ' a valid summoner name before you can start a challenge!')
-  elsif w.region_id.nil?
-    errors.add(:you_need, ' to select a prize zone to start a challenge')
+  def dr_who #this makes sure summoner is valid + region is entered
+    w = Ignindex.find(self.ignindex_id)
+    if w.summoner_validated != true
+      errors.add(:you_need, ' a valid summoner name before you can start a challenge!')
+    elsif w.region_id.nil?
+      errors.add(:you_need, ' to select a prize zone to start a challenge')
+    end
   end
-end
 
-def one_fox_one_gun #this is 1 game/user + concurrent requests/API
-  if Status.all.where("ignindex_id = ?", self.ignindex_id).where(win_value: nil).count > 1
-    errors.add(:you_can, 'only have 1 challenge running at a time!')
-  #elsif Status.all.where("user_id = ?", self.user_id).where("created_at > ?", Time.now - 22.hours).count >= 5
-    #errors.add(:you_have, 'reached your challenge limit for the day! The limit refreshes every 22 hours')
-  elsif Status.all.where("created_at >= ?", Time.now - 60.seconds).count > 20
-    errors.add(:start_queue, ' is full! Try back in 60 seconds')
-  else
+  def one_fox_one_gun #this is 1 game/user + concurrent requests/API
+    if Status.all.where("ignindex_id = ?", self.ignindex_id).where(win_value: nil).count > 1
+      errors.add(:you_can, 'only have 1 challenge running at a time!')
+    #elsif Status.all.where("user_id = ?", self.user_id).where("created_at > ?", Time.now - 22.hours).count >= 5
+      #errors.add(:you_have, 'reached your challenge limit for the day! The limit refreshes every 22 hours')
+    elsif Status.all.where("created_at >= ?", Time.now - 60.seconds).count > 20
+      errors.add(:start_queue, ' is full! Try back in 60 seconds')
+    else
+    end
   end
-end
-
-def challenge_init
-
-  #build baseline for kind 5 (this can be refractored)
-  proc = rand(1..100)
-  self.update(
-    :value => 5400,
-    :points => 0,
-    :proc_value => proc,
-    :kind => 5,
-    :challenge_description => "Play a game to increase the chance your next challenge will be prized",
-    :pause_timer => 0,
-    :trigger_timer => 0,
-    :pause_timer => 0,
-    :trigger_time => 0)
-end
-
 
   def self.api_call
     Rails.logger.info "*****STARTING CLOCKWORK*****"

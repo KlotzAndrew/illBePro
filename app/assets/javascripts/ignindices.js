@@ -220,7 +220,7 @@ var ign_clocks = function(){
   } else { 
     // set timers to 0, if there is no active validation
     s2_panel2_red();
-    now1 = "Expired!"
+    now1 = "Code Expired!"
     $('#s2-check-spinner').removeClass("fa fa-spinner fa-pulse")
     now2 = 0
     $('#test_cd').html(now1)

@@ -122,7 +122,6 @@
     @status = Status.new
     @ignindex = Ignindex.where("user_id = ?", current_user.id).first
       if @ignindex.nil? #redirect
-        # redirect_to setup_path
 
         faker_values
         session[:setup_progress] = 1
@@ -377,18 +376,21 @@
   # POST /statuses.json
   def create # does not take any params
 
-    if user_signed_in?
-      @ignindex = Ignindex.find_by_user_id(current_user.id)
-    else
-      @ignindex = Ignindex.find(session[:ignindex_id])
-    end
-
+    @ignindex = Ignindex.where("user_id = ?", current_user.id).first
     @status = Status.new(
-      :achievement_id => @ignindex.active_achievement )
+      :achievement_id => @ignindex.active_achievement,
+      :summoner_id => @ignindex.summoner_id,
+      :summoner_name => @ignindex.summoner_name,
+      :ignindex_id => @ignindex.id,
+      :value => 5400,
+      :points => 0,
+      :kind => 5,
+      :pause_timer => 0,
+      :trigger_timer => 0,
+      :pause_timer => 0,
+      :trigger_timer => 0)
 
-    @status.summoner_id = @ignindex.summoner_id
-    @status.summoner_name = @ignindex.summoner_name
-    @status.ignindex_id = @ignindex.id
+    @status.save
     
     respond_to do |format|
       if @status.save
