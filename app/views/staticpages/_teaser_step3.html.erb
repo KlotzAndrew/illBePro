@@ -1,9 +1,9 @@
 <div data-pagespec="ignindex_index" id="page_name">
 </div>
 
-<div class="container-fluid" style="margin-top:0px;">
+<div class="container" style="margin-top:0px;">
 
-  <div class="row">
+  <div class="well leaderbox" style="margin-top: 25px;">
     <div class="row" style="margin-bottom: 20px;">
       <div class="col-md-12 col-md-offset-0">
         <h1>3) Validate Summoner</h1>
@@ -13,21 +13,22 @@
       </div>
     </div>  
 
-    <div class="col-md-6 col-md-offset-0">
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
 
-      <h3 id="summoner_name_text" class="text-center">
+       <h3 id="summoner_name_text" class="text-center">
             <span id="">
               <strong>Hide on Bush</strong>
             </span>
+            (<i id="toggle_change_summoner" class="fa fa-pencil fa-1"></i>)
             <span id="" class="not-validated">
                (Not Valid)
             </span>    
       </h3>
-          
+            
 
-      <div id="summoner_panel" class="panel panel-success">
+      <div id="summoner_panel" class="panel panel-success start-ghost">
 
-      
         <div class="panel-heading">
   
           <div class="text-center">
@@ -36,7 +37,7 @@
                 <input type="text" id="input_teaser_summoner" placeholder="Hide on Bush" class="form-control input-md"></input>
                    <span class="dropdown">
                       <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        NA
+                        North America
                         <span class="caret"></span>
                       </button>
                       <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
@@ -50,65 +51,57 @@
             </div>
           </div>        
         </div>
-
-      </div>
+      </div> 
+      <!-- </div> -->
     </div>
 
-    <div id="how_to_going" class="col-md-6 col-md-offset-0 " style="margin-top: 20px;margin-bottom: 0px;"> 
-       
-      <h3 class="text-center" style="margin-top: 0px; color:red;"><strong><span class="">Rename 1st Mastery Page</span></strong></h3>
-      <div class="well">
-        <div class="row">
-          <div class="col-md-6" style="margin-top: 0px;">
-            <h4 class="text-center" style="margin-top:0px"><u>Currently</u></h4>
-            <div id="s2-currently-is" class="panel panel-danger">
-              <div class="panel-heading">
+    <div class="row">
+      <div id="how_to_going" class="col-md-6 col-md-offset-3 " style="margin-top: 20px;margin-bottom: 0px;">   
+        <div class="well">
+          <h3 class="text-center" style="margin-top: 0px; color:red;"><strong>1st Mastery Page - <span class="">(Rename & Wait)</span></strong></h3>
+          <div class="row">
+            <div class="col-md-6" style="margin-top: 0px;">
+              <h4 class="text-center" style="margin-top:0px"><u>Currently</u></h4>
+              <div id="s2-currently-is" class="panel panel-danger">
+                <div class="panel-heading">
+                  <h4 class="text-left" id="mastery_page_name_intro" style="font-weight: bold;">midAP</h4>
 
-                <h4 class="text-left" id="mastery_page_name_intro" style="font-weight: bold;">APmid</h4>
-
-              </div>
-              <div class="panel-body">
-                <h5 style="margin-top: 0px; margin-bottom:0px; padding:0px;"><i id="s2-check-spinner" class="fa fa-spinner fa-pulse"></i> 
-                  checks in <span id="check_loop" data-check=""></span>23s
-                </h5>
-              </div>
-            </div>
-          </div>
-         
-          <div class="col-md-6" style="margin-top: 0px;">
-            <h4 class="text-center" style="margin-top:0px"><u>Should be</u></h4>
-            <div class="col-md-10">
-                <div id="s2-should-be" class="panel panel-success">
-                  <div class="panel-heading">
-
-                    <h4 class="text-left" id="js_validation_string_intro" style="font-weight: bold;">pizza-bepro</h4>
-
-                  </div>
-                  <div class="panel-body">
-                    <h5 style="margin-top: 0px; margin-bottom:0px; padding:0px;">
-                      <span id="test_cd" data-timer="">
-                        expires in: 9m
-                      </span>                    
-                    </h5>
-                  </div>
                 </div>
+                <div class="panel-body">
+                  <h5 style="margin-top: 0px; margin-bottom:0px; padding:0px;"><i id="s2-check-spinner" class="fa fa-spinner fa-pulse"></i> 
+                    checks in <span id="" data-check=""></span>23s
+                  </h5>
+                </div>
+              </div>
             </div>
-            <div class="col-md-2" style="margin-top:15px;">
-              <i id="" class="fa fa-refresh fa-2x"></i>
+           
+            <div class="col-md-6" style="margin-top: 0px;">
+              <h4 class="text-center" style="margin-top:0px"><u>Should be</u></h4>
+              <div class="col-md-12">
+                  <div id="s2-should-be" class="panel panel-success">
+                    <div class="panel-heading">
+                      <h4 class="text-left" id="js_validation_string_intro" style="font-weight: bold;">pizza-wins</h4>
+                    </div>
+                    <div class="panel-body">
+                      <h5 style="margin-top: 0px; margin-bottom:0px; padding:0px;">
+                        <span id="test_cd" data-timer="">
+                          expires in 9m
+                        </span>                    
+                      </h5>
+                    </div>
+                  </div>
+              </div>
             </div>
+
+          </div>
+          <div class=" text-center">
+             <%= link_to "Generate Validation Code", setup_path, :class=>"btn btn-large btn-primary", :style=>"color:white;" %> 
           </div>
         </div>
-        <div class=" text-center">
-          <h5>(Rename and Wait)</h5>
-        </div>
-      </div>
 
-    </div>    
-  
+      </div>    
 
- 
-    
+    </div>
   </div>
 
 </div>
- 

@@ -57,7 +57,7 @@ class IgnindicesController < ApplicationController
 
   def get_setup
     if user_signed_in?
-      @setup_navbar_toggle = true
+      # @setup_navbar_toggle = true
       session[:setup_progress] ||= 1
       session[:region_id_temp] ||= nil
       session[:ignindex_id] ||= nil
@@ -273,31 +273,6 @@ class IgnindicesController < ApplicationController
     end
   end
 
-
-  def get_started # step 3
-    #user just presses 'ok'
-    @setup_progress = 1
-
-    #this is a validation for having a region_id
-    #*****will raise error for some users
-    if session[:region_id_temp].blank?
-      redirect_to new_ignindex_path
-    else
-      show_prizes(session[:region_id_temp])
-    end
-
-  end
-
-
-
-  # def show_prizes_v2(x)
-  #   if [43867, 43869, 43855, 43856, 43857, 43847].include?(x) #[43871, 43873, 43859, 43860, 43861, 43851] is local server id's
-  #     @tagged_for_prizing = true
-  #   else
-  #     @tagged_for_prizing = false
-  #   end
-  # end
-
   def show_prizes(x) #prize region logic (duplicate in ignindeces/statuses controller)
     @all_prize_desc = []
     @all_prize_vendor = []
@@ -322,16 +297,6 @@ class IgnindicesController < ApplicationController
     end  
   end
 
-  def games #step 4
-    #user just presses 'ok'
-    @setup_progress = 2
-
-    #this is a validation for having a region_id
-    #*****will raise error for some users
-    if session[:region_id_temp].blank?
-      redirect_to new_ignindex_path
-    end    
-  end
 
   def index #step 5
     @setup_progress = 3

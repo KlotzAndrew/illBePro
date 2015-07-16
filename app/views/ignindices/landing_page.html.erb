@@ -20,146 +20,124 @@
 </section>
 
 <section id="setup">
-	<div class="setup-background">
+	<div class="setup-background-2">
+		<h1 class="text-center" style="color:white;" >Setup is Quick</h1>
+	</div>
 
-		<div class="container-fluid">
-			<div class="row text-center">
+	<div class="landing-setup-background">
+		<div class="container" >
+			<div class="col-md-8 col-md-offset-2">
+				<div class="setup-background">
 
-				<h1 class="">Setup is super easy</h1>
-				
-				<div class="col-md-6 col-md-offset-3">
+					<div class="container-fluid" style="margin-top:25px;">
+						<div class="row text-center">
+							
+							<div class="col-md-12 col-md-offset-0">
 
-					<div id="setup_progress_bar">
-						<div class="breadcrumb-trail">
+								<div id="setup_progress_bar">
+									<div class="breadcrumb-trail">
 
-							<div class="breadcrumbs">
-							    <div class="breadcrumb-cell first">
-								   		<div id="bread_1" class="breadcrumb active">
-									    	<div class="breadcrumb-icon"></div>
-								    	<span class="breadcrumb-label">1) Postal Code</span>
-							     	</div>
-							    </div>
+										<div class="breadcrumbs">
+										    <div class="breadcrumb-cell first">
+											   		<div id="bread_1" class="breadcrumb active">
+												    	<div class="breadcrumb-icon"></div>
+											    	<span class="breadcrumb-label">1) Postal</span>
+										     	</div>
+										    </div>
 
-							    <div class="breadcrumb-cell">
-										<div id="bread_2" class="breadcrumb">
-										<div class="breadcrumb-icon"></div>			    	
-										<span class="breadcrumb-label">2) Choose Prize</span>
-									</div>
-							    </div> 
-								     						    
+										    <div class="breadcrumb-cell">
+													<div id="bread_2" class="breadcrumb">
+													<div class="breadcrumb-icon"></div>			    	
+													<span class="breadcrumb-label">2) Challenge</span>
+												</div>
+										    </div> 
+											     						    
 
-							    <div class="breadcrumb-cell last">
+										    <div class="breadcrumb-cell last">
 
-							   		<div id="bread_3" class="breadcrumb">
-									<div class="breadcrumb-icon"></div>
-									<span class="breadcrumb-label">3) Summoner Name</span>
-									</div>
-							    </div>       
+										   		<div id="bread_3" class="breadcrumb">
+												<div class="breadcrumb-icon"></div>
+												<span class="breadcrumb-label">3) Summoner</span>
+												</div>
+										    </div>       
 
-						  </div>
-						</div>	
-					</div>			
+									  </div>
+									</div>	
+								</div>			
 
+							</div>
+
+						</div>
+					</div>
 				</div>
-
 			</div>
 		</div>
-	</div>
-	<div class="" style="min-height: 450px">
-		<div id="lp-s1" class="container">
-			<%= render 'staticpages/teaser_step1' %>
+		<div class="" style="min-height: 450px">
+			<div id="lp-s1" class="container">
+				<%= render 'staticpages/teaser_step1' %>
+			</div>
+			<div id="lp-s2" class="container start-ghost">
+				<%= render 'staticpages/teaser_step2' %>
+			</div>
+			<div id="lp-s3" class="container start-ghost">
+				<%= render 'staticpages/teaser_step3' %>
+			</div>				
 		</div>
-		<div id="lp-s2" class="container start-ghost">
-			<%= render 'staticpages/teaser_step2' %>
-		</div>
-		<div id="lp-s3" class="container start-ghost">
-			<%= render 'staticpages/teaser_step3' %>
-		</div>				
 	</div>
 </section>
 
 <section id="winning">
 	<div class="setup-background-2">
-		<h1 class="text-center" style="color:white;" >Complete Challenges and get prizes</h1>
+		<h1 class="text-center" style="color:white;" >Complete Challenges and Get Prizes</h1>
 	</div>
 
   <div class="background-history2">
 
-    <!-- sketch #6 -->
-    <div class="container">
-      <div class="" style="">
-        
-        <div class="row">
-          <div class="prize-panel">
-            <div class="prize-panel-heading">
-              <div class="row", style="">
-                <div class="col-md-10">
-                  <h1 class="text-left" style="color: white;"><strong>Cora Pizza</strong> - <i>League of Legends</i></h1>
-                </div>
-                
-                <div class="col-md-2 text-right">
-                  <h1>
-                  <div id="" class="btn btn-large btn-ldisabled">See Game History</div>
-                  </h1>
-                </div>
-              </div>
-            </div>
+    <!-- sketch #7 -->
+    <div class="container" >
+	    <div class="well leaderbox" style="margin-top:25px">
+	    	<div class="well">
+	    		<h1>Win 10 Games</h1>
+	            <div class="progress basic-border text-center" style="margin-bottom:5px; height: 40px">
+	              <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 100%; min-width: 0.5em;" >
+	                <h4><%= 10 %>/<%= 10 %></h4>
+	              </div>
+	            </div>	
 
-            <div class="prize-panel-body">
-              <div class="row">
-                <div class="col-md-6 col-md-offset-0">
-
-                  <div class="coupon-box">
-                    <div class="row">
-                      <div class="col-md-8 col-md-offset-2">
-                        <div class="coupon-image see-me" style="background: white;">
-                          <div class="row">
-                            
-                            <div class="col-md-4">
-                              <%= image_tag("cora3.jpg", class: "reward-logo ") %>
-                            </div>
-                            
-                            <div class="col-md-8">
-                              <h3 class="text-center" style="margin-top: 15px;"> <strong><%= "$20 off" %></strong> </h3>
-                              <h3 class="text-center"><strong>Code: <%= "123abc" %></strong></h3>
-                            </div>  
-
-
-                          </div>
-                          <div class="row">
-                              <h5 class="text-center"><strong><i>Delivery or Walk-in</i></strong></h5>
-                            <h5  class="text-center">416-922-1188 - 656A Spadina Av.</h5>                                                            
-                            <h5 class="text-center">Expires 1/1/2016.</h5>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-
-                  </div>
-
-                </div>
-
-                <div class="col-md-6">
-                  <div class="row">
-                    <div class="text-center">
-                      <%= image_tag("cora1.jpg", size: "500x225", class: "hist-image see-me") %>
+	    	</div>
+	    	<div class="well">
+              <div class="row brand-banner" >
+                <div class="col-md-6" style="padding-left: 0px;">
+                  <div class="">
+                    <div class="text-left">
+                      <%= image_tag("cora1.jpg", size: "500x225", class: "brand-banner") %>
                     </div>
                   </div>  
                 </div>
-              </div>
-            </div>
-          </div>
 
-        </div> 
-        
-      </div>
+                <div class="col-md-6 col-md-offset-0" >
+	                <div class="row">
+	                <div class="col-md-8 col-md-offset-2">
+	                    <h1 class="text-center" style="margin-top: 15px;"> <strong><%= "$20 off" %></strong> </h1>
+	                    <h1 class="text-center" style="border: 1px dotted"><strong>Code: <%= "123abc" %></strong></h1>	               
+	                    <h5 class="text-center"><strong><i>Delivery or Walk-in</i></strong></h5>
+	                    <h5  class="text-center">416-922-1188 - 656A Spadina Av.</h5>                                                          
+	                    <h5 class="text-center">Expires 1/1/2016.</h5>
+	                </div>                 
+	                </div>
+
+                </div>
+
+
+              </div>	    		
+	    	</div>
+	    </div>
     </div>
+
   </div>
 </section>
 
 <section id="sponsor">
-
 	<div class="setup-background-2">
 		<h1 class="text-center" style="color:white;" >Featured Local Restaurant</h1>
 	</div>
