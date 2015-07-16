@@ -30,9 +30,13 @@ class AchievementsController < ApplicationController
 	    @active = ignindex.achievements.where(id: ignindex.active_achievement)
 	    @achievements = ignindex.achievements.where("result IS ?", nil).where.not(id: ignindex.active_achievement)
 
-		active_ones = ignindex.achievements.map { |x| x.challenge_id }
+		active_ones = ignindex.achievements.where("result IS ?", nil).map { |x| x.challenge_id }
+		Rails.logger.info "active_ones: #{active_ones}"
 		@challenges_global = Challenge.where("global = ?", true).where.not(id: active_ones).map { |x| x }
+		Rails.logger.info "@challenges_global: #{@challenges_global}"
 		@challenges_local = Region.find(ignindex.region).challenges.where.not(id: active_ones).map { |x| x }
+		Rails.logger.info "@challenges_local: #{@challenges_local}"
+		
 	end
 
 	def create

@@ -24,7 +24,7 @@
         <h2 style="margin-top: 0px; margin-bottom: 5px;"><u><%= x.name %></u></h2>
         <% end %>
         <h4 style="margin-top: 0px; margin-bottom: 30px;">
-            <i>
+            <i data="<%= x.id %>">
             <% if x.has_prizing %>
             Prizing Weekly
             <% elsif active == 3 %>

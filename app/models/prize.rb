@@ -61,7 +61,17 @@ postal_raw = ["M6G", "M6J", "M5R", "M5S", "M5T", "M5G"]
 postal_regions = postal_raw.map { |x| Region.where("postal_code = ?", x).first.id }
 
 postal_regions.each do |x|
-	Region.find(x).challenges << Challenge.last
+	Region.find(x).challenges << Challenge.where("local_prizing = ?", true).first
+end
+
+postal_regions.each do |x|
+	h1 = Region.find(x).challenges.first
+	 Region.find(x).challenges.delete(h1)
+end
+
+
+postal_regions.each do |x|
+	puts Region.find(x).challenges
 end
 
 postal_regions = []
