@@ -55,7 +55,15 @@ end; nil
     :tier => "2")
 end; nil
 
+
+#N+1 Example! Get used to this.
 postal_raw = ["M6G", "M6J", "M5R", "M5S", "M5T", "M5G"]
+postal_regions = postal_raw.map { |x| Region.where("postal_code = ?", x).first.id }
+
+postal_regions.each do |x|
+	Region.find(x).challenges << Challenge.last
+end
+
 postal_regions = []
 postal_raw.each do |x|
 	postal_regions << Region.where("postal_code = ?", x).first.id
