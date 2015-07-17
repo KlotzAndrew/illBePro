@@ -13,7 +13,14 @@ class ScoresController < ApplicationController
         @achievements = []
         Ignindex.all.includes(:achievements).where("updated_at > ?", Time.at(cora_start)).where.not("summoner_name IS ?", nil).where.not("active_achievement IS ?", nil).each do |x|
           an_ach = Achievement.find(x.active_achievement)
-          number = an_ach.experience_earned/an_ach.experience_req.round(1) 
+          number_top = an_ach.wins_recorded
+          number_bottom = an_ach.wins_required.round(1) 
+          if !an_ach.can_spell_name.nil?
+            number_top = number_top + (an_ach.can_spell_name.length - an_ach.can_spell_name_open.length)
+            number_bottom = number_bottom + an_ach.can_spell_name.length
+          end
+
+          number = number_top/number_bottom
           progress = (number.round(2)*100).round(0)
 
           block = []
