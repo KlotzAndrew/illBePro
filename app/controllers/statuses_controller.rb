@@ -119,7 +119,9 @@
       redirect_to new_user_session_path, flash: {alert: "You need to be logged in!"}      
     else #user signed-in; this can be refractored
     
-    @status = Status.new
+    @status = Status.new(
+      :value => 0,
+      :created_at => Time.now)
     @ignindex = Ignindex.where("user_id = ?", current_user.id).first
       if @ignindex.nil? #redirect
 
@@ -130,11 +132,21 @@
         # redirect_to zone_url, alert: 'You need a valid Postal Code!'
       else
 
+        if !@ignindex.statuses.last.nil? && @ignindex.statuses.last.win_value.nil?
+          @status = @ignindex.statuses.last
+          @gamerunning = true
+          # if @status.trigger_timer > (Time.now.to_i - 300)
+          #  @checkdata = true
+          # end
+        end
+
         @achievement = Achievement.where("id = ?", @ignindex.active_achievement).first
         if @achievement.nil?
           @achievement = Achievement.new
         end
 
+        @last_game  = @achievement.statuses.order(created_at: :desc).select { |x| if !x.game_1.empty? then x end }.first
+        # @last_game  = Status.order(created_at: :desc).select { |x| if !x.game_1.empty? then x end }.first
         # @game_history = @achievement.statuses.order(created_at: :desc)
 
       end
@@ -394,13 +406,13 @@
     
     respond_to do |format|
       if @status.save
-        format.html { redirect_to challenges_url }
+        format.html { redirect_to root_path }
         format.json { head :no_content }
-        format.js { redirect_to challenges_url}
+        format.js { redirect_to root_path}
       else
-        format.html { redirect_to challenges_url, alert: 'illBePro engine is temporarily offline!' }
+        format.html { redirect_to root_path, alert: 'illBePro engine is temporarily offline!' }
         format.json { render json: @status.errors, status: :unprocessable_entity }
-        format.js { redirect_to challenges_url, alert: 'illBePro engine is temporarily offline!' }
+        format.js { redirect_to root_path, alert: 'illBePro engine is temporarily offline!' }
       end
     end
   end
@@ -415,7 +427,7 @@
     if @status.roll_status == 1 #UPDATE (using AJAX for calls, redirect making no sense)
       @status.update(roll_status: 1)
          respond_to do |format|
-            format.html { redirect_to challenges_url, notice: 'Challenge getting started' }
+            format.html { redirect_to root_path, notice: 'Challenge getting started' }
             format.json { head :no_content }
             format.js { render :nothing => true}
           end      
@@ -425,7 +437,7 @@
         if @status.pause_timer == 0
           @status.update(pause_timer: Time.now.to_i)
           respond_to do |format|
-            format.html { redirect_to challenges_url }
+            format.html { redirect_to root_path }
             format.json { head :no_content }
             format.js { render :nothing => true}
           end
@@ -433,7 +445,7 @@
           @status.update(value: (@status.value + Time.now.to_i - @status.pause_timer))
           @status.update(pause_timer: 0)
           respond_to do |format|
-            format.html { redirect_to challenges_url }
+            format.html { redirect_to root_path }
             format.json { head :no_content }
             format.js { render :nothing => true } 
           end
@@ -441,7 +453,7 @@
       else
         @status.update(trigger_timer: Time.now.to_i)
           respond_to do |format|
-            format.html { redirect_to challenges_url, notice: 'Checking game results...' }
+            format.html { redirect_to root_path, notice: 'Checking game results...' }
             format.json { head :no_content }
             format.js { render :nothing => true } 
           end
@@ -460,12 +472,8 @@
         :assignment => 0,
         :user_id => 0,
         })
-      # score = Score.find_by_user_id(current_user.id)
-      # if score.challenge_points > 0
-      #   score.update(challenge_points: score.challenge_points - 1) 
-      # end
       respond_to do |format|
-        format.html { redirect_to new_status_path }
+        format.html { redirect_to root_path }
         format.json { head :no_content }
       end
     elsif @status.kind == 5
@@ -477,7 +485,7 @@
       #   score.update(challenge_points: score.challenge_points - 1) 
       # end
       respond_to do |format|
-        format.html { redirect_to new_status_path }
+        format.html { redirect_to root_path }
         format.json { head :no_content }
       end
     else
@@ -485,7 +493,7 @@
       @status.update(value: 0)
       @status.update(win_value: 3)      
       respond_to do |format|
-        format.html { redirect_to new_status_path, alert: 'Something went wrong with your challenge kind' }
+        format.html { redirect_to root_path, alert: 'Something went wrong with your challenge kind' }
         format.json { head :no_content }
       end      
     end

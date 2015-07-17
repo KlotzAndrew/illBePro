@@ -873,9 +873,9 @@ class Status < ActiveRecord::Base
     if status.win_value == 2 # game won, all challenges use this so far
       ach.update(
         :wins_recorded => ach.wins_recorded += 1)
-      Rails.logger.info "#{cron_st}: from game won (#{status.win_value}) ach_win #{ach_win}"
+      Rails.logger.info "#{cron_st}: from game won (#{status.win_value}) ach_win #{ach.wins_recorded}"
     else
-      Rails.logger.info "#{cron_st}: from game won (#{status.win_value}) ach_win #{ach_win}"
+      Rails.logger.info "#{cron_st}: from game won (#{status.win_value}) ach_win #{ach.wins_recorded}"
     end
 
     if ach.can_spell_name_open.length > 0 #this achievement is available

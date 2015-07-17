@@ -3,6 +3,12 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 
+.stats-spinner {
+	
+	margin-left: 50px;
+	margin-top: 15px;
+}
+
 .profile-box {
 	background-image: linear-gradient(to bottom, #0A636E 0px, #e8e8e8 150%);
 }
@@ -26,6 +32,10 @@
 	margin-top: 0px;
 	width: 500px;	
 	height: 100px;
+}
+
+.cancel-game-button {
+	width: 500px;	
 }
 
 .start-game-button-inactive {

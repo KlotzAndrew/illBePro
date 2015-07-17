@@ -1,3 +1,38 @@
+var button_game_start = function() {
+  $('#start_game_track').bind('ajax:success', function(evt, data, status, xhr) {
+    // js_game_starting()
+  })
+}
+
+var button_game_end = function() {
+  $('#end_game_track').bind('ajax:success', function(evt, data, status, xhr) {
+    // js_game_ending()
+  })
+}
+
+var js_game_starting = function(){
+    $('#button-game-cancel').removeClass("start-ghost")
+    $('#start_game_track').addClass("start-ghost")
+    $('#current_created_at').removeClass("start-ghost")
+
+    $('#spinner_toggle').removeClass("start-ghost")
+    $('#stats_toggle').addClass("start-ghost")
+
+    $('#game_track_timer').removeClass("start-ghost")
+
+}
+
+var js_game_ending = function(){
+    $('#button-game-cancel').addClass("start-ghost")
+    $('#start_game_track').removeClass("start-ghost")
+    $('#current_created_at').addClass("start-ghost")
+
+    $('#spinner_toggle').addClass("start-ghost")
+    $('#stats_toggle').removeClass("start-ghost")
+
+    $('#game_track_timer').addClass("start-ghost")
+}
+
 var offline_alert = function() {
     $('#new_chal_button').on("click", function(){
         alert("illBePro engine is temporarily offline! Check out our Facebook or Twitter page for updates!")
@@ -43,11 +78,11 @@ var check_game = function(){
         success: function(data) {
             console.log(data)
             if (data.win_value !== null) {
-                
+                document.location.reload(true);
                 if (data.prize_id !== null) {
                     document.location.reload(true);
                 } else {
-
+                    
                     $('#v3_ingame').addClass("start-ghost")
                     $('#v3_outgame').removeClass("start-ghost")                
                     kills = data.game_1["kills"]
@@ -66,9 +101,7 @@ var check_game = function(){
                     } else { // loss or timeout
                         $('#game_results').html("Defeat")
                     }
-
-                    // $('#game_end_instructions').html("Every game has a random chance for a prize")
-
+                    
                 }
                 clearInterval(checkint)
                 clearTimeout(statusTimer);      
@@ -126,6 +159,8 @@ var is_page_status = function(){
       console.log("this is status_index")
       challenge_timer()
       finish_button()
+      button_game_start()
+      button_game_end()
         
      if ( $('#cg-refresher').hasClass("cg-update-true") ) {
         // window.clearInterval(game_check_int)

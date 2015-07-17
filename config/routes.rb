@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :prizes
+
   resources :achievements
 
   # get 'achievements', to: 'achievements#index', as: :achievements
@@ -7,7 +7,6 @@ Rails.application.routes.draw do
   resources :scores
   get 'leaderboard', to: 'scores#leaderboard'
 
-  resources :geodelivers
 
   resources :ignindices
   get 'summoner', to: 'ignindices#index', as: :summoner
@@ -33,13 +32,13 @@ Rails.application.routes.draw do
   get 'challenges', to: 'statuses#index', as: :challenges
   
 
-authenticated :user do
-  root to: 'statuses#new', as: :authenticated_root
-end
+  authenticated :user do
+    root to: 'statuses#new', as: :authenticated_root
+  end
 
-unauthenticated do
-  root to: "ignindices#landing_page"
-end
+  unauthenticated do
+    root to: "ignindices#landing_page"
+  end
 
 
 
