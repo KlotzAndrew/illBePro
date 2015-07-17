@@ -9,66 +9,67 @@
   # GET /statuses.json
   def index
 
-    #checks what ignindex we are using (redirect )
-    if user_signed_in? #filter users for signed in
-      if Ignindex.find_by_user_id(current_user.id).nil?
-        redirect_to summoner_path, notice: "You need to validate your Summoner Name!"
-      else
-        active_ign_id = Ignindex.find_by_user_id(current_user.id).id
-        @ignindex = Ignindex.find_by_user_id(current_user.id)
-      end
-    else #not signed-in users
-      if session[:ignindex_id].nil?
-        redirect_to summoner_path, notice: "You need to validate your Summoner Name!"
-      else
-        active_ign_id = session[:ignindex_id]
-        @ignindex = Ignindex.find(session[:ignindex_id])
-      end
-    end
+    redirect_to root_path
+    # #checks what ignindex we are using (redirect )
+    # if user_signed_in? #filter users for signed in
+    #   if Ignindex.find_by_user_id(current_user.id).nil?
+    #     redirect_to summoner_path, notice: "You need to validate your Summoner Name!"
+    #   else
+    #     active_ign_id = Ignindex.find_by_user_id(current_user.id).id
+    #     @ignindex = Ignindex.find_by_user_id(current_user.id)
+    #   end
+    # else #not signed-in users
+    #   if session[:ignindex_id].nil?
+    #     redirect_to summoner_path, notice: "You need to validate your Summoner Name!"
+    #   else
+    #     active_ign_id = session[:ignindex_id]
+    #     @ignindex = Ignindex.find(session[:ignindex_id])
+    #   end
+    # end
 
-    #this block checks if there is a status running, if not it redirects you
-    if Status.where("win_value IS ?", nil).where("ignindex_id = ?", active_ign_id).count > 0
-      @status = Status.where("win_value IS ?", nil).where("ignindex_id = ?", active_ign_id).first
+    # #this block checks if there is a status running, if not it redirects you
+    # if Status.where("win_value IS ?", nil).where("ignindex_id = ?", active_ign_id).count > 0
+    #   @status = Status.where("win_value IS ?", nil).where("ignindex_id = ?", active_ign_id).first
       
-      if ((Time.now.to_i - @status.created_at.to_i - @status.value) > -120)
-        @update_trigger = "cg-update-true"
-      else
+    #   if ((Time.now.to_i - @status.created_at.to_i - @status.value) > -120)
+    #     @update_trigger = "cg-update-true"
+    #   else
 
-        if @status.trigger_timer.nil?
-          @update_trigger = ""
-        else
+    #     if @status.trigger_timer.nil?
+    #       @update_trigger = ""
+    #     else
 
-          if ((Time.now.to_i - @status.trigger_timer) < 300)
-            @update_trigger = "cg-update-true"
-          else
-            @update_trigger = ""
-          end
-        end
-      end
+    #       if ((Time.now.to_i - @status.trigger_timer) < 300)
+    #         @update_trigger = "cg-update-true"
+    #       else
+    #         @update_trigger = ""
+    #       end
+    #     end
+    #   end
 
-    else
-      # if Ignindex.find_by_user_id(current_user.id).nil?
-      #   redirect_to summoner_path, notice: "You need to validate your Summoner Name!"
-      # else
-      #   redirect_to new_status_path
-      # end
-      # @status = Status.new(
-      #   :ignindex_id => active_ign_id)
-      redirect_to new_status_path
-    end
+    # else
+    #   # if Ignindex.find_by_user_id(current_user.id).nil?
+    #   #   redirect_to summoner_path, notice: "You need to validate your Summoner Name!"
+    #   # else
+    #   #   redirect_to new_status_path
+    #   # end
+    #   # @status = Status.new(
+    #   #   :ignindex_id => active_ign_id)
+    #   redirect_to new_status_path
+    # end
     
-    Rails.logger.info "prize display 1/3"
-    if @ignindex != nil
-      Rails.logger.info "prize display 2/3"
-      if @ignindex.prize_id != nil
-        prize = Prize.find(@ignindex.prize_id)
-        @prize_description = prize.description
-        @prize_vendor = prize.vendor
-         Rails.logger.info "prize display 3/3"
-      else
-        show_prizes_2(@ignindex.region_id)
-      end
-    end
+    # Rails.logger.info "prize display 1/3"
+    # if @ignindex != nil
+    #   Rails.logger.info "prize display 2/3"
+    #   if @ignindex.prize_id != nil
+    #     prize = Prize.find(@ignindex.prize_id)
+    #     @prize_description = prize.description
+    #     @prize_vendor = prize.vendor
+    #      Rails.logger.info "prize display 3/3"
+    #   else
+    #     show_prizes_2(@ignindex.region_id)
+    #   end
+    # end
   end
 
   # GET /statuses/1
