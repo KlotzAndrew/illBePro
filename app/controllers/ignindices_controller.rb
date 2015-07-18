@@ -249,28 +249,8 @@ class IgnindicesController < ApplicationController
     redirect_to root_path
   end
 
-  def new # step 2
-    #user enters postal code. udpate action for existing user w/ ignindex, else create action
-    #settings refresh redirects to here
-    #no validations required for this page
-    @setup_progress = 0
-
-    if user_signed_in? 
-      step2_ign = Ignindex.find_by_user_id(current_user.id)
-      if step2_ign.nil?
-        step2_ign = Ignindex.new
-      end
-
-      if step2_ign.summoner_validated == true
-        @ignindex = step2_ign #triggers 'update' action
-      else
-        reset_session_vars
-        @ignindex = Ignindex.new #triggers 'new' action        
-      end
-    else
-      reset_session_vars
-      @ignindex = Ignindex.new #triggers 'new' action
-    end
+  def new 
+    redirect_to setup_path
   end
 
   def show_prizes(x) #prize region logic (duplicate in ignindeces/statuses controller)

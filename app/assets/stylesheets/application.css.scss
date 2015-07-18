@@ -19,6 +19,23 @@
  *= require font-awesome
  */
 
+#login_page {
+  background: url("bg_champion_lux_1920x1080.jpg") no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+#register_page {
+  background: url("bg_champion_ashe_1920x1080.jpg") no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+
 .brand-banner {
   border: 2px solid;
   border-color: black;
