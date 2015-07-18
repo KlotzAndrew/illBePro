@@ -1,8 +1,16 @@
-<div class="container">
-	<h3>Current Postal Code: <strong><%= @zone_pc %></strong></h3>
+<section id="top">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4" style="margin-top:25px">
+				<div class="well leaderbox">
+					<h3 class="" style="margin:0px">Current Postal Code: <strong><%= @zone_pc %></strong></h3>
+				</div>
+			</div>
+		</div>
 
-	<%= render 'ignindices/step1' %>
-</div>
+		<%= render 'ignindices/step1' %>
+	</div>
+</section>
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
