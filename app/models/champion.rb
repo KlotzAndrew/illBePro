@@ -1,9 +1,9 @@
 class Champion < ActiveRecord::Base
 
 def update_champions
-p = 1
+p = 220
 puts p
-while p < 500
+while p < 224
   if Champion.where(id: p).empty?
     Champion.create(:id => p)
   end
