@@ -28,6 +28,7 @@ group :production do
 end
 
 gem "typhoeus"
+gem 'newrelic_rpm'
 
 
  #gem "chardinjs-rails"
