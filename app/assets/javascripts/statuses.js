@@ -1,13 +1,31 @@
 var button_game_start = function() {
   $('#start_game_track').bind('ajax:success', function(evt, data, status, xhr) {
-    // js_game_starting()
+    js_game_starting()
+    button_cancel_needs_status_id()
   })
 }
 
 var button_game_end = function() {
   $('#end_game_track').bind('ajax:success', function(evt, data, status, xhr) {
-    // js_game_ending()
+    js_game_ending()
   })
+}
+
+button_cancel_needs_status_id = function(){
+    $.ajax({
+        url: "/statuses",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            console.log(data)
+            console.log(data.id)
+            chal_timer = Date.parse(data.created_at)/1000 + data.value
+            $('#challenge_timer').data("chal_time_value", chal_timer)
+            $('#cg_id').data('status_id', data.id)
+            $('#end_game_track').attr('action', '/statuses/' + data.id)
+        }
+    })
+
 }
 
 var js_game_starting = function(){
@@ -19,7 +37,6 @@ var js_game_starting = function(){
     $('#stats_toggle').addClass("start-ghost")
 
     $('#game_track_timer').removeClass("start-ghost")
-
 }
 
 var js_game_ending = function(){
@@ -72,15 +89,15 @@ var finish_button = function(){
 
 var check_game = function(){
     $.ajax({
-        url: "/statuses/" + $("#cg_id").data("status_id"),
+        url: "/statuses",
         type: "GET",
         dataType: "json",
         success: function(data) {
             console.log(data)
-            if (data.win_value !== null) {
-                document.location.reload(true);
+            if ((data !== null) && (data.win_value !== null)) {
+                // document.location.reload(true);
                 if (data.prize_id !== null) {
-                    document.location.reload(true);
+                    // document.location.reload(true);
                 } else {
                     
                     $('#v3_ingame').addClass("start-ghost")
@@ -107,7 +124,6 @@ var check_game = function(){
                 clearTimeout(statusTimer);      
             } else {
                 var checkint = setTimeout(check_game, 15000)
-                console.log(data.win_value)
             }
         }
     });

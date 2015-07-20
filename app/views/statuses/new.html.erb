@@ -33,6 +33,7 @@
               <div class="col-md-9">
                 <h3 style="margin-top: 0px;"><%= @ignindex.summoner_name %></h3>
                 <p>Rank TBD</p>
+                <p>Honorable Beta Tester</p>
               </div>
             </div>
           </div>
@@ -42,7 +43,7 @@
             <div class="row">
               <div class="">
                 <div class="col-md-3">
-                  <%= image_tag("ChampionSquare.png", size: "", class: "profile-picture") %>
+                  <%= image_tag("TeemoSquare.png", size: "", class: "profile-picture") %>
                 </div>
                 <div class="col-md-9">
                   <h4 style="margin-top:0px;"><u>Recent Game</u></h4>
@@ -50,28 +51,28 @@
                   <div id="spinner_toggle">
                     <i id="s2-check-spinner" class="fa fa-spinner fa-pulse stats-spinner" style="font-size: 50px;"></i> 
                   </div>
-                   <h3 id="stats_toggle" class="start-ghost">
+                   <h2 id="stats_toggle" class="start-ghost">
                       <% if @last_game.nil? %>
-                    <span id="game_champion">No recent game</span>
+                    <span id="game_champion"></span>
                     <span id="game_kda"></span>
                       <% else %>
                     <%= @last_game.game_1[:champion_id] %>
                     <%= @last_game.game_1[:kills] %>/<%= @last_game.game_1[:deaths] %>/<%= @last_game.game_1[:assists] %>
                      <% end %>
-                    </h3>
+                    </h2>
                   <% else %>
                   <div id="spinner_toggle" class="start-ghost">
                     <i id="" class="fa fa-spinner fa-pulse stats-spinner" style="font-size: 50px;"></i> 
                   </div>                
-                    <h3 id="stats_toggle">
+                    <h2 id="stats_toggle">
                       <% if @last_game.nil? %>
-                    <span id="game_champion">No recent game</span>
+                    <span id="game_champion"></span>
                     <span id="game_kda"></span>
                       <% else %>
                     <span id="game_champion"><%= @last_game.game_1[:champion_id] %></span>
                     <span id="game_kda"><%= @last_game.game_1[:kills] %>/<%= @last_game.game_1[:deaths] %>/<%= @last_game.game_1[:assists] %></span>
                       <% end %>
-                    </h3>
+                    </h2>
                   <% end %>
                 </div>
               </div>
@@ -119,7 +120,7 @@
                         <% else %>
 
                             <% if @gamerunning == true %>
-                              <%= simple_form_for(@status, html: {class: 'form-hoizontal start-ghost', :id => 'start_game_track'}) do |f| %>
+                              <%= simple_form_for(@status, remote: true, html: {class: 'form-hoizontal start-ghost', :id => 'start_game_track'}) do |f| %>
                                 <%= f.hidden_field :kind, :value=>5 %>
                                 <%= f.button :submit, "Play for Challenge", class: "btn btn-lg btn-lprimary start-game-button " %>
                               <% end %>
@@ -148,7 +149,7 @@
                               </div>
 
                             <% else %>
-                              <%= simple_form_for(@status, html: {class: 'form-hoizontal', :id => 'start_game_track'}) do |f| %>
+                              <%= simple_form_for(@status, remote: true, html: {class: 'form-hoizontal', :id => 'start_game_track'}) do |f| %>
                                 <%= f.hidden_field :kind, :value=>5 %>
                                 <%= f.button :submit, "Play for Challenge", class: "btn btn-lg btn-lprimary start-game-button" %>
                               <% end %>
@@ -187,7 +188,7 @@
                     <% else %>
                     <div id="button-game-cancel" class="start-ghost">
                     <% end %>
-                    <%= simple_form_for(@status, method: :delete, html: {class: 'form-hoizontal', :id => 'end_game_track'}) do |f| %>
+                    <%= simple_form_for(@status, remote: true,  method: :delete, html: {class: 'form-hoizontal', :id => 'end_game_track'}) do |f| %>
                       <%= f.button :submit, "Cancel", class: "btn btn-default cancel-game-button " %>
                     <% end %>
                     </div>

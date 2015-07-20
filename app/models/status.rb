@@ -36,8 +36,12 @@ class Status < ActiveRecord::Base
 
   def self.api_call
     Rails.logger.info "*****STARTING CLOCKWORK*****"
-    Staticpage.find(1).update(
-      :league_api_ping => Time.now.to_i)
+    if Staticpage.last.nil?
+      Staticpage.create
+    else
+      Staticpage.find(1).update(
+        :league_api_ping => Time.now.to_i)
+    end
     cron_st = Time.now.to_i
     time_holder = 3900
     times_run = 0

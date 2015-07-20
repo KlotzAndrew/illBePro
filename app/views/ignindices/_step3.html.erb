@@ -78,7 +78,11 @@
       <% if @uu_summoner_validated == true %> 
       <div id="how_to_finished" class="col-md-6 lwell col-md-offset-3 text-center" style="margin-top: 40px; margin-bottom: 20px;">
       <% else %>
-      <div id="how_to_going" class="col-md-6 col-md-offset-3 " style="margin-top: 20px;margin-bottom: 0px;">   
+      <% if @ignindex.id.nil? %>
+      <div id="how_to_going" class="col-md-6 col-md-offset-3 start-ghost" style="margin-top: 20px;margin-bottom: 0px;"> 
+      <% else %>
+      <div id="how_to_going" class="col-md-6 col-md-offset-3 " style="margin-top: 20px;margin-bottom: 0px;"> 
+      <% end %>
         <div class="well">
           <h3 class="text-center" style="margin-top: 0px; color:red;"><strong>1st Mastery Page - <span class="">(Rename & Wait)</span></strong></h3>
           <div class="row">
