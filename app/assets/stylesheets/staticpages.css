@@ -1,3 +1,10 @@
+.carousel-indicators li{
+    max-width:25%;
+    max-height:15%; /*or any other percentage that would look good*/
+    cursor: pointer;
+    text-align:center;
+}
+
 .social-facebook {
   background: rgb(58, 87, 149) none repeat scroll 0% 0%;
   border-radius: 10px;

@@ -25,74 +25,100 @@
 	</div>
 
 	<div class="landing-setup-background">
-		<div class="container" >
-			<div class="col-md-8 col-md-offset-2">
-				<div class="setup-background">
+		<div class="container">
+			<div class="row">
+				<div id="carousel-example-generic" class="carousel slide" data-ride="carousel"  >
+					<div class="row">
+						<div class="col-md-8 col-md-offset-2">
+							<div class="setup-background">
 
-					<div class="container-fluid" style="margin-top:25px;">
-						<div class="row text-center">
-							
-							<div class="col-md-12 col-md-offset-0">
+								<div class="container-fluid" style="margin-top:25px;">
+									<div class="row text-center">
 
-								<div id="setup_progress_bar">
-									<div class="breadcrumb-trail">
+										<div id="setup_progress_bar">
+											<div class="breadcrumb-trail ">
 
-										<div class="breadcrumbs">
-										    <div class="breadcrumb-cell first">
-											   		<div id="bread_1" class="breadcrumb active">
-												    	<div class="breadcrumb-icon"></div>
-											    	<span class="breadcrumb-label">1) Postal</span>
-										     	</div>
-										    </div>
+												<div class="">
+													<div class="breadcrumbs">
+													    <div class="breadcrumb-cell first">
+														   	<div data-target="#carousel-example-generic" data-slide-to="0" class="breadcrumb">
+															    	<div class="breadcrumb-icon"></div>
+														    	<span class="breadcrumb-label">1) Postal</span>
+													     	</div>
+													    </div>
 
-										    <div class="breadcrumb-cell">
-													<div id="bread_2" class="breadcrumb">
-													<div class="breadcrumb-icon"></div>			    	
-													<span class="breadcrumb-label">2) Challenge</span>
-												</div>
-										    </div> 
-											     						    
+													    <div class="breadcrumb-cell">
+															<div data-target="#carousel-example-generic" data-slide-to="1" class="breadcrumb">
+																<div class="breadcrumb-icon"></div>			    	
+																<span class="breadcrumb-label">2) Challenge</span>
+															</div>
+													    </div> 
+														     						    
 
-										    <div class="breadcrumb-cell last">
+													    <div class="breadcrumb-cell last">
 
-										   		<div id="bread_3" class="breadcrumb">
-												<div class="breadcrumb-icon"></div>
-												<span class="breadcrumb-label">3) Summoner</span>
-												</div>
-										    </div>       
+													   		<div data-target="#carousel-example-generic" data-slide-to="2" class="breadcrumb">
+																<div class="breadcrumb-icon"></div>
+																<span class="breadcrumb-label">3) Summoner</span>
+															</div>
+													    </div> 
+												    </div>      
 
-									  </div>
-									</div>	
-								</div>			
+											  </div>
+											</div>	
+										</div>			
 
+									</div>
+								</div>
 							</div>
-
 						</div>
 					</div>
+
+				  <!-- Wrapper for slides -->
+				  <div class="carousel-inner" role="listbox">
+				    <div class="item active">
+				      <%= render 'staticpages/teaser_step1' %>
+				      <div class="carousel-caption">
+				        
+				      </div>
+				    </div>
+				    <div class="item">
+				      <%= render 'staticpages/teaser_step2' %>
+				      <div class="carousel-caption">
+				        
+				      </div>
+				    </div>
+				    <div class="item">
+				      <%= render 'staticpages/teaser_step3' %>
+				      <div class="carousel-caption">
+				        
+				      </div>
+				    </div>    
+				    ...
+				  </div>
+
+				  <!-- Controls -->
+				  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+				    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+				    <span class="sr-only">Previous</span>
+				  </a>
+				  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+				    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+				    <span class="sr-only">Next</span>
+				  </a>
 				</div>
 			</div>
-		</div>
-		<div class="" style="min-height: 450px">
-			<div id="lp-s1" class="container">
-				<%= render 'staticpages/teaser_step1' %>
-			</div>
-			<div id="lp-s2" class="container start-ghost">
-				<%= render 'staticpages/teaser_step2' %>
-			</div>
-			<div id="lp-s3" class="container start-ghost">
-				<%= render 'staticpages/teaser_step3' %>
-			</div>
-
-
-		</div>
-
-		<div class="container" >
+		
 			<div class="row" style="margin-bottom: 25px;">
 				<div class="col-md-6 col-md-offset-3">
 					<style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class='embed-container'><iframe src='https://www.youtube.com/embed/MsX97cnZTqE' frameborder='0' allowfullscreen></iframe></div>
 				</div>
 			</div>
 		</div>
+
+
+
+
 
 	</div>
 </section>

@@ -35,6 +35,7 @@ gem "typhoeus"
 
  gem "font-awesome-rails"
 
+
 # gem 'geocoder'
 
 
