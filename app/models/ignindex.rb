@@ -18,48 +18,36 @@ class Ignindex < ActiveRecord::Base
 		self.update(validation_string: "#{"pizza" + "-" + ('a'..'z').to_a.shuffle.first(4).join}")
 	end
 
-	def self.prize_objects(ignindex_id)
-		prize_2 = Ignindex.find(ignindex_id).summoner_name		
-	end
+	#flagged for removal
+	# def self.prize_objects(ignindex_id)
+	# 	prize_2 = Ignindex.find(ignindex_id).summoner_name		
+	# end
 
-  def assign_prize(choice)
-  	if choice == "Accept" or choice == "Upgrade"
-		prize = Prize.find(self.prize_id)
-		Rails.logger.info "Prize choice was #{choice}"
-		Rails.logger.info "self.prize_id: #{self.prize_id}, prize.ignindex_id: #{prize.ignindex_id}"
-	    if self.id == prize.ignindex_id #double check prize is assigned correctly
+  	def assign_prize(choice)
+  		prize = Prize.find(self.prize_id)
+  		Rails.logger.info "self.id: #{self.id}"
+  		Rails.logger.info "prize.ignindex_id: #{prize.ignindex_id}"
+  		if self.id == prize.ignindex_id 
+		  	if choice == "Accept"
+		  		Rails.logger.info "accepted"
+		  		self.accept_prize(prize)
+		  	end
+		end
+  	end	
 
-	    	if choice == "Accept"
-	    		Rails.logger.info "choice is confirm accept"
-		      prize.update(
-		      	:assignment => 2,
-		      	:delivered_at => Time.now.to_i)
-		      self.update(
-		      	:prize_id => nil,
-		      	:last_prize_time => Time.now.to_i)
-		      	#:prize_level => 1)
+  	def accept_prize(prize)
+		Rails.logger.info "choice is confirm accept"
+		prize.update(
+			:assignment => 2,
+			:delivered_at => Time.now.to_i)
+		Rails.logger.info "prize.assignment: #{prize.assignment}"
+		self.update(
+			:prize_id => nil,
+			:last_prize_time => Time.now.to_i)
+  	end
 
-	      	elsif choice == "Upgrade"
 
-	    		Rails.logger.info "choice is confirm accept"
-		      prize.update(
-		      	:assignment => 0,
-		      	:user_id => nil)
-		      self.update(
-		      	:prize_id => nil)
-		      	#:challenge_points => 0
-		      	#:prize_level => self.prize_level + 1)	      		
-	      	else
-	      	end
-	    else
-	      #something is wrong
-	    end
-	else
-		Rails.logger.info "vars going in wrong"
-	end
-  end	
-
-	def clear_duplcates #unresolved bug fixer
+	def clear_duplcates #unresolved bug fixer (manually run)
 		Rails.logger.info "DUPLICATE SUMMONER ISSUE"
 		Ignindex.find(dont_run) #dont run
 		#finds duplicate summoner names (idk where bug is being created)

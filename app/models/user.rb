@@ -9,25 +9,6 @@ class User < ActiveRecord::Base
   #                   length: { in: 4..15 },
   #                   format: { with: /\A[a-zA-Z]+\z/, message: "only allows letters" }
 
-  # after_create :index_me
-
-  def index_me
-    Ignindex.create!(
-      :user_id => self.id) 
-    Score.create!(
-      :user_id => self.id)
-    Geodeliver.create(
-      :user_id => self.id)
-  end
-
-  def full_name
-  	first_name + " " + last_name
-  end
-
-  has_many :statuses
-
-  # has_one :geodelivers
-  # has_one :scores
-  has_one :ignindices
+  has_one :ignindex
 
 end

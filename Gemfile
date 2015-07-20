@@ -13,6 +13,10 @@ gem 'clockwork', :git => "https://github.com/tomykaira/clockwork.git"
 
 group :development, :test do
 	gem 'sqlite3'
+	
+	gem 'rspec-rails', '~> 3.0'
+	gem 'shoulda'
+	gem 'webmock'
 end
 
 group :production do

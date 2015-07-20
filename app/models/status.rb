@@ -1,10 +1,8 @@
 class Status < ActiveRecord::Base
 
-	# belongs_to :user
-	
-	# validates :user_id, presence: true
   validate :dr_who, :on => :create
   validate :one_fox_one_gun, :on => :create
+
   belongs_to :ignindex
 
   serialize :game_1, Hash
@@ -15,22 +13,24 @@ class Status < ActiveRecord::Base
 
 
   def dr_who #this makes sure summoner is valid + region is entered
-    w = Ignindex.find(self.ignindex_id)
-    if w.summoner_validated != true
-      errors.add(:you_need, ' a valid summoner name before you can start a challenge!')
-    elsif w.region_id.nil?
-      errors.add(:you_need, ' to select a prize zone to start a challenge')
+    ignindex = self.ignindex
+    if ignindex.summoner_validated != true
+      errors.add(:summoner_required, '- You need a summoner name before you can start a challenge!')
+    elsif ignindex.region_id.nil?
+      errors.add(:region_required, '- You need to select a prize zone to start a challenge')
     end
   end
 
   def one_fox_one_gun #this is 1 game/user + concurrent requests/API
-    if Status.all.where("ignindex_id = ?", self.ignindex_id).where(win_value: nil).count > 1
+    ignindex = self.ignindex
+    if ignindex.statuses.where("win_value IS ?", nil).count > 0
+      # errors.add(:region_required, '- You need to select a prize zone to start a challenge')
+
       errors.add(:you_can, 'only have 1 challenge running at a time!')
-    #elsif Status.all.where("user_id = ?", self.user_id).where("created_at > ?", Time.now - 22.hours).count >= 5
-      #errors.add(:you_have, 'reached your challenge limit for the day! The limit refreshes every 22 hours')
-    elsif Status.all.where("created_at >= ?", Time.now - 60.seconds).count > 20
+    elsif Status.all.where("created_at >= ?", Time.now - 60.seconds).count > 19
       errors.add(:start_queue, ' is full! Try back in 60 seconds')
     else
+      Rails.logger.info "no errors"
     end
   end
 
@@ -54,8 +54,8 @@ class Status < ActiveRecord::Base
     Ignindex.where("validation_timer > ?", 0 ).each do |x|
       if x.validation_timer < (Time.now.to_i - 600)
         Rails.logger.info "#{x.summoner_name} ran out of time"
-        Ignindex.find_by_id(x.id).update(validation_timer: nil)
-        Ignindex.find_by_id(x.id).update(validation_string: nil)
+        x.update(validation_timer: nil)
+        x.update(validation_string: nil)
       else
         Rails.logger.info "#{cron_st}: #{x.summoner_name} still has #{600 + x.validation_timer - Time.now.to_i} seconds!"
         if x.summoner_id.nil?
