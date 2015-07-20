@@ -319,7 +319,6 @@ class Status < ActiveRecord::Base
     end
     Rails.logger.info "#{cron_st}: completed validations in #{Time.now.to_i - cron_st} seconds!"
 
-
     #general instance veriables
 
     #status specific instance variables
@@ -337,6 +336,7 @@ class Status < ActiveRecord::Base
 
     Status.where(win_value: nil).order(created_at: :desc).each do |status| #=> all active statuses
       total_count += 1
+         Rails.logger.info "status.trigger_timer #{status.trigger_timer}"
       if Time.now.to_i - cron_st > 55
         Rails.logger.info "#{cron_st}: CRON TIMEOUT OVERLOAD! Unable to get matches for #{status.summoner_name}!"
         timeout_count += 1
@@ -344,8 +344,6 @@ class Status < ActiveRecord::Base
         Rails.logger.info "#{cron_st}: CRON API OVERLOAD! Unable to get matches for #{status.summoner_name}!"
         api_overload_count += 1
       else
-
-        
         if status.pause_timer.nil?
           status.update(pause_timer: 0)
         end

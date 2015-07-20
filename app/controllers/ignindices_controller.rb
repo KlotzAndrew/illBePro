@@ -703,7 +703,7 @@ class IgnindicesController < ApplicationController
       #this moves from step3 to step4
       session[:setup_progress] = 3
       respond_to do |format|
-        format.html { redirect_to new_status_path }
+        format.html { redirect_to root_path }
         format.json { head :no_content } 
       end        
     elsif params[:commit] == "Add Summoner Name" # save action for ign

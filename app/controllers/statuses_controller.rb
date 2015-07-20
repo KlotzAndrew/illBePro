@@ -19,7 +19,7 @@
     if user_signed_in?
       respond_to do |format|
         format.html { render nothing: true}
-        format.json { render json: Status.where("ignindex_id = ?", Ignindex.find_by_user_id(current_user.id).id).last }
+        format.json { render json: Status.find(params[:id]) }
       end    
     else
      respond_to do |format|

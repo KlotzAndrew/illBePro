@@ -23,12 +23,14 @@ button_cancel_needs_status_id = function(){
             $('#challenge_timer').data("chal_time_value", chal_timer)
             $('#cg_id').data('status_id', data.id)
             $('#end_game_track').attr('action', '/statuses/' + data.id)
+            $('#button_get_results').attr('action', '/statuses/' + data.id)
         }
     })
 
 }
 
 var js_game_starting = function(){
+    console.log("game starting")
     $('#button-game-cancel').removeClass("start-ghost")
     $('#start_game_track').addClass("start-ghost")
     $('#current_created_at').removeClass("start-ghost")
@@ -40,6 +42,7 @@ var js_game_starting = function(){
 }
 
 var js_game_ending = function(){
+    console.log("game ending")
     $('#button-game-cancel').addClass("start-ghost")
     $('#start_game_track').removeClass("start-ghost")
     $('#current_created_at').addClass("start-ghost")
@@ -62,7 +65,6 @@ var start_challenge = function(){
     $('#roll_prizes').hide(); // remove proc roller
     $('#show_chal').fadeIn(2500); // fadein hidden challenge
 
-
 };
 
 
@@ -78,18 +80,17 @@ var finish_button = function(){
         $('#hit-unfinish').toggleClass("start-ghost");
         $('#hit-finish').toggleClass("start-ghost");
         
-        if ( $('#cg-refresher').hasClass("cg-update-true") ) {
-        } else  {
-            $('#cg-refresher').toggleClass("cg-update-true") 
+        if (checking_game == false) {
+            check_game()
             console.log("button triggered check-game")
-            check_game()    
         }
     });        
 };
 
+checking_game = false
 var check_game = function(){
     $.ajax({
-        url: "/statuses",
+        url: "/statuses/" + $('#cg_id').data('status_id'),
         type: "GET",
         dataType: "json",
         success: function(data) {
@@ -99,9 +100,10 @@ var check_game = function(){
                 if (data.prize_id !== null) {
                     // document.location.reload(true);
                 } else {
-                    
-                    $('#v3_ingame').addClass("start-ghost")
-                    $('#v3_outgame').removeClass("start-ghost")                
+                    console.log("game updated")
+                    js_game_ending()
+
+                    checking_game = false                
                     kills = data.game_1["kills"]
                     deaths = data.game_1["deaths"]
                     assists = data.game_1["assists"]
@@ -111,19 +113,14 @@ var check_game = function(){
 
                     $('#game_champion').html(data.game_1["champion_id"])
                     $('#game_kda').html(game_summary)
-                    $('#game_length').html(duration)
-
-                    if (data.win_value == 2) { // won game
-                        $('#game_results').html("Victory")
-                    } else { // loss or timeout
-                        $('#game_results').html("Defeat")
-                    }
+                    // $('#game_length').html(duration)
                     
                 }
                 clearInterval(checkint)
                 clearTimeout(statusTimer);      
             } else {
                 var checkint = setTimeout(check_game, 15000)
+                checking_game = true
             }
         }
     });
