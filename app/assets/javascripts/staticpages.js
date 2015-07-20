@@ -212,7 +212,7 @@ var is_page_landing_page = function(){ // also runs static pages
   if (current_page == "landing_page") {
 		console.log("this is landing_page")
 		stop_setup_preview();
-		var previewSetupTimer = setTimeout( preview_steps_cycle, 5000);
+		var previewSetupTimer = setTimeout( preview_steps_cycle, 7000);
     } else {
       console.log("this is not landing_page");
     } 
