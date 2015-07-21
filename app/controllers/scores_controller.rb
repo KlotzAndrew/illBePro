@@ -17,7 +17,7 @@ class ScoresController < ApplicationController
           number_bottom = 0
           if !an_ach.challenge.wins_required.nil?
             number_top = number_top + an_ach.wins_recorded
-            number_bottom = an_ach.challenge.wins_required
+            number_bottom = number_bottom + an_ach.challenge.wins_required
           end
 
           if !an_ach.challenge.can_spell_name.nil?
@@ -30,8 +30,11 @@ class ScoresController < ApplicationController
             number_bottom = number_bottom + an_ach.challenge.con_wins_required
           end          
 
-          if number_bottom == 0 then number_bottom = 1 end
-          number = number_top/number_bottom
+          if number_bottom == 0
+            number_bottom = 1
+          end
+          
+          number = number_top/number_bottom.round(2)
           progress = (number.round(2)*100).round(0)
 
           block = []
