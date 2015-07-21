@@ -35,6 +35,14 @@
 				</div>
 			<% end %>
 		<% end %>
+		
+		<% if !@challenges_country.empty? %>	
+			<% @challenges_country.each do |x| %>
+				<div class="row">
+					<%= render 'new_block', :x => x %>
+				</div>
+			<% end %>
+		<% end %>		
 	</div>
 </section>
 

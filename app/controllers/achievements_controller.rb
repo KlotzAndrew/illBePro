@@ -36,6 +36,7 @@ class AchievementsController < ApplicationController
 		Rails.logger.info "@challenges_global: #{@challenges_global}"
 		@challenges_local = Region.find(ignindex.region).challenges.where.not(id: active_ones).map { |x| x }
 		Rails.logger.info "@challenges_local: #{@challenges_local}"
+		@challenges_country = Challenge.where("country = ?", ignindex.region.country).where.not(id: active_ones).map { |x| x }
 		
 	end
 

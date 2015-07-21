@@ -80,6 +80,8 @@ class IgnindicesController < ApplicationController
           @region_postal = region.postal_code
           @challenges_global = Challenge.where("global = ?", true).map { |x| x }
           @challenges_local = region.challenges.map { |x| x }
+          @challenges_country = Challenge.where("country = ?", region.country).map { |x| x }
+
         end
       elsif session[:setup_progress] == 3 #validate
         if @ignindex.id.nil? && (session[:region_id_temp].nil? or session[:challenge_id].nil?) #redidrect to step1
