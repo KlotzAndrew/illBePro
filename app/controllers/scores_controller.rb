@@ -12,6 +12,7 @@ class ScoresController < ApplicationController
 
         @achievements = []
         Ignindex.all.includes(:achievements).where("updated_at > ?", Time.at(cora_start)).where.not("summoner_name IS ?", nil).where.not("active_achievement IS ?", nil).each do |x|
+          Rails.logger.info "x.id:::: #{x.id}"
           an_ach = Achievement.find(x.active_achievement)
           number_top = 0
           number_bottom = 0

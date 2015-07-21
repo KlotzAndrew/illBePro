@@ -35,69 +35,71 @@
             </i>
         </h4>
 
-        <% e = 0 %>
-        <% if !x.can_spell_name.nil? %>
-        <div class="row">
-          <div class="col-md-7">
-            <% e = e+1 %>
-            <%= e %>) Spell "<%= x.can_spell_name %>" with the names of champions<br/>
-            (e.g. <strong>C</strong>orki, <strong>O</strong>laf, <strong>R</strong>yze, <strong>A</strong>zir)
+        <% if active != 3 %>
+          <% e = 0 %>
+          <% if !x.can_spell_name.nil? %>
+          <div class="row">
+            <div class="col-md-7">
+              <% e = e+1 %>
+              <%= e %>) Spell "<%= x.can_spell_name %>" with the names of champions<br/>
+              (e.g. <strong>C</strong>orki, <strong>O</strong>laf, <strong>R</strong>yze, <strong>A</strong>zir)
+            </div>
+            <div class="col-md-5">
+              <h2 style="margin-top: 0px">
+              <% name_count = x.can_spell_name.length %>
+              <% i = 0 %>
+              <% name_count.times do |y| %>
+              <% if x.can_spell_name_open.include?(x.can_spell_name[i]) %>
+                <%= x.can_spell_name[i] %>
+              <% else %>
+              <span class="spelling-name">  
+                <%= x.can_spell_name[i] %>
+              </span>
+              <% end %>
+              <% if x.merchant == "Papa John's" && i == 3 %>
+              <br/>
+              <% end %>
+              <% i = i += 1 %>
+              <% end %>
+              </h2>                   
+            </div>              
           </div>
-          <div class="col-md-5">
-            <h2 style="margin-top: 0px">
-            <% name_count = x.can_spell_name.length %>
-            <% i = 0 %>
-            <% name_count.times do |y| %>
-            <% if x.can_spell_name_open.include?(x.can_spell_name[i]) %>
-              <%= x.can_spell_name[i] %>
-            <% else %>
-            <span class="spelling-name">  
-              <%= x.can_spell_name[i] %>
-            </span>
-            <% end %>
-            <% if x.merchant == "Papa John's" && i == 3 %>
-            <br/>
-            <% end %>
-            <% i = i += 1 %>
-            <% end %>
-            </h2>                   
-          </div>              
-        </div>
-        <% end %>
+          <% end %>
 
-        <% if !x.wins_required.nil? %>
-        <% if x.wins_recorded.nil? then x.wins_recorded = 0 end %>
-        <div class="row" style="margin-top: 0px">
-          <div class="col-md-7">
-            <% e = e+1 %>
-          	 <%= e %>) Win <%= x.wins_required %> games
+          <% if !x.wins_required.nil? %>
+          <% if x.wins_recorded.nil? then x.wins_recorded = 0 end %>
+          <div class="row" style="margin-top: 0px">
+            <div class="col-md-7">
+              <% e = e+1 %>
+            	 <%= e %>) Win <%= x.wins_required %> games
+            </div>
+            <div class="col-md-5">
+              <div class="progress basic-border text-center" style="margin-bottom:5px;">
+                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= (x.wins_recorded/x.wins_required.round(2)*100).round %>%; min-width: 0.5em;" >
+                </div>
+                  <%= x.wins_recorded %>/<%= x.wins_required %>
+              </div>                
+            </div> 
           </div>
-          <div class="col-md-5">
-            <div class="progress basic-border text-center" style="margin-bottom:5px;">
-              <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= (x.wins_recorded/x.wins_required.round(2)*100).round %>%; min-width: 0.5em;" >
-              </div>
-                <%= x.wins_recorded %>/<%= x.wins_required %>
-            </div>                
-          </div> 
-        </div>
-       <% end %>
+         <% end %>
 
-        <% if !x.challenge.con_wins_required.nil? %>
-         <% if x.con_wins_recorded.nil? then x.con_wins_recorded = 0 end %>
-        <div class="row" style="margin-top: 0px">
-          <div class="col-md-7">
-            <% e = e+1 %>
-             <%= e %>) Win <%= x.challenge.con_wins_required %> games in a row
+          <% if !x.challenge.con_wins_required.nil? %>
+           <% if x.con_wins_recorded.nil? then x.con_wins_recorded = 0 end %>
+          <div class="row" style="margin-top: 0px">
+            <div class="col-md-7">
+              <% e = e+1 %>
+               <%= e %>) Win <%= x.challenge.con_wins_required %> games in a row
+            </div>
+            <div class="col-md-5">
+              <div class="progress basic-border text-center" style="margin-bottom:5px;">
+                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= (x.con_wins_recorded/x.challenge.con_wins_required.round(2)*100).round %>%; min-width: 0.5em;" >
+                </div>
+                  <%= x.con_wins_recorded %>/<%= x.challenge.con_wins_required %>
+              </div>                
+            </div> 
           </div>
-          <div class="col-md-5">
-            <div class="progress basic-border text-center" style="margin-bottom:5px;">
-              <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= (x.con_wins_recorded/x.challenge.con_wins_required.round(2)*100).round %>%; min-width: 0.5em;" >
-              </div>
-                <%= x.con_wins_recorded %>/<%= x.challenge.con_wins_required %>
-            </div>                
-          </div> 
-        </div>
-       <% end %>       
+         <% end %>
+       <% end %> 
 
 
 

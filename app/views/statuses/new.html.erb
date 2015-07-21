@@ -84,7 +84,7 @@
         <% if @ignindex.id.nil? %>
 
         <% else %>
-          <% if @achievement.id.nil? %>
+          <% if @achievement.id.nil? or @ignindex.active_achievement.nil? %>
             <%= render 'achievements/current_block', :x => @achievement, :active => 3 %>
           <% else %>
             <%= render 'achievements/current_block', :x => @achievement, :active => 2 %>
