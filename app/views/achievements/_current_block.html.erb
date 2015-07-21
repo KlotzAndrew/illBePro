@@ -55,6 +55,9 @@
               <%= x.can_spell_name[i] %>
             </span>
             <% end %>
+            <% if x.merchant == "Papa John's" && i == 3 %>
+            <br/>
+            <% end %>
             <% i = i += 1 %>
             <% end %>
             </h2>                   
@@ -112,7 +115,7 @@
           <% if x.merchant == "Cora Pizza" %>
             <%= image_tag("cora1.jpg", size: "375x168", class: "brand-banner") %>
           <% elsif x.merchant == "Papa John's" %>
-            <%= image_tag("papajohns1.jpg", size: "375x168", class: "brand-banner") %>
+            <%= image_tag("papajohns3.jpg", size: "168x168", class: "brand-banner") %>
           <% else %>
             <%= image_tag("front-cover4.jpg", size: "375x168", class: "brand-banner") %>
           <% end %>

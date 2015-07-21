@@ -59,6 +59,8 @@
         <div class="row" style="margin-top:25px;">
           <% if x.merchant == "Cora Pizza" %>
             <%= link_to "Learn More", current_achievement_path, :class => "", :method => :get, :style => "margin-top: 50px;"   %>
+          <% elsif x.merchant == "Papa John's" %>
+            (Papa John's is not an official sponsor <%= link_to "Learn More", papa_johns_path, :class => "", :method => :get, :style => "margin-top: 50px;"   %>)
           <% end %>
         </div>
       </div>
@@ -70,6 +72,8 @@
           </h2>
           <% if x.merchant == "Cora Pizza" %>
             <%= image_tag("cora1.jpg", size: "375x168", class: "brand-banner") %>
+          <% elsif x.merchant == "Papa John's" %>
+            <%= image_tag("papajohns3.jpg", size: "168x168", class: "brand-banner") %>
           <% else %>
             <%= image_tag("front-cover.jpg", size: "375x168", class: "brand-banner") %>
           <% end %>

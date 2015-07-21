@@ -24,7 +24,15 @@
 						<%= render 'challenges_available', :x => x, :active => 1 %>			
 					<% end %>
 				<% end %>
-			</div>			
+			</div>
+			
+			<div class="row">
+				<% if !@challenges_country.nil? %>
+					<% @challenges_country.each do |x| %>
+						<%= render 'challenges_available', :x => x, :active => 1 %>			
+					<% end %>
+				<% end %>
+			</div>					
 		</div>
 	</div>
 </div>
