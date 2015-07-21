@@ -76,7 +76,8 @@ class AchievementsController < ApplicationController
 		active_ones = ignindex.achievements.map { |x| x.challenge_id }
 		challenges_global = Challenge.where("global = ?", true).where.not(id: active_ones)
 		challenges_local = Region.find(ignindex.region).challenges.where.not(id: active_ones)
-		all_challenges = challenges_global + challenges_local
+		challenges_country = Challenge.where("country = ?", ignindex.region.country).where.not(id: active_ones)
+		all_challenges = challenges_global + challenges_local + challenges_country
 		match_chals = lambda {|x| if x.id == chalId then x end}	#just fancy :p
 		@challenge = all_challenges.select(&match_chals)		
 		if !@challenge.empty? 
