@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150713205442) do
+ActiveRecord::Schema.define(version: 20150721033043) do
 
   create_table "achievements", force: true do |t|
     t.string   "description"
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 20150713205442) do
     t.integer  "wins_recorded"
     t.string   "name"
     t.string   "merchant"
+    t.integer  "con_wins_recorded"
   end
 
   create_table "challenge_regions", force: true do |t|
@@ -56,6 +57,7 @@ ActiveRecord::Schema.define(version: 20150713205442) do
     t.integer  "wins_required"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "con_wins_required"
   end
 
   create_table "champions", force: true do |t|

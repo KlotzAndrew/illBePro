@@ -782,7 +782,8 @@ class IgnindicesController < ApplicationController
         :can_spell_name => challenge.can_spell_name,
         :can_spell_name_open => challenge.can_spell_name,
         :wins_required => challenge.wins_required,
-        :wins_recorded => 0)
+        :wins_recorded => 0,
+        :con_wins_recorded => 0)
 
       Rails.logger.info "@achievement.id: #{@achievement.id}"
 

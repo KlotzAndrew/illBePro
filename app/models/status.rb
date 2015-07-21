@@ -558,7 +558,7 @@ class Status < ActiveRecord::Base
                           
                           ign_score = Ignindex.find(key_summoner[0].ignindex_id)
                           Rails.logger.info "#{cron_st}: achievement refresh for #{ign_score.id}"
-                          achievement_refresh(ign_score.id)
+                          # achievement_refresh(ign_score.id)
                           curent_ach = Achievement.find(ign_score.active_achievement)
                           if !curent_ach.nil?
                             achievement_play(cron_st, curent_ach, clock_active_status)
@@ -784,7 +784,7 @@ class Status < ActiveRecord::Base
 
                           ign_score = Ignindex.find(key_summoner[0].ignindex_id)
                           Rails.logger.info "#{cron_st}: achievement refresh for #{ign_score.id}"
-                          achievement_refresh(ign_score.id)
+                          # achievement_refresh(ign_score.id)
                           curent_ach = Achievement.find(ign_score.active_achievement)
                           if !curent_ach.nil?
                             achievement_play(cron_st, curent_ach, clock_active_status)
@@ -872,6 +872,33 @@ class Status < ActiveRecord::Base
   def self.achievement_play(cron_st, ach, status)
     Rails.logger.info "#{cron_st}: achievement_up, status.win_value #{status.win_value}"
 
+    if !ach.challenge.wins_required.nil?
+      games_won(cron_st, ach, status)
+    end
+
+    if !ach.challenge.can_spell_name.nil? && (ach.can_spell_name_open.length > 0) #this achievement is available
+      spell_letter(cron_st, ach, status)
+    end
+
+    if !ach.challenge.con_wins_required.nil?
+      consecutive_games_won(cron_st, ach, status)
+    end
+
+    Rails.logger.info "#{cron_st}: finished ach experience update"
+  
+  end
+
+  def self.consecutive_games_won(cron_st, ach, status)
+    if status.win_value == 2
+      ach.update(
+        :con_wins_recorded => ach.con_wins_recorded += 1)
+    else
+      ach.update(
+        :con_wins_recorded => 0)
+    end    
+  end
+
+  def self.games_won(cron_st, ach, status)
     if status.win_value == 2 # game won, all challenges use this so far
       ach.update(
         :wins_recorded => ach.wins_recorded += 1)
@@ -879,13 +906,6 @@ class Status < ActiveRecord::Base
     else
       Rails.logger.info "#{cron_st}: from game won (#{status.win_value}) ach_win #{ach.wins_recorded}"
     end
-
-    if ach.can_spell_name_open.length > 0 #this achievement is available
-      spell_letter(cron_st, ach, status)
-    end
-
-    Rails.logger.info "#{cron_st}: finished ach experience update"
-  
   end
 
   def self.spell_letter(cron_st, ach, status)
@@ -903,118 +923,49 @@ class Status < ActiveRecord::Base
       Rails.logger.info "#{cron_st}: spelling_vandor_name finished"    
   end
 
-  # def self.experience_gain(cron_st, ach, status)
-  #   Rails.logger.info "#{cron_st}: experience_gain, status.win_value #{status.win_value}"
-  #   ach_win = 0
-  #   ach_exp = 0
+  # def self.achievement_refresh(session_ignindex_id) #input also takes current_user.ignindex_id
+  #   Rails.logger.info "session_ignindex_id: #{session_ignindex_id}"
+  #   gca_ign = Ignindex.where("id = ?", session_ignindex_id).first
+  #   Rails.logger.info "gca_ign.id: #{gca_ign.id}"
+  #   if gca_ign.active_achievement.nil?
 
-  #   if ach.can_spell_name_open.length > 0 #this achievement is available
-  #     Rails.logger.info "#{cron_st}: ach spelling has length: #{ach.can_spell_name_open}"
-
-  #     champion_letter = status.game_1[:champion_id][0]
-  #     Rails.logger.info "#{cron_st}: champion_letter: #{champion_letter}"
-  #     if ach.can_spell_name_open.include?(champion_letter)
-  #       ach.update(
-  #         :can_spell_name_open => ach.can_spell_name_open.sub(champion_letter, "")) 
-  #       ach_exp = ach_exp += 1
-  #       Rails.logger.info "#{cron_st}: ach spelling has new length: #{ach.can_spell_name_open}"
-  #       Rails.logger.info "#{cron_st}: from game won (#{status.win_value}) ach_win #{ach_win}, ach_exp #{ach}"
-  #       Rails.logger.info "double check w/ table: #{Achievement.find(ach.id).can_spell_name_open}"
-  #     else 
-  #       "#{cron_st}: ach spelling has new same length"
+  #     if Region.find(gca_ign.region_id).prize_id_tier1.nil? #fixes sloppy db default vars
+  #       Region.find(gca_ign.region_id).update(
+  #         :prize_id_tier1 => "[]")
   #     end
 
-  #     Rails.logger.info "#{cron_st}: spelling_vandor_name finished"
-  #   end
+  #     if JSON.parse(Region.find(gca_ign.region_id).prize_id_tier1)[0] == 1
+  #       prizing_here = 1
+  #     else
+  #       prizing_here = 0
+  #     end
+  #     gca_ach_search = Achievement.where("ignindex_id = ?", gca_ign.id).where("result IS ?", nil).where("kind = ?", prizing_here).first
 
-  #   if status.win_value == 2 # game won
-  #     ach_win = 1
-  #     ach_exp = ach_exp += 1
-  #     Rails.logger.info "#{cron_st}: from game won (#{status.win_value}) ach_win #{ach_win}, ach_exp #{ach_exp}"
-  #   else
-  #     Rails.logger.info "#{cron_st}: from game won (#{status.win_value}) ach_win #{ach_win}, ach_exp #{ach_exp}"
-  #   end
+  #     if gca_ach_search.nil?
+  #       new_ach = Achievement.create(
+  #         :ignindex_id => session_ignindex_id,
+  #         :experience_req => 10,
+  #         :can_spell_name => "CORA",
+  #         :can_spell_name_open => "CORA",
+  #         :description => "Earn 10 experience points to get an end of the week reward. Each win recoded is 1exp, winning game with a champion whose name starts with one of the letters CORA is 2exp.",
+  #         :kind => prizing_here,
+  #         :expire => 4.weeks.from_now.to_i )
+  #       Ignindex.where("id = ?", session_ignindex_id).first.update(
+  #         :active_achievement => new_ach.id)
+  #     else        
+  #       new_ach = gca_ach_search
+  #       Ignindex.where("id = ?", session_ignindex_id).first.update(
+  #         :active_achievement => new_ach.id)        
+  #     end
 
-  #   Rails.logger.info "#{cron_st}: increasing experience from: #{ach.experience_earned} by #{ach_exp}"
-  #   Rails.logger.info "#{cron_st}: increasing games from: #{ach.games_played} by #{ach_win}"
-  #   ach.update(
-  #     :experience_earned => ach.experience_earned += ach_exp,
-  #     :games_played => ach.games_played += ach_win)
-  #   Rails.logger.info "#{cron_st}: finished ach experience update"
-
-  #   Rails.logger.info "#{cron_st}: achievement win status: #{ach.experience_req >= ach.experience_earned}"
-  #   if ach.experience_earned >= ach.experience_req   #acheivement is won
-  #     ach.update(
-  #       :result => 2)
-  #     ach.ignindex.update(
-  #       :active_achievement => nil,
-  #       :ign_challenge_points => ach.ignindex.ign_challenge_points += 1)
-  #   end
-  #   Rails.logger.info "#{cron_st}: experience_gain finished"
-  # end  
-
-  def self.spelling_vandor_name(cron_st, ach, status, ach_exp)
-    Rails.logger.info "#{cron_st}: ach spelling has length: #{ach.can_spell_name_open}"
-
-    champion_letter = status.game_1[:champion_id][0]
-    Rails.logger.info "#{cron_st}: champion_letter: #{champion_letter}"
-    if ach.can_spell_name_open.include?(champion_letter)
-      ach.update(
-        :can_spell_name_open => ach.can_spell_name_open.sub(champion_letter, "")) 
-      ach_exp = ach_exp += 1
-      Rails.logger.info "#{cron_st}: ach spelling has new length: #{ach.can_spell_name_open}"
-      Rails.logger.info "#{cron_st}: from game won (#{status.win_value}) ach_win #{ach_win}, ach_exp #{ach}"
-      Rails.logger.info "double check w/ table: #{Achievement.find(ach.id).can_spell_name_open}"
-    else 
-      "#{cron_st}: ach spelling has new same length"
-    end
-
-    Rails.logger.info "#{cron_st}: spelling_vandor_name finished"
-  end
-
-  def self.achievement_refresh(session_ignindex_id) #input also takes current_user.ignindex_id
-    Rails.logger.info "session_ignindex_id: #{session_ignindex_id}"
-    gca_ign = Ignindex.where("id = ?", session_ignindex_id).first
-    Rails.logger.info "gca_ign.id: #{gca_ign.id}"
-    if gca_ign.active_achievement.nil?
-
-      if Region.find(gca_ign.region_id).prize_id_tier1.nil? #fixes sloppy db default vars
-        Region.find(gca_ign.region_id).update(
-          :prize_id_tier1 => "[]")
-      end
-
-      if JSON.parse(Region.find(gca_ign.region_id).prize_id_tier1)[0] == 1
-        prizing_here = 1
-      else
-        prizing_here = 0
-      end
-      gca_ach_search = Achievement.where("ignindex_id = ?", gca_ign.id).where("result IS ?", nil).where("kind = ?", prizing_here).first
-
-      if gca_ach_search.nil?
-        new_ach = Achievement.create(
-          :ignindex_id => session_ignindex_id,
-          :experience_req => 10,
-          :can_spell_name => "CORA",
-          :can_spell_name_open => "CORA",
-          :description => "Earn 10 experience points to get an end of the week reward. Each win recoded is 1exp, winning game with a champion whose name starts with one of the letters CORA is 2exp.",
-          :kind => prizing_here,
-          :expire => 4.weeks.from_now.to_i )
-        Ignindex.where("id = ?", session_ignindex_id).first.update(
-          :active_achievement => new_ach.id)
-      else        
-        new_ach = gca_ach_search
-        Ignindex.where("id = ?", session_ignindex_id).first.update(
-          :active_achievement => new_ach.id)        
-      end
-
-      @achievement = new_ach
-      number = @achievement.experience_earned/@achievement.experience_req
-      @achievement_progress = number.round(2)
+  #     @achievement = new_ach
+  #     number = @achievement.experience_earned/@achievement.experience_req
+  #     @achievement_progress = number.round(2)
       
-    else
-      @achievement = Achievement.find(Ignindex.where("id = ?", session_ignindex_id).first.active_achievement)
-    end
-  end  
+  #   else
+  #     @achievement = Achievement.find(Ignindex.where("id = ?", session_ignindex_id).first.active_achievement)
+  #   end
+  # end  
 
 
 end

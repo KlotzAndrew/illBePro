@@ -53,9 +53,9 @@ class AchievementsController < ApplicationController
 
 	    respond_to do |format|
 	      if @achievement.save
-	        format.html { redirect_to new_status_path }
+	        format.html { redirect_to root_path }
 	      elsif @ignindex.save
-	      	format.html { redirect_to new_status_path }
+	      	format.html { redirect_to root_path }
 	      else
 	        format.html { redirect_to achievements_path, alert: 'Something went wrong with your Challenge selection!' }
 	      end
@@ -91,7 +91,8 @@ class AchievementsController < ApplicationController
 				:can_spell_name => @challenge.can_spell_name,
 				:can_spell_name_open => @challenge.can_spell_name,
 				:wins_required => @challenge.wins_required,
-				:wins_recorded => 0)
+				:wins_recorded => 0,
+				:con_wins_recorded => 0)
 			ignindex.update(
 				:active_achievement => achievement.id)
 		end

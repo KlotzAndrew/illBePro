@@ -19,22 +19,35 @@
               </i>
           </h4>
 
+        <% e = 0 %>
         <% if !x.can_spell_name.nil? %>
         <div class="row" style="margin-top: 10px">
           <div class="col-md-12">
-            1) Spell "<%= x.can_spell_name %>" with the names of champions<br/>
+            <% e = e+1 %>
+            <%= e %>) Spell "<%= x.can_spell_name %>" with the names of champions<br/>
             (e.g. <strong>C</strong>orki, <strong>O</strong>laf, <strong>R</strong>yze, <strong>A</strong>zir)
           </div>            
         </div>
         <% end %>
 
-        <% if x.wins_required != 0 %>
+        <% if !x.wins_required.nil? %>
         <div class="row" style="margin-top: 10px">
           <div class="col-md-12">
-            2) Win <%= x.wins_required %> games
+            <% e = e+1 %>
+            <%= e %>) Win <%= x.wins_required %> games
           </div>
         </div>
         <% end %>
+
+        <% if !x.con_wins_required.nil? %>
+        <div class="row" style="margin-top: 10px">
+          <div class="col-md-12">
+            <% e = e+1 %>
+            <%= e %>) Win <%= x.con_wins_required %> games in a row
+          </div>
+        </div>
+        <% end %>
+
 
         <div class="row" style="margin-top:25px;">
           <% if x.merchant == "Cora Pizza" %>

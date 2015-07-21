@@ -35,11 +35,12 @@
             </i>
         </h4>
 
-        <% if x.wins_required != 0 %>
+        <% e = 0 %>
         <% if !x.can_spell_name.nil? %>
         <div class="row">
           <div class="col-md-7">
-            1) Spell "<%= x.can_spell_name %>" with the names of champions<br/>
+            <% e = e+1 %>
+            <%= e %>) Spell "<%= x.can_spell_name %>" with the names of champions<br/>
             (e.g. <strong>C</strong>orki, <strong>O</strong>laf, <strong>R</strong>yze, <strong>A</strong>zir)
           </div>
           <div class="col-md-5">
@@ -61,10 +62,12 @@
         </div>
         <% end %>
 
+        <% if !x.wins_required.nil? %>
         <% if x.wins_recorded.nil? then x.wins_recorded = 0 end %>
         <div class="row" style="margin-top: 0px">
           <div class="col-md-7">
-          	2) Win <%= x.wins_required %> games
+            <% e = e+1 %>
+          	 <%= e %>) Win <%= x.wins_required %> games
           </div>
           <div class="col-md-5">
             <div class="progress basic-border text-center" style="margin-bottom:5px;">
@@ -75,6 +78,23 @@
           </div> 
         </div>
        <% end %>
+
+        <% if !x.challenge.con_wins_required.nil? %>
+         <% if x.con_wins_recorded.nil? then x.con_wins_recorded = 0 end %>
+        <div class="row" style="margin-top: 0px">
+          <div class="col-md-7">
+            <% e = e+1 %>
+             <%= e %>) Win <%= x.challenge.con_wins_required %> games in a row
+          </div>
+          <div class="col-md-5">
+            <div class="progress basic-border text-center" style="margin-bottom:5px;">
+              <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= (x.con_wins_recorded/x.challenge.con_wins_required.round(2)*100).round %>%; min-width: 0.5em;" >
+              </div>
+                <%= x.con_wins_recorded %>/<%= x.challenge.con_wins_required %>
+            </div>                
+          </div> 
+        </div>
+       <% end %>       
 
 
 
