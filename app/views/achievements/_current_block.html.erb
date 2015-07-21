@@ -111,6 +111,8 @@
           </h2>          
           <% if x.merchant == "Cora Pizza" %>
             <%= image_tag("cora1.jpg", size: "375x168", class: "brand-banner") %>
+          <% elsif x.merchant == "Papa John's" %>
+            <%= image_tag("papajohns1.jpg", size: "375x168", class: "brand-banner") %>
           <% else %>
             <%= image_tag("front-cover4.jpg", size: "375x168", class: "brand-banner") %>
           <% end %>

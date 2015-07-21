@@ -24,6 +24,9 @@ class StaticpagesController < ApplicationController
   def current_achievement
   end
 
+  def papa_johns
+  end
+
   def about
   end
 

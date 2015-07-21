@@ -47,6 +47,7 @@ Rails.application.routes.draw do
   get 'teaser_challenges', to: "staticpages#teaser_challenges"
   get 'teaser_prize_zone', to: "staticpages#teaser_prize_zone"
   get 'current_achievement', to: "staticpages#current_achievement"
+  get 'papa_johns', to: "staticpages#papa_johns"
   get 'dash', to: "staticpages#dash"
   
   get 'about', to: "staticpages#about"
