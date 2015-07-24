@@ -111,7 +111,7 @@ RSpec.describe Status, :type => :model do
 		describe "section summoner_id" do
 			describe "times out after 10 min" do
 				ignindex = Ignindex.create(
-					:validation_timer => Time.now.to_i - 601)
+					:validation_timer => Time.now.to_i - 701)
 
 				Status.api_call
 				it "sets timer to nil" do
@@ -124,14 +124,14 @@ RSpec.describe Status, :type => :model do
 			end
 
 			describe "updates summoner_id" do
-				# ignindex = Ignindex.create(
-				# 	:validation_timer => Time.now.to_i,
-				# 	:summoner_name => "Hide on Bush")
+				ignindex = Ignindex.create(
+					:validation_timer => Time.now.to_i - 701,
+					:summoner_name => "Hide on Bush")
 
-				# Status.api_call
-				# it "updates summoner_name_ref" do
-				# 	expect(ignindex.reload.summoner_name_ref).to eq(ignindex.summoner_name.mb_chars.downcase.gsub(' ', '').to_s)
-				# end
+				Status.api_call
+				it "updates summoner_name_ref" do
+					expect(ignindex.reload.summoner_name_ref).to eq(ignindex.summoner_name.mb_chars.downcase.gsub(' ', '').to_s)
+				end
 			end
 		end
 
