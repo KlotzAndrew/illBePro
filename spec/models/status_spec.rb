@@ -85,7 +85,7 @@ RSpec.describe Status, :type => :model do
 
 	describe "league clockwork method" do
 
-		describe "method components" do
+		describe "league_summoner_byname" do
 			it "records last time run" do
 				static = Staticpage.create
 				Status.api_call
@@ -112,7 +112,9 @@ RSpec.describe Status, :type => :model do
 
 				expect(ignindex.reload.summoner_id).to eq(60783)
 			end
+		end
 
+		describe "league_summoner" do
 			it "verify mastery" do
 				Staticpage.create
 				ignindex = Ignindex.create(
@@ -129,7 +131,9 @@ RSpec.describe Status, :type => :model do
 				expect(ignindex.reload.validation_timer).to be_nil
 				expect(ignindex.reload.validation_string).to be_nil
 			end
+		end
 
+		describe "league_matchhistory" do
 			it "times-out status" do
 				Staticpage.create
 				ignindex = Ignindex.create(
@@ -150,13 +154,12 @@ RSpec.describe Status, :type => :model do
 				expect(status.reload.win_value).to eq(1)
 			end			
 
-			it "clockwork win/loss w/ & w/o ach" do
+			it "records loss" do
 				Staticpage.create
-				Champion.create(
+				champ = Champion.create(
 					:id => 22,
 					:champion => "Ashe")
 
-				#status for win
 				ignindex1 = Ignindex.create(
 					:summoner_name => "TheOddOne",
 					:summoner_name_ref => "theoddone",
@@ -166,12 +169,46 @@ RSpec.describe Status, :type => :model do
 				status_loss = Status.create(
 					:created_at => Time.at(1437883032 - 2143).utc,
 					:ignindex_id => ignindex1.id,
-					:value => (Time.now.to_i - (1437883032 - 2143 - 100)),
+					:value => (Time.now.to_i - (1437883032 - 2143 - 100)), #1st game ago was loss
 					:kind => 5,
 					:summoner_id => ignindex1.summoner_id,
 					:summoner_name => ignindex1.summoner_name)
 
-				#status for loss
+				Status.api_call
+				expect(status_loss.reload.win_value).to eq(0)
+				expect(status_loss.reload.game_1[:champion_id]).to eq(champ.champion)
+			end
+
+			it "records loss (for long status)" do
+				Staticpage.create
+				champ = Champion.create(
+					:id => 121,
+					:champion => "Khazix")
+
+				ignindex1 = Ignindex.create(
+					:summoner_name => "TheOddOne",
+					:summoner_name_ref => "theoddone",
+					:summoner_id => 60783,
+					:summoner_validated => true,
+					:region_id => 1)
+				status_loss = Status.create(
+					:created_at => Time.at(1437878752 - 1337).utc,
+					:ignindex_id => ignindex1.id,
+					:value => (Time.now.to_i - (1437878752 - 1337 - 100)),
+					:kind => 5,
+					:summoner_id => ignindex1.summoner_id,
+					:summoner_name => ignindex1.summoner_name) #3rd game ago was loss
+
+				Status.api_call
+				expect(status_loss.reload.win_value).to eq(0)
+				expect(status_loss.reload.game_1[:champion_id]).to eq(champ.champion)
+			end			
+
+			it "records win" do
+				Staticpage.create
+				champ = Champion.create(
+					:id => 22,
+					:champion => "Ashe")
 				ignindex2 = Ignindex.create(
 					:summoner_name => "BoxStripe",
 					:summoner_name_ref => "boxstripe",
@@ -184,9 +221,18 @@ RSpec.describe Status, :type => :model do
 					:value => (Time.now.to_i - (1437880882 - 1313 - 100)),
 					:kind => 5,
 					:summoner_id => ignindex2.summoner_id,
-					:summoner_name => ignindex2.summoner_name)
+					:summoner_name => ignindex2.summoner_name) #2nd game ago was win
 
-				#status for win w/ ach
+				Status.api_call
+				expect(status_win.reload.win_value).to eq(2)
+				expect(status_win.reload.game_1[:champion_id]).to eq(champ.champion)
+			end
+
+			it "win updates ach_wins + ach_letters" do
+				Staticpage.create
+				champ = Champion.create(
+					:id => 22,
+					:champion => "Ashe")
 				ignindex3 = Ignindex.create(
 					:summoner_name => "Nightblue3",
 					:summoner_name_ref => "nightblue3",
@@ -226,15 +272,62 @@ RSpec.describe Status, :type => :model do
 				ignindex3.update(
 					:active_achievement => achievement1.id)
 
-
 				Status.api_call
-				expect(status_loss.reload.win_value).to eq(0)
-				expect(status_win.reload.win_value).to eq(2)
-
 				expect(status_win_ach1.reload.win_value).to eq(2)
 				expect(achievement1.reload.can_spell_name_open).to eq("COR")
 				expect(achievement1.reload.wins_recorded).to eq(1)
-			end					
+				expect(status_win_ach1.reload.game_1[:champion_id]).to eq(champ.champion)
+			end	
+
+			it "win updates con_wins_recorded" do
+				Staticpage.create
+				Champion.create(
+					:id => 22,
+					:champion => "Ashe")
+				ignindex3 = Ignindex.create(
+					:summoner_name => "Nightblue3",
+					:summoner_name_ref => "nightblue3",
+					:summoner_id => 25850956,
+					:summoner_validated => true,
+					:region_id => 1)
+				status_win_ach1 = Status.create(
+					:created_at => Time.at(1437880882 - 1313).utc,
+					:ignindex_id => ignindex3.id,
+					:value => (Time.now.to_i - (1437880882 - 1313 - 100)),
+					:kind => 5,
+					:summoner_id => ignindex3.summoner_id,
+					:summoner_name => ignindex3.summoner_name)
+				challenge1 = Challenge.create(
+					:merchant => "illBePro",
+					:available => true,
+					:expiery => (Time.now.to_i + 4.weeks.to_i),
+					:name => "Hot Streak",
+					:global => true,
+					:global_prizing => false,
+					:local_prizing => false,
+					:can_spell_name => nil,
+					:wins_required => nil,
+					:con_wins_required => 3)
+				achievement1 = Achievement.create(
+					:ignindex_id => ignindex3.id,
+			        :region_id => ignindex3.region_id,
+			        :challenge_id => challenge1.id,
+			        :expire => challenge1.expiery,
+			        :name => challenge1.name,
+			        :merchant => challenge1.merchant,
+			        :has_prizing => challenge1.local_prizing,
+			        :can_spell_name => challenge1.can_spell_name,
+			        :can_spell_name_open => challenge1.can_spell_name,
+			        :wins_required => challenge1.wins_required,
+			        :wins_recorded => 0,
+			        :con_wins_recorded => 1)
+				ignindex3.update(
+					:active_achievement => achievement1.id)
+
+				Status.api_call
+				expect(status_win_ach1.reload.win_value).to eq(2)
+				expect(achievement1.reload.con_wins_recorded).to eq(2)
+			end							
 		end
 
 
