@@ -1,7 +1,5 @@
 require 'rails_helper'
 
-
-
 RSpec.describe Status, :type => :model do
 
   it "has none after one was created in a previous example" do
