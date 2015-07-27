@@ -38,7 +38,7 @@
         </div>
         <% end %>
 
-        <% if x.wins_required != 0 %>
+        <% if !x.wins_required.nil? %>
         <div class="row" style="margin-top: 10px">
           <div class="col-md-12">
             <% e = e+1 %>
