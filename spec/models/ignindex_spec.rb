@@ -36,41 +36,33 @@ RSpec.describe Ignindex, :type => :model do
 		describe "valid prize" do
 
 			describe "prize not attached to ignindex" do
-				prize = Prize.create(
-					:assignment => 1)
-				ignindex = Ignindex.create(
-					:prize_id => prize.id)
-
-				ignindex.assign_prize("Accept")
 				it "does not assign prize" do
+					prize = Prize.create(
+						:assignment => 1)
+					ignindex = Ignindex.create(
+						:prize_id => prize.id)
+
+					ignindex.assign_prize("Accept")
 					expect(prize.reload.assignment).not_to eq(2)
 				end
 			end
 
 			describe "assigns prize for 'accept'" do
-				prize = Prize.create(
-					:assignment => 1)
-				ignindex = Ignindex.create(
-					:prize_id => prize.id)
-				prize.update(
-					:ignindex_id => ignindex.id)				
-				ignindex.assign_prize("Accept")
-
 				it "prize marked as accepted" do
+					prize = Prize.create(
+						:assignment => 1)
+					ignindex = Ignindex.create(
+						:prize_id => prize.id)
+					prize.update(
+						:ignindex_id => ignindex.id)				
+					ignindex.assign_prize("Accept")
+
 					expect(prize.reload.assignment).to eq(2)
-				end
-
-				it "prize marked as delivered" do
 					expect(prize.reload.delivered_at).to be_within(10).of(Time.now.to_i)
-				end
-
-				it "marks ignindex prize_id open" do
 					expect(ignindex.reload.reload.prize_id).to eq(nil)
-				end
-
-				it "marks last prize for ignindex" do
 					expect(ignindex.reload.last_prize_time).to be_within(10).of(Time.now.to_i)
 				end
+
 			end
 		end
 	end

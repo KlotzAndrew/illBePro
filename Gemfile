@@ -2,42 +2,29 @@ source 'https://rubygems.org'
 
 require 'open-uri'
 gem 'devise', '~> 3.4.0'
-
-gem 'simple_form'
-
-gem 'unicorn'
-
+gem 'simple_form', '3.0.2'
+gem 'unicorn', '4.8.3'
 gem 'clockwork', :git => "https://github.com/tomykaira/clockwork.git"
-
-# gem 'whenever', :require => false
+gem "typhoeus", '0.6.9'
+gem 'newrelic_rpm'
+gem "introjs-rails"
+gem "font-awesome-rails"
 
 group :development, :test do
-	gem 'sqlite3'
-	
+	gem 'sqlite3'	
 	gem 'rspec-rails', '~> 3.0'
-	gem 'shoulda'
+	gem 'shoulda', '3.5.0'
 end
 
 group :test do
 	gem 'webmock'
+	gem 'database_cleaner'
 end
 
 group :production do
 	gem 'pg'
 	gem 'rails_12factor'
 end
-
-gem "typhoeus"
-gem 'newrelic_rpm'
-
-
- #gem "chardinjs-rails"
- gem "introjs-rails"
-
- gem "font-awesome-rails"
-
-
-# gem 'geocoder'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'

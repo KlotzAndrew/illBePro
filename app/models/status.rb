@@ -24,8 +24,6 @@ class Status < ActiveRecord::Base
   def one_fox_one_gun #this is 1 game/user + concurrent requests/API
     ignindex = self.ignindex
     if ignindex.statuses.where("win_value IS ?", nil).count > 0
-      # errors.add(:region_required, '- You need to select a prize zone to start a challenge')
-
       errors.add(:you_can, 'only have 1 challenge running at a time!')
     elsif Status.all.where("created_at >= ?", Time.now - 60.seconds).count > 19
       errors.add(:start_queue, ' is full! Try back in 60 seconds')
@@ -78,7 +76,6 @@ class Status < ActiveRecord::Base
           if mass_count > 0 && mass_count%40 == 0
             Rails.logger.info "#{cron_st}: Running api call for (#{mass_summoner})"
             url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/#{mass_summoner}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
-            puts url
             val_count += 1
             begin
               Rails.logger.info "#{cron_st}: #{cron_st}: Running API call successfully for mass_summoner on name"
@@ -89,12 +86,12 @@ class Status < ActiveRecord::Base
 
                   Ignindex.where("summoner_name_ref = ?", summoner_hash_key).first.update(summoner_id: summoner_hash["#{summoner_hash_key}"]["id"])
                 
-                    if Score.find_by_summoner_id(summoner_hash["#{x}"]["id"]).nil?
-                      Score.create!(:summoner_id => summoner_hash["#{x}"]["id"], :summoner_name => summoner_hash["#{x}"]["name"])
-                      Rails.logger.info "#{cron_st}: scorecard created for #{summoner_hash["#{x}"]["id"]}"
-                    else
-                      Rails.logger.info "#{cron_st}: scorecard already exists for #{summoner_hash["#{x}"]["id"]}"
-                    end
+                    # if Score.find_by_summoner_id(summoner_hash["#{x}"]["id"]).nil?
+                    #   Score.create!(:summoner_id => summoner_hash["#{x}"]["id"], :summoner_name => summoner_hash["#{x}"]["name"])
+                    #   Rails.logger.info "#{cron_st}: scorecard created for #{summoner_hash["#{x}"]["id"]}"
+                    # else
+                    #   Rails.logger.info "#{cron_st}: scorecard already exists for #{summoner_hash["#{x}"]["id"]}"
+                    # end
 
                 end
             rescue Timeout::Error
@@ -119,7 +116,6 @@ class Status < ActiveRecord::Base
     if (mass_count > 40 && mass_count%40 != 0) or (mass_count < 40 && mass_count != 0)
       Rails.logger.info "#{cron_st}: Remainder count for summoner name to id"
       url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/#{mass_summoner}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
-      puts url
       val_count += 1
       begin
         summoner_data = open(URI.encode(url),{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,:read_timeout=>3}).read
@@ -133,12 +129,12 @@ class Status < ActiveRecord::Base
 
           Ignindex.where("summoner_name_ref = ?", x).first.update(summoner_id: summoner_hash["#{x}"]["id"])
 
-            if Score.find_by_summoner_id(summoner_hash["#{x}"]["id"]).nil?
-              Score.create!(:summoner_id => summoner_hash["#{x}"]["id"], :summoner_name => summoner_hash["#{x}"]["name"])
-              Rails.logger.info "#{cron_st}: scorecard created for #{summoner_hash["#{x}"]["id"]}"
-            else
-              Rails.logger.info "#{cron_st}: scorecard already exists for #{summoner_hash["#{x}"]["id"]}"
-            end
+            # if Score.find_by_summoner_id(summoner_hash["#{x}"]["id"]).nil?
+            #   Score.create!(:summoner_id => summoner_hash["#{x}"]["id"], :summoner_name => summoner_hash["#{x}"]["name"])
+            #   Rails.logger.info "#{cron_st}: scorecard created for #{summoner_hash["#{x}"]["id"]}"
+            # else
+            #   Rails.logger.info "#{cron_st}: scorecard already exists for #{summoner_hash["#{x}"]["id"]}"
+            # end
         
         end
 
@@ -361,11 +357,6 @@ class Status < ActiveRecord::Base
         elsif Time.now.to_i - status.created_at.to_i - status.value > 0 #=> terminate timeouts
           Rails.logger.info "#{cron_st}: Status: #{status.summoner_name} has timed out"
           status.update(win_value: 1)
-          # if status.kind == 6 #re-open lost prize
-          #   Prize.find(status.prize_id).update(
-          #     :assignment => 0,
-          #     :user_id => nil) 
-          # end
         elsif ((Time.now.to_i - status.created_at.to_i - status.value) > -119) or (status.trigger_timer > (Time.now.to_i - trigger_timer_bench)) 
 
           mass_count += 1
@@ -394,8 +385,7 @@ class Status < ActiveRecord::Base
                  
                   key_summoner = []
                   hydra_food.each do |temp_status_looper|
-                    if temp_status_looper.summoner_id == response.effective_url[52...(response.effective_url.length - 45)].to_i
-                      puts "#{temp_status_looper.summoner_id} matched with url #{response.effective_url[52...(response.effective_url.length - 45)]}"
+                    if temp_status_looper.summoner_id == request.url[52...(request.url.length - 45)].to_i
                       key_summoner << temp_status_looper
                     end
                   end
@@ -408,7 +398,7 @@ class Status < ActiveRecord::Base
                     valid_games = []
                     i = 0
                     games_hash["matches"].each do |match|
-                      if match["queueType"] == "RANKED_SOLO_5x5" && (match["matchCreation"] - match["matchDuration"]) >= (key_summoner[0].created_at.to_i - 420)*1000
+                      if match["queueType"] == "RANKED_SOLO_5x5" && (match["matchCreation"]/1000 - match["matchDuration"]) >= (key_summoner[0].created_at.to_i - 420)
                         valid_games << i
                         i = i + 1
                       else
@@ -512,7 +502,7 @@ class Status < ActiveRecord::Base
                           clock_active_status.update(win_value: 0)
 
                           ign_score = Ignindex.find(key_summoner[0].ignindex_id)
-                          curent_ach = Achievement.find(ign_score.active_achievement)
+                          curent_ach = Achievement.where("id = ?", ign_score.active_achievement).first
                           if !curent_ach.nil?
                             achievement_play(cron_st, curent_ach, clock_active_status)
                             # experience_gain(cron_st, curent_ach, clock_active_status)
@@ -537,7 +527,7 @@ class Status < ActiveRecord::Base
                           proc = rand(1..100)
                           Rails.logger.info "#{cron_st}: proc value is #{proc}"
 
-                          random_prize(cron_st, ign_score, clock_active_status)
+                          # random_prize(cron_st, ign_score, clock_active_status)
 
                           if key_summoner[0].kind == 6
                             ign_score.update(prize_id: key_summoner[0].prize_id)
@@ -559,7 +549,7 @@ class Status < ActiveRecord::Base
                           ign_score = Ignindex.find(key_summoner[0].ignindex_id)
                           Rails.logger.info "#{cron_st}: achievement refresh for #{ign_score.id}"
                           # achievement_refresh(ign_score.id)
-                          curent_ach = Achievement.find(ign_score.active_achievement)
+                          curent_ach = Achievement.where("id = ?", ign_score.active_achievement).first
                           if !curent_ach.nil?
                             achievement_play(cron_st, curent_ach, clock_active_status)
                             # experience_gain(cron_st, curent_ach, clock_active_status)
@@ -593,7 +583,6 @@ class Status < ActiveRecord::Base
           end
           hydra.run
           het = Time.now
-          puts "\n" + (het - hst).to_s() + " seconds for hydra"
 
           ct = Time.now.to_i
           hydra_food = []
@@ -635,8 +624,7 @@ class Status < ActiveRecord::Base
 
                 key_summoner = []
                 hydra_food.each do |temp_status_looper|
-                  if temp_status_looper.summoner_id == response.effective_url[52...(response.effective_url.length - 45)].to_i
-                    puts "#{temp_status_looper.summoner_id} matched with  #{response.effective_url[52...(response.effective_url.length - 45)]}"
+                  if temp_status_looper.summoner_id == request.url[52...(request.url.length - 45)].to_i
                     key_summoner << temp_status_looper
                   end
                 end
@@ -649,7 +637,7 @@ class Status < ActiveRecord::Base
                   valid_games = []
                   i = 0
                   games_hash["matches"].each do |match|
-                    if match["queueType"] == "RANKED_SOLO_5x5" && (match["matchCreation"] - match["matchDuration"]) >= (key_summoner[0].created_at.to_i - 420)*1000
+                    if match["queueType"] == "RANKED_SOLO_5x5" && (match["matchCreation"]/1000 - match["matchDuration"]) >= (key_summoner[0].created_at.to_i - 420)
                       valid_games << i
                       i = i + 1
                     else
@@ -755,7 +743,7 @@ class Status < ActiveRecord::Base
                           clock_active_status.update(win_value: 0)
 
                           ign_score = Ignindex.find(key_summoner[0].ignindex_id)
-                          curent_ach = Achievement.find(ign_score.active_achievement)
+                          curent_ach = Achievement.where("id = ?", ign_score.active_achievement).first
                           if !curent_ach.nil?
                             achievement_play(cron_st, curent_ach, clock_active_status)
                             # experience_gain(cron_st, curent_ach, clock_active_status)
@@ -780,12 +768,12 @@ class Status < ActiveRecord::Base
                           proc = rand(100..100)
                           Rails.logger.info "#{cron_st}: proc value is #{proc}"
                           
-                          random_prize(cron_st, ign_score, clock_active_status)
+                          # random_prize(cron_st, ign_score, clock_active_status)
 
                           ign_score = Ignindex.find(key_summoner[0].ignindex_id)
                           Rails.logger.info "#{cron_st}: achievement refresh for #{ign_score.id}"
                           # achievement_refresh(ign_score.id)
-                          curent_ach = Achievement.find(ign_score.active_achievement)
+                          curent_ach = Achievement.where("id = ?", ign_score.active_achievement).first
                           if !curent_ach.nil?
                             achievement_play(cron_st, curent_ach, clock_active_status)
                             # experience_gain(cron_st, curent_ach, clock_active_status)
@@ -819,7 +807,6 @@ class Status < ActiveRecord::Base
         end
         hydra.run
         het = Time.now
-        puts "\n" + (het - hst).to_s() + " seconds for hydra"
 
         ct = Time.now.to_i
         if (ct-cron_st) < times_run*11
@@ -833,7 +820,6 @@ class Status < ActiveRecord::Base
     #end status remainder
     Rails.logger.info "#{cron_st}: completed challenges in #{Time.now.to_i - status_st} seconds!"
     Rails.logger.info "#{cron_st}: | Cron Duration: #{Time.now.to_i - cron_st} | Throttle: #{throttle_total} | API calls: #{val_count + api_call_count} | Total challenges: #{total_count} | API/second: #{(val_count + api_call_count)/(Time.now.to_i - cron_st).round(2)}/second | max @ #{(val_count + api_call_count*1.00)/(Time.now.to_i - cron_st - throttle_total)}/second | Timeouts: #{timeout_count} | Overloads #{api_overload_count}"
-    #puts "#{Time.now.to_i} | Cron Duration: #{Time.now.to_i - cron_st} | Throttle: #{throttle_total} | API calls: #{val_count + api_call_count} | Total challenges: #{total_count} | API/second: #{(val_count + api_call_count)/(Time.now.to_i - cron_st).round(2)}/second | max @ #{(val_count + api_call_count*1.00)/(Time.now.to_i - cron_st - throttle_total)}/second | Timeouts: #{timeout_count} | Overloads #{api_overload_count}"
 
   end #end of api_call_status
 
