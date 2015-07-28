@@ -42,8 +42,15 @@ class Status < ActiveRecord::Base
     @throttle_total = 0 #seconds throttled
     @mass_count = 0 #only fire 8 API calls per 10s
 
+    section_league_summoner #SECTION_1: league summoner/by-name endpoint
+    section_league_summoner_byname  #SECTION_2: league summoner endpoint
+    section_league_matchhistory #SECTION_3: league matchistory endpoint
 
-    #SECTION_1: league summoner/by-name endpoint
+    #end status remainder
+    Rails.logger.info "#{@cron_st}: | Cron Duration: #{Time.now.to_i - @cron_st} | Throttle: #{@throttle_total} | API calls: #{@val_count + @api_call_count} | Total challenges: #{@challenge_count} | API/second: #{(@val_count + @api_call_count)/(Time.now.to_i - @cron_st).round(2)}/second | max @ #{(@val_count + @api_call_count.round)/(Time.now.to_i - @cron_st - @throttle_total.round(2))}/second | Timeouts: #{@timeout_count} | Overloads #{@api_overload_count}"
+  end
+
+  def self.section_league_summoner
     mass_summoner_names = ""
     val_st = Time.now.to_i
     Ignindex.where("validation_timer > ?", 0 ).each do |x|
@@ -77,9 +84,10 @@ class Status < ActiveRecord::Base
       league_summoner_byname(mass_summoner_names)
       mass_summoner_names = ""
     end
-    Rails.logger.info "#{@cron_st}: completed league_summoner_byname in #{Time.now.to_i - val_st} seconds!"
+    Rails.logger.info "#{@cron_st}: completed league_summoner_byname in #{Time.now.to_i - val_st} seconds!"    
+  end
 
-    #SECTION_2: league summoner endpoint
+  def self.section_league_summoner_byname
     mass_summoner_ids = ""
     Ignindex.where("validation_timer > ?", 0 ).where.not(summoner_id: nil).each do |x|
       if mass_summoner_ids.length > 0 then mass_summoner_ids << "," end 
@@ -97,12 +105,10 @@ class Status < ActiveRecord::Base
       league_summoner(mass_summoner_ids)
       mass_summoner_ids = ""      
     end
-    Rails.logger.info "#{@cron_st}: completed validations in #{Time.now.to_i - @cron_st} seconds!"
+    Rails.logger.info "#{@cron_st}: completed validations in #{Time.now.to_i - @cron_st} seconds!"    
+  end
 
-    #end of leauge_summoner
-
-
-    #SECTION_3: league matchistory endpoint
+  def self.section_league_matchhistory
     status_st = Time.now.to_i #required for logger
     @challenge_count = 0 #total number of active challenges
     @api_call_count = 0 #calls used for matchhistory
@@ -147,10 +153,7 @@ class Status < ActiveRecord::Base
       league_matchhistory(hydra_food, throttle)
       hydra_food = []
     end
-    Rails.logger.info "#{@cron_st}: completed challenges in #{Time.now.to_i - status_st} seconds!"
-
-    #end status remainder
-    Rails.logger.info "#{@cron_st}: | Cron Duration: #{Time.now.to_i - @cron_st} | Throttle: #{@throttle_total} | API calls: #{@val_count + @api_call_count} | Total challenges: #{@challenge_count} | API/second: #{(@val_count + @api_call_count)/(Time.now.to_i - @cron_st).round(2)}/second | max @ #{(@val_count + @api_call_count.round)/(Time.now.to_i - @cron_st - @throttle_total.round(2))}/second | Timeouts: #{@timeout_count} | Overloads #{@api_overload_count}"
+    Rails.logger.info "#{@cron_st}: completed challenges in #{Time.now.to_i - status_st} seconds!"    
   end
 
   def self.league_summoner(mass_summoner_ids)
@@ -343,7 +346,7 @@ class Status < ActiveRecord::Base
       games_won(ach, status)
     end
 
-    if !ach.challenge.can_spell_name.nil? && (ach.can_spell_name_open.length > 0) #this achievement is available
+    if !ach.challenge.can_spell_name.nil? && (ach.can_spell_name_open.length > 0)
       spell_letter(ach, status)
     end
 
@@ -365,26 +368,18 @@ class Status < ActiveRecord::Base
   end
 
   def self.games_won(ach, status)
-    if status.win_value == 2 # game won, all challenges use this so far
+    if status.win_value == 2
       ach.update(
         :wins_recorded => ach.wins_recorded += 1)
-      Rails.logger.info "#{@cron_st}: from game won (#{status.win_value}) ach_win #{ach.wins_recorded}"
-    else
-      Rails.logger.info "#{@cron_st}: from game won (#{status.win_value}) ach_win #{ach.wins_recorded}"
     end
   end
 
   def self.spell_letter(ach, status)
-      Rails.logger.info "#{@cron_st}: ach spelling has length: #{ach.can_spell_name_open}"
       champion_letter = status.game_1[:champion_id][0]
-      Rails.logger.info "#{@cron_st}: champion_letter: #{champion_letter}"
       if ach.can_spell_name_open.include?(champion_letter)
         ach.update(
           :can_spell_name_open => ach.can_spell_name_open.sub(champion_letter, "")) 
-        Rails.logger.info "#{@cron_st}: ach spelling has new length: #{ach.can_spell_name_open}"
-        Rails.logger.info "double check w/ table: #{Achievement.find(ach.id).can_spell_name_open}"
       else 
-        "#{@cron_st}: ach spelling has same length"
       end
       Rails.logger.info "#{@cron_st}: spelling_vandor_name finished"    
   end
