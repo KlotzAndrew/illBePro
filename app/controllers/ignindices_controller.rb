@@ -12,7 +12,6 @@ class IgnindicesController < ApplicationController
   def landing_page
     session[:setup_progress] ||= 1
     @ignindex = Ignindex.new
-    
   end
 
   def zone
