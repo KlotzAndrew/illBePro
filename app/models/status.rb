@@ -159,7 +159,7 @@ class Status < ActiveRecord::Base
   def self.league_summoner(mass_summoner_ids)
     @val_count += 1
     @mass_count += 1
-    url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/#{mass_summoner_ids}/masteries?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
+    url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/#{mass_summoner_ids}/masteries?api_key=" + Rails.application.secrets.league_api_key
     begin
       mastery_data = open(url,{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,:read_timeout=>3}).read
       mastery_hash = JSON.parse(mastery_data)
@@ -214,7 +214,7 @@ class Status < ActiveRecord::Base
     @val_count += 1
     @mass_count += 1
     Rails.logger.info "#{@cron_st}: Running api call for (#{mass_summoner_names})"
-    url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/#{mass_summoner_names}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
+    url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/#{mass_summoner_names}?api_key=" + Rails.application.secrets.league_api_key
     begin
       Rails.logger.info "#{@cron_st}: #{@cron_st}: Running API call successfully for mass_summoner_names on name"
       summoner_data = open(URI.encode(url),{ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE,:read_timeout=>3}).read
@@ -240,7 +240,7 @@ class Status < ActiveRecord::Base
     Rails.logger.info "#{@cron_st}: ran hydra @times_run is about to run for: #{@times_run}st time"
     hydra = Typhoeus::Hydra.new(:max_concurrency => 200)
     hydra_food.each do |food|
-      url = "https://na.api.pvp.net/api/lol/na/v2.2/matchhistory/#{food.summoner_id}?api_key=cfbf266e-d1db-4aff-9fc2-833faa722e72"
+      url = "https://na.api.pvp.net/api/lol/na/v2.2/matchhistory/#{food.summoner_id}?api_key=" + Rails.application.secrets.league_api_key
       request = Typhoeus::Request.new(url, :timeout => 3)
       hydra.queue(request)
       request.on_complete do |response|

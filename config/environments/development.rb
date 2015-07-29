@@ -41,10 +41,10 @@ config.action_mailer.delivery_method = :smtp
 ActionMailer::Base.smtp_settings = {
   :address => "smtp.sendgrid.net",
   :port => 587,
-  :domain => "evening-bastion-2124.herokuapp.com",
+  :domain => Rails.application.secrets.sendgrid_domain,
   :authentication => :plain,
-  :user_name => "TirelessPuppy",
-  :password => "YoloMode123"
+  :user_name => Rails.application.secrets.sendgrid_username,
+  :password => Rails.application.secrets.sendgrid_password
 }
 
 end
