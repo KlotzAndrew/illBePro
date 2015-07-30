@@ -1,28 +1,38 @@
-== README
+== illBepro!
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A web App where gamers can win physical rewards for completing in-game achievements. 
 
-Things you may want to cover:
+For Gamers: illBePro connects to existing games, enabling players to play for additional in-game challenges. Some challanges are prized with physical prizes, including pizza from local pizzerieas.
 
-* Ruby version
+For Vendors: illBePro offers a way to connect with gamers in your local area. By providing them with branded rewards in connection with a positive achievement.
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Milestones Reached:
+* 2500+ Users
+* 1 awesome customer
 
 
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+==To do
+Coming next:
+* 50 => 250+ tests
+* Cleanup floating routes/unused code
+* Refractor
+* Move prizing from command line to scheduled job
+
+Stretch Goals:
+* additional API endpoints for more in-game profile data
+* rename tables/columns to better reflect data
+* Reduce avg. page load time to <2s
+* in-app Admin panel
+* more robust challenges (daily, tiers, content-specific)
+* badges for completing challenges
+* add 2nd game API
+* add user forum
+
+==illBePro is live
+Currently Using:
+* League of Legends API
+
+Current Rewards
+* Up to a Free Pizza (for users in downtown Toronto, ON)
+
+Missing a critical component for mass-commercial success, message me if you want to know more or chat :)
