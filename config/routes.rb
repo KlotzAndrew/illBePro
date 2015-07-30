@@ -2,23 +2,15 @@ Rails.application.routes.draw do
 
   resources :achievements
 
-  # get 'achievements', to: 'achievements#index', as: :achievements
-
   resources :scores
   get 'leaderboard', to: 'scores#leaderboard'
 
-
   resources :ignindices
   get 'summoner', to: 'ignindices#index', as: :summoner
-  get 'get_started', to: 'ignindices#get_started', as: :get_started
   get 'games', to: 'ignindices#games', as: :games
   get 'setup', to: "ignindices#get_setup", as: :setup
   get 'zone', to: "ignindices#zone"
-  get 'setup_1', to: "ignindices#setup_1", as: :setup_1
-  get 'setup_2', to: "ignindices#setup_2", as: :setup_2
   
-  resources :profiles
-
   devise_for :users
   
   devise_scope :user do
@@ -40,20 +32,15 @@ Rails.application.routes.draw do
     root to: "ignindices#landing_page"
   end
 
-
-
 #static_page routes. so many.
-  get 'teaser_summoner', to: "staticpages#teaser_summoner"
-  get 'teaser_challenges', to: "staticpages#teaser_challenges"
-  get 'teaser_prize_zone', to: "staticpages#teaser_prize_zone"
   get 'current_achievement', to: "staticpages#current_achievement"
   get 'papa_johns', to: "staticpages#papa_johns"
+
   get 'dash', to: "staticpages#dash"
   
   get 'about', to: "staticpages#about"
   get 'contact', to: "staticpages#contact"
   get 'faq', to: "staticpages#faq"
-  # get 'home', to: "staticpages#home"
   get 'privacy', to: "staticpages#privacy"
   get 'terms_of_service', to: "staticpages#terms_of_service"
 
