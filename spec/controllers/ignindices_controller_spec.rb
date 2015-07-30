@@ -13,7 +13,6 @@ RSpec.describe IgnindicesController, :type => :controller do
 			get :landing_page
 			expect(assigns(:ignindex)).to be_a_new(Ignindex)
 		end
-
 		
 	end
 
@@ -31,6 +30,21 @@ RSpec.describe IgnindicesController, :type => :controller do
 			get :zone
 			expect(response).to redirect_to(new_user_session_path) 
 		end
+
+		describe "for logged-in user" do
+			login_user
+			it "redirects without an ignindex" do
+				get :zone
+				expect(response).to redirect_to(setup_path) 
+			end
+
+			it "has a @zone_pc with @ignindex" do
+				get :zone
+				FactoryGirl.create(:ignindex, :user_id)
+				expect(@zone_pc).to be_truthy 
+			end			
+		end
+
 	end	
 
 	describe 'GET #summoner' do
@@ -41,5 +55,7 @@ RSpec.describe IgnindicesController, :type => :controller do
 	end		
 
 	describe 'GET #show' do
+		it "logs in a user" do
+		end		
 	end	
 end
