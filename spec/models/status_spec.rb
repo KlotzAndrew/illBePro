@@ -2,6 +2,12 @@ require 'rails_helper'
 
 RSpec.describe Status, :type => :model do
 
+	it "has a working user factory" do
+		FactoryGirl.create(:ignindex)
+
+		expect(Ignindex.count).to eq 1
+	end
+
   it "has none after one was created in a previous example" do
     expect(Ignindex.count).to eq 0
   end	
@@ -14,21 +20,16 @@ RSpec.describe Status, :type => :model do
 		describe "dr_who" do
 
 			it "requires valid summoner name" do
-				ignindex = Ignindex.create(
-					:summoner_validated => false)
-				status = Status.new(
-					:ignindex_id => ignindex.id)
+				ignindex = FactoryGirl.create(:ignindex)
+				status = FactoryGirl.build(:status, :ignindex_id => ignindex.id)
 				status.valid?
 
 				expect(status.errors).to include(:summoner_required)
 			end
 
 			it "requires region_id" do
-				ignindex = Ignindex.create(
-					:summoner_validated => true,
-					:region_id => nil)
-				status = Status.create(
-					:ignindex_id => ignindex.id)
+				ignindex = FactoryGirl.create(:ignindex, :validated, :region_id => nil)
+				status = FactoryGirl.build(:status, :ignindex_id => ignindex.id)
 				status.valid?
 			
 				expect(status.errors).to include(:region_required)
@@ -37,27 +38,18 @@ RSpec.describe Status, :type => :model do
 
 		describe "one_fox_one_gun" do
 			it "allows one running" do
-				ignindex = Ignindex.create(
-					:summoner_validated => true,
-					:region_id => 1)
-
-				status = Status.create(
-					:ignindex_id => ignindex.id)
+				ignindex = FactoryGirl.create(:ignindex, :validated)
+				status = FactoryGirl.create(:status, :ignindex_id => ignindex.id)
 						
 				expect(status.reload.id).not_to be_nil
 			end
 
-			it "only 1 concurrent" do
-				ignindex = Ignindex.create(
-					:summoner_validated => true,
-					:region_id => 1)
+			it "only 1 status concurrent" do
+				ignindex = FactoryGirl.create(:ignindex, :validated)
 				1.times do |x|
-					Status.create(
-						:ignindex_id => ignindex.id)
+					FactoryGirl.create(:status, :ignindex_id => ignindex.id)
 				end
-
-				status1 = Status.create(
-					:ignindex_id => ignindex.id)
+				status1 = FactoryGirl.build(:status, :ignindex_id => ignindex.id)
 				status1.valid?
 
 				expect(status1.errors).to include(:you_can)				
@@ -65,17 +57,11 @@ RSpec.describe Status, :type => :model do
 
 			it "throttles at 20/min" do
 				20.times do |x|
-					ignindex = Ignindex.create(
-						:summoner_validated => true,
-						:region_id => 1)
-					Status.create(
-						:ignindex_id => ignindex.id)					
+					ignindex = FactoryGirl.create(:ignindex, :validated)
+					FactoryGirl.create(:status, :ignindex_id => ignindex.id)	
 				end
-				ignindex = Ignindex.create(
-					:summoner_validated => true,
-					:region_id => 1)
-				status1 = Status.create(
-					:ignindex_id => ignindex.id)
+				ignindex = FactoryGirl.create(:ignindex, :validated)
+				status1 = FactoryGirl.build(:status, :ignindex_id => ignindex.id)
 				status1.valid?
 
 				expect(status1.errors).to include(:start_queue)							
@@ -93,9 +79,8 @@ RSpec.describe Status, :type => :model do
 			end
 
 			it "times out after 10 min" do
-				Staticpage.create
-				ignindex = Ignindex.create(
-					:validation_timer => Time.now.to_i - 701)
+				FactoryGirl.create(:staticpage)
+				ignindex = FactoryGirl.create(:ignindex, :timer_off)
 				Status.api_call
 
 				expect(ignindex.reload.validation_timer).to be_nil
@@ -104,10 +89,8 @@ RSpec.describe Status, :type => :model do
 
 			it "updates summoner_id" do
 				Staticpage.create
-				ignindex = Ignindex.create(
-					:validation_timer => Time.now.to_i,
-					:summoner_name => "TheOddOne",
-					:summoner_name_ref => "theoddone")
+				ignindex = FactoryGirl.create(:ignindex, :theoddone, :timer_on)
+	
 				Status.api_call
 
 				expect(ignindex.reload.summoner_id).to eq(60783)
@@ -116,15 +99,9 @@ RSpec.describe Status, :type => :model do
 
 		describe "league_summoner" do
 			it "verify mastery" do
-				Staticpage.create
-				ignindex = Ignindex.create(
-					:validation_timer => Time.now.to_i,
-					:summoner_name => "TheOddOne",
-					:summoner_name_ref => "theoddone",
-					:summoner_id => 60783,
-					:validation_string => "abc",
-					:summoner_validated => false,
-					:validation_string => "TIME MAN")
+				FactoryGirl.create(:staticpage)
+				ignindex = FactoryGirl.create(:ignindex, :theoddone, :timer_on, :theoddone_id, :theoddone_page1)
+
 				Status.api_call
 
 				expect(ignindex.reload.summoner_validated).to eq(true)
@@ -135,13 +112,8 @@ RSpec.describe Status, :type => :model do
 
 		describe "league_matchhistory" do
 			it "times-out status" do
-				Staticpage.create
-				ignindex = Ignindex.create(
-					:summoner_name => "TheOddOne",
-					:summoner_name_ref => "theoddone",
-					:summoner_id => 60783,
-					:summoner_validated => true,
-					:region_id => 1)
+				FactoryGirl.create(:staticpage)
+				ignindex = FactoryGirl.create(:ignindex, :theoddone, :theoddone_id, :validated)
 				status = Status.create(
 					:created_at => Time.at(1437883032 - 2143).utc,
 					:ignindex_id => ignindex.id,
@@ -155,17 +127,11 @@ RSpec.describe Status, :type => :model do
 			end			
 
 			it "records loss" do
-				Staticpage.create
+				FactoryGirl.create(:staticpage)
 				champ = Champion.create(
 					:id => 22,
 					:champion => "Ashe")
-
-				ignindex1 = Ignindex.create(
-					:summoner_name => "TheOddOne",
-					:summoner_name_ref => "theoddone",
-					:summoner_id => 60783,
-					:summoner_validated => true,
-					:region_id => 1)
+				ignindex1 = FactoryGirl.create(:ignindex, :theoddone, :theoddone_id, :validated)
 				status_loss = Status.create(
 					:created_at => Time.at(1437883032 - 2143).utc,
 					:ignindex_id => ignindex1.id,
@@ -180,17 +146,11 @@ RSpec.describe Status, :type => :model do
 			end
 
 			it "records loss (for long status)" do
-				Staticpage.create
+				FactoryGirl.create(:staticpage)
 				champ = Champion.create(
 					:id => 121,
 					:champion => "Khazix")
-
-				ignindex1 = Ignindex.create(
-					:summoner_name => "TheOddOne",
-					:summoner_name_ref => "theoddone",
-					:summoner_id => 60783,
-					:summoner_validated => true,
-					:region_id => 1)
+				ignindex1 = FactoryGirl.create(:ignindex, :theoddone, :theoddone_id, :validated)
 				status_loss = Status.create(
 					:created_at => Time.at(1437878752 - 1337).utc,
 					:ignindex_id => ignindex1.id,
@@ -205,16 +165,11 @@ RSpec.describe Status, :type => :model do
 			end			
 
 			it "records win" do
-				Staticpage.create
+				FactoryGirl.create(:staticpage)
 				champ = Champion.create(
 					:id => 22,
 					:champion => "Ashe")
-				ignindex2 = Ignindex.create(
-					:summoner_name => "BoxStripe",
-					:summoner_name_ref => "boxstripe",
-					:summoner_id => 51189734,
-					:summoner_validated => true,
-					:region_id => 1)
+				ignindex2 = FactoryGirl.create(:ignindex, :boxstripe, :boxstripe_id, :validated)
 				status_win = Status.create(
 					:created_at => Time.at(1437880882 - 1313).utc,
 					:ignindex_id => ignindex2.id,
@@ -229,16 +184,11 @@ RSpec.describe Status, :type => :model do
 			end
 
 			it "win updates ach_wins + ach_letters" do
-				Staticpage.create
+				FactoryGirl.create(:staticpage)
 				champ = Champion.create(
 					:id => 22,
 					:champion => "Ashe")
-				ignindex3 = Ignindex.create(
-					:summoner_name => "Nightblue3",
-					:summoner_name_ref => "nightblue3",
-					:summoner_id => 25850956,
-					:summoner_validated => true,
-					:region_id => 1)
+				ignindex3 = FactoryGirl.create(:ignindex, :nightblue3, :nightblue3_id, :validated)
 				status_win_ach1 = Status.create(
 					:created_at => Time.at(1437880882 - 1313).utc,
 					:ignindex_id => ignindex3.id,
@@ -280,16 +230,11 @@ RSpec.describe Status, :type => :model do
 			end	
 
 			it "win updates con_wins_recorded" do
-				Staticpage.create
+				FactoryGirl.create(:staticpage)
 				Champion.create(
 					:id => 22,
 					:champion => "Ashe")
-				ignindex3 = Ignindex.create(
-					:summoner_name => "Nightblue3",
-					:summoner_name_ref => "nightblue3",
-					:summoner_id => 25850956,
-					:summoner_validated => true,
-					:region_id => 1)
+				ignindex3 = FactoryGirl.create(:ignindex, :nightblue3, :nightblue3_id, :validated)
 				status_win_ach1 = Status.create(
 					:created_at => Time.at(1437880882 - 1313).utc,
 					:ignindex_id => ignindex3.id,

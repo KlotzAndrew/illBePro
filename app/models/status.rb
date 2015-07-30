@@ -11,6 +11,11 @@ class Status < ActiveRecord::Base
   serialize :game_4, Hash
   serialize :game_5, Hash
 
+  def factory_test
+    Rails.logger.info "User.all.count:: #{User.all.count}"
+    self.update(summoner_name: "working")
+  end
+
 
   def dr_who #this makes sure summoner is valid + region is entered
     ignindex = self.ignindex
