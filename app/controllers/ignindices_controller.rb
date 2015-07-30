@@ -1,62 +1,16 @@
 class IgnindicesController < ApplicationController
   before_action :set_ignindex, only: [:show, :edit, :update, :destroy]
 
-  helper_method :show_prizes
-  # skip_before_action :verify_authenticity_token
-
-
   # before_filter :authenticate_user!
 
   respond_to :html, :xml, :json
   
-  def landing_page
-    session[:setup_progress] ||= 1
+  def landing_page #GET as root
     @ignindex = Ignindex.new
   end
 
-  def zone
-    if user_signed_in? && !current_user.ignindex_id.nil?
-      @ignindex = Ignindex.where("user_id = ?", current_user.id).first
-      if !@ignindex.region_id.nil?
-        @zone_pc = @ignindex.region.postal_code
-      else
-        @zone_pc = "?"
-      end
-    else
-      redirect_to setup_path
-    end
-  end
-
-  def show #for ajax requests only
-    if user_signed_in? && !Ignindex.find_by_user_id(current_user.id).nil?
-
-      respond_to do |format|
-        format.html {render nothing: true}
-        format.json {render json: {
-          :ignindex => Ignindex.find_by_user_id(current_user.id),
-          :valid => Ignindex.find_by_user_id(current_user.id).summoner_validated }}
-      end
-    else
-      ign = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
-      if ign.last_validation == session[:last_validation]
-        valid = true
-      else
-        valid = false
-      end
-
-      respond_to do |format|
-        format.html {render nothing: true}
-        format.json {render json: {
-          :ignindex => ign,
-          :valid => valid }}
-      end
-    end
-  end
-
-
-  def get_setup
+  def get_setup #GET as setup
     if user_signed_in?
-      # @setup_navbar_toggle = true
       session[:setup_progress] ||= 1
       session[:region_id_temp] ||= nil
       session[:ignindex_id] ||= nil
@@ -102,9 +56,68 @@ class IgnindicesController < ApplicationController
     else
       redirect_to new_user_session_path, flash: {alert: "You need to be logged in!"}
     end
+  end  
+
+  def zone #GET as zone
+    if user_signed_in?
+      if !current_user.ignindex_id.nil?
+        @ignindex = Ignindex.where("user_id = ?", current_user.id).first
+        if !@ignindex.region_id.nil?
+          @zone_pc = @ignindex.region.postal_code
+        else
+          @zone_pc = "?"
+        end
+      else
+        redirect_to setup_path
+      end
+    else
+      redirect_to new_user_session_path, flash: {alert: "You need to be logged in!"}
+    end
   end
 
-  def update
+  def index #GET as summoner
+    @setup_progress = 3
+    session[:region_id_temp] ||= nil
+
+    if user_signed_in? && !Ignindex.find_by_user_id(current_user.id).nil?
+      using_ign = Ignindex.find_by_user_id(current_user.id)
+    
+      if using_ign.nil?
+        if session[:region_id_temp].blank?
+          redirect_to new_ignindex_path
+        end
+        @uu_summoner_validated = false
+        @ignindex = Ignindex.new(
+          :region_id => session[:region_id_temp])
+      else
+        @ignindex = using_ign
+        is_summoner_valid(using_ign)
+        session[:ignindex_id] = @ignindex.id
+      end
+
+    else #user not signed in
+      redirect_to new_user_session_path, flash: {alert: "You need to be logged in!"}
+    end #end of user in/out block
+  end
+
+  def show #GET for ajax
+    if user_signed_in? && !Ignindex.find_by_user_id(current_user.id).nil?
+
+      respond_to do |format|
+        format.html {render nothing: true}
+        format.json {render json: {
+          :ignindex => Ignindex.find_by_user_id(current_user.id),
+          :valid => Ignindex.find_by_user_id(current_user.id).summoner_validated }}
+      end
+    else
+      respond_to do |format|
+        format.html {render nothing: true}
+        format.json {render nothing: true}
+      end
+    end
+  end
+
+  def update #POST
     if user_signed_in?
       if params[:commit] == "Change Summoner Name" #step3a, unbind+reset setup OR typo
         if (params["ignindex"]["summoner_name"].length < 1) #valid entry?
@@ -203,7 +216,7 @@ class IgnindicesController < ApplicationController
     end    
   end
 
-  def create #runs if user has @ingindex.new
+  def create #POST
     if user_signed_in?
       if params["commit"] == "Add Postal/Zip Code" #step1
         @ignindex = Ignindex.new(
@@ -341,18 +354,6 @@ class IgnindicesController < ApplicationController
     end
     Rails.logger.info "#postal_search: #{postal_search}"
   end  
-
-
-  def get_unauth_ignindex #sets @ignindex to new or existing
-    if !session[:summoner_name_ref_temp].blank? && !Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first.nil?
-      @ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
-      session[:ignindex_id] = @ignindex.id
-      #dont load in the full object -_-; fix me later
-    else
-      @ignindex = Ignindex.new(
-        :region_id => session[:region_id_temp])
-    end
-  end
   
   def is_summoner_valid(current_ignindex)
     if current_ignindex.summoner_validated == true
@@ -360,105 +361,6 @@ class IgnindicesController < ApplicationController
     else
       @uu_summoner_validated = false
     end
-  end
-
-  def is_unauth_summoner_valid(current_ignindex, session_validation) #checks is valid w/ session token
-    if (current_ignindex.summoner_validated == true) && (current_ignindex.last_validation == session_validation)
-      @uu_summoner_validated = true
-    else
-      @uu_summoner_validated = false
-    end    
-  end    
-
-  def setup_progress_finder(setup_progress)
-    @setup_progress = setup_progress
-  end
-
-  def reset_session_vars
-    reset_session
-      session[:setup_progress] = 1
-      session[:postal_code_temp] = nil
-      session[:region_id_temp] = nil
-      session[:summoner_name_temp] = nil
-      session[:summoner_name_ref_temp] = nil
-      session[:ignindex_id] = nil    
-      session[:last_validation] = nil
-  end
-
-  def setup_1
-    session[:setup_progress] = 1
-    redirect_to setup_path
-  end
-
-  def setup_2
-    session[:setup_progress] = 2
-    redirect_to setup_path
-  end
-
-  def reset_setup
-    reset_session_vars
-    redirect_to root_path
-  end
-
-  def new 
-    redirect_to setup_path
-  end
-
-  def show_prizes(x) #prize region logic (duplicate in ignindeces/statuses controller)
-    @all_prize_desc = []
-    @all_prize_vendor = []
-
-    region = Region.find(x)
-
-    @region_city = region.city
-    @region_country = region.country
-    @region_postal = region.postal_code
-        
-    if !region.prizes.last.nil? #use local prize
-      region.prizes.each do |y|
-        @all_prize_desc << y.description
-        @all_prize_vendor = y.vendor
-      end
-    else #use global prize
-      y = Prize.all.where("country_zone = ?", region.country).where("assignment = ? OR assignment = ?", 0,1).where("tier = ?", "1").first
-      if !y.nil?
-        @all_prize_desc << y.description
-        @all_prize_vendor = y.vendor
-      end
-    end  
-  end
-
-
-  def index #step 5
-    @setup_progress = 3
-    session[:region_id_temp] ||= nil
-
-    if user_signed_in? && !Ignindex.find_by_user_id(current_user.id).nil?
-      using_ign = Ignindex.find_by_user_id(current_user.id)
-    
-      if using_ign.nil?
-        if session[:region_id_temp].blank?
-          redirect_to new_ignindex_path
-        end
-        @uu_summoner_validated = false
-        @ignindex = Ignindex.new(
-          :region_id => session[:region_id_temp])
-      else
-        @ignindex = using_ign
-        is_summoner_valid(using_ign)
-        session[:ignindex_id] = @ignindex.id
-      end
-
-    else #user not signed in
-      session[:region_id_temp] ||= nil
-      if session[:region_id_temp].blank?
-        redirect_to new_ignindex_path
-      else
-        get_unauth_ignindex #sets @ignindex to existing or new
-        is_unauth_summoner_valid(@ignindex, session[:last_validation])
-      end
-
-    end #end of user in/out block
   end
 
   private
