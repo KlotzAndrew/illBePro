@@ -3,7 +3,7 @@
 		<div class="row">
 			<div class="col-md-4" style="margin-top:25px">
 				<div class="well leaderbox">
-					<h3 class="" style="margin:0px">Current Postal Code: <strong><%= @zone_pc %></strong></h3>
+					<h3 class="" style="margin:0px">Current Postal Code: <strong><%= if @ignindex.region then @ignindex.region.postal_code end %></strong></h3>
 				</div>
 			</div>
 		</div>

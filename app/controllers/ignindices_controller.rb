@@ -58,13 +58,7 @@ class IgnindicesController < ApplicationController
 
   def zone #GET as zone
     if !current_user.ignindex_id.nil?
-      @ignindex = Ignindex.where("user_id = ?", current_user.id).first
-      @val = "abc"
-      if !@ignindex.region_id.nil?
-        @zone_pc = @ignindex.region.postal_code
-      else
-        @zone_pc = "?"
-      end
+      @ignindex = current_user.ignindex
     else
       redirect_to setup_path
     end
@@ -180,6 +174,7 @@ class IgnindicesController < ApplicationController
         session[:setup_progress] = 3
         redirect_to new_status_path #validation on status#new controller
       elsif params["commit"] == "Add Postal/Zip Code" #step1
+        @ignindex = Ignindex.find(params[:id])
         update_region_id(@ignindex, ignindex_params[:postal_code])
         @ignindex.update( 
           :region_id => @ignindex.region_id_temp,

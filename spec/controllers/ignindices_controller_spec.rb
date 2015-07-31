@@ -12,8 +12,7 @@ RSpec.describe IgnindicesController, :type => :controller do
 		it "assigns new @ignindex" do
 			get :landing_page
 			expect(assigns(:ignindex)).to be_a_new(Ignindex)
-		end
-		
+		end	
 	end
 
 	describe 'GET #setup' do
@@ -21,8 +20,6 @@ RSpec.describe IgnindicesController, :type => :controller do
 			get :get_setup
 			expect(response).to redirect_to(new_user_session_path) 
 		end
-
-
 	end
 
 	describe 'GET #zone' do
@@ -38,7 +35,7 @@ RSpec.describe IgnindicesController, :type => :controller do
 				expect(response).to redirect_to(setup_path) 
 			end
 
-			it 'gets 200 when supposed to' do
+			it 'gets 200 with ignindex' do
 				user = subject.current_user
 				ignindex = FactoryGirl.create(:ignindex, :user_id => user.id)
 				user.update(ignindex_id: ignindex.id)
