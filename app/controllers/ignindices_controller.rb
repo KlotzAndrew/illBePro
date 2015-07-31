@@ -24,14 +24,10 @@ class IgnindicesController < ApplicationController
     if session[:setup_progress] == 1 #postal
     elsif session[:setup_progress] == 2 #challenge
       if session[:region_id_temp].nil? #redidrect to step1
+        session[:setup_progress] = 1
         redirect_to setup_path
       else
-        region = Region.where("id = ?", session[:region_id_temp]).first
-        @region_postal = region.postal_code
-        @challenges_global = Challenge.where("global = ?", true).map { |x| x }
-        @challenges_local = region.challenges.map { |x| x }
-        @challenges_country = Challenge.where("country = ?", region.country).map { |x| x }
-
+        setup_challenge_list(session[:region_id_temp])
       end
     elsif session[:setup_progress] == 3 #validate
       if @ignindex.id.nil? && (session[:region_id_temp].nil? or session[:challenge_id].nil?) #redidrect to step1
@@ -51,6 +47,14 @@ class IgnindicesController < ApplicationController
       @league_api_ping = Staticpage.find(1).league_api_ping
     end
   end  
+
+  def setup_challenge_list(region_id_temp)
+    region = Region.where("id = ?", session[:region_id_temp]).first
+    @region_postal = region.postal_code
+    @challenges_global = Challenge.where("global = ?", true).map { |x| x }
+    @challenges_local = region.challenges.map { |x| x }
+    @challenges_country = Challenge.where("country = ?", region.country).map { |x| x }
+  end
 
   def zone #GET as zone
     if !current_user.ignindex_id.nil?

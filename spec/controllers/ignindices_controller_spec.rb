@@ -20,6 +20,43 @@ RSpec.describe IgnindicesController, :type => :controller do
 			get :get_setup
 			expect(response).to redirect_to(new_user_session_path) 
 		end
+
+		describe "for logged-in user" do
+			login_user
+			it "ignindex.new if nil" do
+				get :get_setup
+				
+				expect(assigns(:ignindex)).to be_a_new(Ignindex) 
+			end
+
+			it "get existing ignindex if !nil" do
+				user = subject.current_user
+				ignindex = FactoryGirl.create(:ignindex, :user_id => user.id)
+				user.update(ignindex_id: ignindex.id)
+				get :get_setup
+				
+				expect(assigns(:ignindex)).to eq(user.ignindex) 
+			end		
+
+			it "step2 redirect if region nil" do
+				session[:setup_progress] = 2
+				session[:region_id_temp] = nil
+				get :get_setup
+				
+				expect(session[:setup_progress]).to eq(1)
+				expect(response).to redirect_to(setup_path)
+			end					
+
+			it "gets 200 with region_id" do
+				session[:setup_progress] = 2
+				session[:region_id_temp] = 1
+				region = FactoryGirl.create(:region)
+				
+				get :get_setup
+				expect(response).to be_success
+				expect(response).to have_http_status(200)	
+			end		
+		end		
 	end
 
 	describe 'GET #zone' do
@@ -44,7 +81,6 @@ RSpec.describe IgnindicesController, :type => :controller do
 				expect(response).to be_success
 				expect(response).to have_http_status(200)
 			end
-			
 		end
 	end	
 
