@@ -40,8 +40,7 @@ RSpec.describe IgnindicesController, :type => :controller do
 
 			it "has a @zone_pc with @ignindex" do
 				get :zone
-				FactoryGirl.create(:ignindex, :user_id)
-				expect(@zone_pc).to be_truthy 
+				expect(subject.current_user.id).to eq(99)
 			end			
 		end
 
