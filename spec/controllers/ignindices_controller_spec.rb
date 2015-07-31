@@ -46,19 +46,32 @@ RSpec.describe IgnindicesController, :type => :controller do
 			end
 			
 		end
-
-		describe 'bypass auth' do
-			
-		end
 	end	
 
-
-	describe 'GET #summoner' do
+	describe 'GET #index' do
 		it 'redirects if user not logged in' do
 			get :index
 			expect(response).to redirect_to(new_user_session_path) 
 		end
-	end		
+
+		describe "for logged-in user" do
+			login_user
+			it "redirects without an ignindex" do
+				get :index
+				expect(response).to redirect_to(setup_path) 
+			end			
+
+			it 'gets 200 with ignindex' do
+				user = subject.current_user
+				ignindex = FactoryGirl.create(:ignindex, :user_id => user.id)
+				user.update(ignindex_id: ignindex.id)
+				get :index
+
+				expect(response).to be_success
+				expect(response).to have_http_status(200)
+			end		
+		end
+	end	
 
 	describe 'GET #show' do
 		it "logs in a user" do

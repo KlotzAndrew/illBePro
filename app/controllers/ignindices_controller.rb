@@ -8,51 +8,47 @@ class IgnindicesController < ApplicationController
   end
 
   def get_setup #GET as setup
-    if user_signed_in?
-      session[:setup_progress] ||= 1
-      session[:region_id_temp] ||= nil
-      session[:ignindex_id] ||= nil
-      session[:summoner_name_ref_temp] ||= nil
-      session[:last_validation] ||= nil
+    session[:setup_progress] ||= 1
+    session[:region_id_temp] ||= nil
+    session[:ignindex_id] ||= nil
+    session[:summoner_name_ref_temp] ||= nil
+    session[:last_validation] ||= nil
 
-      @setup_progress = session[:setup_progress]
+    @setup_progress = session[:setup_progress]
 
-      @ignindex = Ignindex.where("user_id = ?", current_user.id).first
-      if @ignindex.nil?
-        @ignindex = Ignindex.new
+    @ignindex = Ignindex.where("user_id = ?", current_user.id).first
+    if @ignindex.nil?
+      @ignindex = Ignindex.new
+    end
+
+    if session[:setup_progress] == 1 #postal
+    elsif session[:setup_progress] == 2 #challenge
+      if session[:region_id_temp].nil? #redidrect to step1
+        redirect_to setup_path
+      else
+        region = Region.where("id = ?", session[:region_id_temp]).first
+        @region_postal = region.postal_code
+        @challenges_global = Challenge.where("global = ?", true).map { |x| x }
+        @challenges_local = region.challenges.map { |x| x }
+        @challenges_country = Challenge.where("country = ?", region.country).map { |x| x }
+
       end
-
-      if session[:setup_progress] == 1 #postal
-      elsif session[:setup_progress] == 2 #challenge
-        if session[:region_id_temp].nil? #redidrect to step1
-          redirect_to setup_path
-        else
-          region = Region.where("id = ?", session[:region_id_temp]).first
-          @region_postal = region.postal_code
-          @challenges_global = Challenge.where("global = ?", true).map { |x| x }
-          @challenges_local = region.challenges.map { |x| x }
-          @challenges_country = Challenge.where("country = ?", region.country).map { |x| x }
-
+    elsif session[:setup_progress] == 3 #validate
+      if @ignindex.id.nil? && (session[:region_id_temp].nil? or session[:challenge_id].nil?) #redidrect to step1
+        rsession[:setup_progress] = 1
+        redirect_to setup_path
+      else
+        if !Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first.nil?
+          @ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
+          session[:ignindex_id] = @ignindex.id
+        end 
+        if (@ignindex.user_id == current_user.id) && @ignindex.summoner_validated == true
+          @uu_summoner_validated = true
+        else 
+           @uu_summoner_validated = false
         end
-      elsif session[:setup_progress] == 3 #validate
-        if @ignindex.id.nil? && (session[:region_id_temp].nil? or session[:challenge_id].nil?) #redidrect to step1
-          rsession[:setup_progress] = 1
-          redirect_to setup_path
-        else
-          if !Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first.nil?
-            @ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
-            session[:ignindex_id] = @ignindex.id
-          end 
-          if (@ignindex.user_id == current_user.id) && @ignindex.summoner_validated == true
-            @uu_summoner_validated = true
-          else 
-             @uu_summoner_validated = false
-          end
-        end
-        @league_api_ping = Staticpage.find(1).league_api_ping
       end
-    else
-      redirect_to new_user_session_path, flash: {alert: "You need to be logged in!"}
+      @league_api_ping = Staticpage.find(1).league_api_ping
     end
   end  
 
@@ -65,28 +61,13 @@ class IgnindicesController < ApplicationController
   end
 
   def index #GET as summoner
-    @setup_progress = 3
-    session[:region_id_temp] ||= nil
+    @setup_progress = 1
 
-    if user_signed_in? && !Ignindex.find_by_user_id(current_user.id).nil?
-      using_ign = Ignindex.find_by_user_id(current_user.id)
-    
-      if using_ign.nil?
-        if session[:region_id_temp].blank?
-          redirect_to new_ignindex_path
-        end
-        @uu_summoner_validated = false
-        @ignindex = Ignindex.new(
-          :region_id => session[:region_id_temp])
-      else
-        @ignindex = using_ign
-        is_summoner_valid(using_ign)
-        session[:ignindex_id] = @ignindex.id
-      end
-
-    else #user not signed in
-      redirect_to new_user_session_path, flash: {alert: "You need to be logged in!"}
-    end #end of user in/out block
+    if current_user.ignindex.nil?
+      redirect_to setup_path
+    else
+      @ignindex = current_user.ignindex
+    end
   end
 
   def show #GET for ajax

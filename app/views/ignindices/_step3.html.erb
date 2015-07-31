@@ -29,7 +29,7 @@
               <strong><%= @ignindex.summoner_name %></strong>
             </span>
             (<i id="toggle_change_summoner" class="fa fa-pencil fa-1"></i>)
-            <% if @uu_summoner_validated == true %>
+            <% if @ignindex.summoner_validated == true %>
             <span id="js_val"> - Valid</span>
             <% else %>
             <span id="js_val"> - Not Valid Yet</span>
@@ -75,7 +75,7 @@
     </div>
 
     <div class="row">
-      <% if @uu_summoner_validated == true %> 
+      <% if @ignindex.summoner_validated == true %> 
       <div id="how_to_finished" class="col-md-6 lwell col-md-offset-3 text-center" style="margin-top: 40px; margin-bottom: 20px;">
       <% else %>
       <% if @ignindex.id.nil? %>
