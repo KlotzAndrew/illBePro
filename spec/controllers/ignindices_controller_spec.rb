@@ -38,13 +38,23 @@ RSpec.describe IgnindicesController, :type => :controller do
 				expect(response).to redirect_to(setup_path) 
 			end
 
-			it "has a @zone_pc with @ignindex" do
+			it 'gets 200 when supposed to' do
+				user = subject.current_user
+				ignindex = FactoryGirl.create(:ignindex, :user_id => user.id)
+				user.update(ignindex_id: ignindex.id)
 				get :zone
-				expect(subject.current_user.id).to eq(99)
-			end			
+
+				expect(response).to be_success
+				expect(response).to have_http_status(200)
+			end
+			
 		end
 
+		describe 'bypass auth' do
+			
+		end
 	end	
+
 
 	describe 'GET #summoner' do
 		it 'redirects if user not logged in' do

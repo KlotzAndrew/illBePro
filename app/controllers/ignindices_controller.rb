@@ -1,7 +1,5 @@
 class IgnindicesController < ApplicationController
-  before_action :set_ignindex, only: [:show, :edit, :update, :destroy]
-
-  # before_filter :authenticate_user!
+  before_action :authenticate_user!, except: [:landing_page]
 
   respond_to :html, :xml, :json
   
@@ -59,19 +57,16 @@ class IgnindicesController < ApplicationController
   end  
 
   def zone #GET as zone
-    if user_signed_in?
-      if !current_user.ignindex_id.nil?
-        @ignindex = Ignindex.where("user_id = ?", current_user.id).first
-        if !@ignindex.region_id.nil?
-          @zone_pc = @ignindex.region.postal_code
-        else
-          @zone_pc = "?"
-        end
+    if !current_user.ignindex_id.nil?
+      @ignindex = Ignindex.where("user_id = ?", current_user.id).first
+      @val = "abc"
+      if !@ignindex.region_id.nil?
+        @zone_pc = @ignindex.region.postal_code
       else
-        redirect_to setup_path
+        @zone_pc = "?"
       end
     else
-      redirect_to new_user_session_path, flash: {alert: "You need to be logged in!"}
+      redirect_to setup_path
     end
   end
 
@@ -364,9 +359,6 @@ class IgnindicesController < ApplicationController
   end
 
   private
-    def set_ignindex
-      @ignindex = Ignindex.find(params[:id])
-    end
 
     def ignindex_params
       # this is dangerous! Fix me asap.
