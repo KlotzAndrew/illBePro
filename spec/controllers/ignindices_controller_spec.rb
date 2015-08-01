@@ -165,7 +165,15 @@ RSpec.describe IgnindicesController, :type => :controller do
 	end	
 
 	describe 'GET #show' do
-		it "logs in a user" do
-		end		
+		login_user
+		
+		it 'responds with JSON ignindex id' do
+			user = subject.current_user
+			ignindex = FactoryGirl.create(:ignindex, :user_id => user.id)
+			user.update(ignindex_id: ignindex.id)			
+
+			get :show
+			expect(response).to redirect_to(new_user_session_path) 
+		end	
 	end	
 end

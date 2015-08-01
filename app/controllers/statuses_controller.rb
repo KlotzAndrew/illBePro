@@ -1,5 +1,6 @@
  class StatusesController < ApplicationController
   before_action :set_status, only: [:show, :edit, :update, :destroy]
+  #set status is raising errors, why is this here?
 
   # before_filter :authenticate_user!
 
