@@ -17,17 +17,17 @@ FactoryGirl.define do
 
   	trait :theoddone do
   		summoner_name "TheOddOne"
-		summoner_name_ref "theoddone"
+		  summoner_name_ref "theoddone"
   	end
 
   	trait :boxstripe do
   		summoner_name "BoxStripe"
-		summoner_name_ref "boxstripe"
+		  summoner_name_ref "boxstripe"
   	end
 
   	trait :nightblue3 do
   		summoner_name "Nightblue3"
-		summoner_name_ref "nightblue3"
+		  summoner_name_ref "nightblue3"
   	end  	
 
   	trait :theoddone_id do

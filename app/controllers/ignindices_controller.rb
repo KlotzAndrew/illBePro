@@ -8,45 +8,49 @@ class IgnindicesController < ApplicationController
   end
 
   def get_setup #GET as setup
-    session[:setup_progress] ||= 1
-    session[:region_id_temp] ||= nil
-    session[:ignindex_id] ||= nil
-    session[:summoner_name_ref_temp] ||= nil
-    session[:last_validation] ||= nil
-
+    get_setup_session_vars
     @setup_progress = session[:setup_progress]
 
-    @ignindex = Ignindex.where("user_id = ?", current_user.id).first
+    @ignindex = Ignindex.where("user_id = ?", current_user.id).first #is this needed?
     if @ignindex.nil?
       @ignindex = Ignindex.new
     end
 
     if session[:setup_progress] == 1 #postal
     elsif session[:setup_progress] == 2 #challenge
-      if session[:region_id_temp].nil? #redidrect to step1
+      if session[:region_id_temp].nil?
         session[:setup_progress] = 1
         redirect_to setup_path
       else
         setup_challenge_list(session[:region_id_temp])
       end
     elsif session[:setup_progress] == 3 #validate
-      if @ignindex.id.nil? && (session[:region_id_temp].nil? or session[:challenge_id].nil?) #redidrect to step1
-        rsession[:setup_progress] = 1
+      if session[:region_id_temp].nil? or session[:challenge_id].nil?
+        session[:setup_progress] = 1
         redirect_to setup_path
       else
-        if !Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first.nil?
-          @ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
-          session[:ignindex_id] = @ignindex.id
-        end 
-        if (@ignindex.user_id == current_user.id) && @ignindex.summoner_validated == true
-          @uu_summoner_validated = true
-        else 
-           @uu_summoner_validated = false
-        end
+        find_unauth_ignindex(session[:summoner_name_ref_temp])
+        is_summoner_valid_for_ignindex
+        @league_api_ping = Staticpage.find(1).league_api_ping
       end
-      @league_api_ping = Staticpage.find(1).league_api_ping
     end
   end  
+
+  def is_summoner_valid_for_ignindex
+    if (@ignindex.user_id == current_user.id) && @ignindex.summoner_validated == true
+      @uu_summoner_validated = true
+    else 
+      @uu_summoner_validated = false
+    end
+  end
+
+  def find_unauth_ignindex(summoner_name_ref_temp)
+    ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
+    if !ignindex.nil?
+      @ignindex = ignindex
+      session[:ignindex_id] = @ignindex.id
+    end     
+  end
 
   def setup_challenge_list(region_id_temp)
     region = Region.where("id = ?", session[:region_id_temp]).first
@@ -54,6 +58,14 @@ class IgnindicesController < ApplicationController
     @challenges_global = Challenge.where("global = ?", true).map { |x| x }
     @challenges_local = region.challenges.map { |x| x }
     @challenges_country = Challenge.where("country = ?", region.country).map { |x| x }
+  end
+
+  def get_setup_session_vars
+    session[:setup_progress] ||= 1
+    session[:region_id_temp] ||= nil
+    session[:ignindex_id] ||= nil
+    session[:summoner_name_ref_temp] ||= nil
+    session[:last_validation] ||= nil    
   end
 
   def zone #GET as zone

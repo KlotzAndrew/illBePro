@@ -47,7 +47,7 @@ RSpec.describe IgnindicesController, :type => :controller do
 				expect(response).to redirect_to(setup_path)
 			end					
 
-			it "gets 200 with region_id" do
+			it "step2 gets 200 with region_id" do
 				session[:setup_progress] = 2
 				session[:region_id_temp] = 1
 				region = FactoryGirl.create(:region)
@@ -55,7 +55,62 @@ RSpec.describe IgnindicesController, :type => :controller do
 				get :get_setup
 				expect(response).to be_success
 				expect(response).to have_http_status(200)	
-			end		
+			end
+
+			it "step3 redirect if region nil" do
+				session[:setup_progress] = 3
+				session[:region_id_temp] = nil
+				get :get_setup
+				
+				expect(session[:setup_progress]).to eq(1)
+				expect(response).to redirect_to(setup_path)
+			end	
+
+			it "step3 redirect if challenge nil" do
+				session[:setup_progress] = 3
+				session[:challenge_id] = nil
+				get :get_setup
+				
+				expect(session[:setup_progress]).to eq(1)
+				expect(response).to redirect_to(setup_path)
+			end	
+
+			it "step3 gets 200 with region_id & challenge_id" do
+				session[:setup_progress] = 3
+				session[:region_id_temp] = 1
+				session[:challenge_id] = 1
+				FactoryGirl.create(:staticpage)
+				
+				get :get_setup
+				expect(response).to be_success
+				expect(response).to have_http_status(200)	
+			end			
+
+			it "step3 grab temp ignindex if !nil?" do
+				session[:setup_progress] = 3
+				session[:challenge_id] = 1
+				session[:region_id_temp] = 1
+				session[:summoner_name_ref_temp] = "theoddone"
+				FactoryGirl.create(:staticpage)
+				ignindex = FactoryGirl.create(:ignindex, :theoddone)
+				get :get_setup
+				
+				expect(session[:ignindex_id]).to eq(ignindex.id)
+			end	
+
+			it "step3 uu summoner valid?" do
+				session[:setup_progress] = 3
+				session[:challenge_id] = 1
+				session[:region_id_temp] = 1
+				session[:summoner_name_ref_temp] = "theoddone"
+				FactoryGirl.create(:staticpage)
+				user = subject.current_user
+				ignindex = FactoryGirl.create(:ignindex, :theoddone, :validated, :user_id => user.id)
+				user.update(ignindex_id: ignindex.id)
+				get :get_setup
+				
+				expect(assigns(:uu_summoner_validated)).to eq(true)
+			end	
 		end		
 	end
 
