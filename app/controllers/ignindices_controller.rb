@@ -87,18 +87,13 @@ class IgnindicesController < ApplicationController
   end
 
   def show #GET for ajax
-    if !Ignindex.find_by_user_id(current_user.id).nil?
-      respond_to do |format|
-        format.html {render nothing: true}
-        format.json {render json: {
-          :ignindex => Ignindex.find_by_user_id(current_user.id),
-          :valid => Ignindex.find_by_user_id(current_user.id).summoner_validated }}
-      end
-    else
-      respond_to do |format|
-        format.html {render nothing: true}
-        format.json {render nothing: true}
-      end
+    @ignindex = Ignindex.find(params["id"])
+    is_summoner_valid_for_ignindex
+    respond_to do |format|
+      format.html {render nothing: true}
+      format.json {render json: {
+        :ignindex => @ignindex,
+        :valid => @uu_summoner_validated }}
     end
   end
 

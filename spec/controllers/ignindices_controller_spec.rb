@@ -172,8 +172,34 @@ RSpec.describe IgnindicesController, :type => :controller do
 			ignindex = FactoryGirl.create(:ignindex, :user_id => user.id)
 			user.update(ignindex_id: ignindex.id)			
 
-			get :show
-			expect(response).to redirect_to(new_user_session_path) 
+			get :show, id: ignindex.id, :format => :json
+			body = JSON.parse(response.body)
+			
+			expect(body["ignindex"]["id"]).to eq(ignindex.id) 
 		end	
+
+		it 'responds with JSON ignindex id' do
+			user = subject.current_user
+			ignindex = FactoryGirl.create(:ignindex, :user_id => user.id)
+			user.update(ignindex_id: ignindex.id)			
+
+			get :show, id: ignindex.id, :format => :json
+			body = JSON.parse(response.body)
+			
+			expect(body["ignindex"]["id"]).to eq(ignindex.id)
+			expect(body["valid"]).to eq(false)
+		end	
+
+		it 'responds with valid JSON ignindex id' do
+			user = subject.current_user
+			ignindex = FactoryGirl.create(:ignindex, :validated, :user_id => user.id)
+			user.update(ignindex_id: ignindex.id)			
+
+			get :show, id: ignindex.id, :format => :json
+			body = JSON.parse(response.body)
+			
+			expect(body["valid"]).to eq(true)
+		end	
+
 	end	
 end
