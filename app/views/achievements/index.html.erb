@@ -1,7 +1,7 @@
 <section id="current-challenges">
 	<div class="container">
 		<h1 class="text-left" style="color: white;"><strong>Your Current Challenge</strong></h1>
-		<% @active.each do |x| %>
+		<% @all_challenges[:active].each do |x| %>
 			<div class="row">
 				<%= render 'current_block', :x => x, :active => 1 %>
 			</div>
@@ -10,40 +10,35 @@
 </section>
 
 <section id="new-challenges">
-	<div class="container" style="min-height: 400px">
-		<h1 class="text-left" style="color: white;"><strong>Other Challenges Available (<%= @ignindex.region.postal_code %>)</strong></h1>
-		<% if !@achievements.empty? %>
-			<% @achievements.each do |x| %>
-			<div class="row">1
-				<%= render 'current_block', :x => x %>
-			</div>
-			<% end %>
-		<% end %>
-		
-		<% if !@challenges_local.empty? %>
-			<% @challenges_local.each do |x| %>
-				<div class="row">
-					<%= render 'new_block', :x => x %>
-				</div>
-			<% end %>
-		<% end %>
-		
-		<% if !@challenges_global.empty? %>	
-			<% @challenges_global.each do |x| %>
-				<div class="row">
-					<%= render 'new_block', :x => x %>
-				</div>
-			<% end %>
-		<% end %>
-		
-		<% if !@challenges_country.empty? %>	
-			<% @challenges_country.each do |x| %>
-				<div class="row">
-					<%= render 'new_block', :x => x %>
-				</div>
-			<% end %>
-		<% end %>		
-	</div>
+  <div class="container" style="min-height: 400px">
+    <h1 class="text-left" style="color: white;"><strong>Other Challenges Available (<%= @ignindex.region.postal_code %>)</strong></h1>
+
+      <% @all_challenges[:saved].each do |x| %>
+      <div class="row">
+        <%= render 'current_block', :x => x %>
+      </div>
+      <% end %>
+
+      <% @all_challenges[:local].each do |x| %>
+        <div class="row">
+          <%= render 'new_block', :x => x %>
+        </div>
+      <% end %>
+
+    
+      <% @all_challenges[:global].each do |x| %>
+        <div class="row">
+          <%= render 'new_block', :x => x %>
+        </div>
+      <% end %>
+    
+      <% @all_challenges[:country].each do |x| %>
+        <div class="row">
+          <%= render 'new_block', :x => x %>
+        </div>
+      <% end %>
+
+  </div> 
 </section>
 
 <script>

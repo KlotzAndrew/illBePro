@@ -67,6 +67,8 @@ class Status < ActiveRecord::Base
         Rails.logger.info "#{@cron_st}: #{x.summoner_name} still has #{600 + x.validation_timer - Time.now.to_i} seconds!"
         if x.summoner_id.nil?
           Rails.logger.info "#{@cron_st}: #{x.summoner_name} summoner.id is nill"
+
+          #convert_name_to_reference?
           if x.summoner_name_ref != x.summoner_name.mb_chars.downcase.gsub(' ', '').to_s
             x.update(summoner_name_ref: "#{x.summoner_name.mb_chars.downcase.gsub(' ', '').to_s}")
           end

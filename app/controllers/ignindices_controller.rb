@@ -3,6 +3,8 @@ class IgnindicesController < ApplicationController
 
   respond_to :html, :xml, :json
   
+  #validatetes: summoner_name :unique
+
   def landing_page #GET as root
     @ignindex = Ignindex.new
   end
@@ -35,38 +37,6 @@ class IgnindicesController < ApplicationController
       end
     end
   end  
-
-  def is_summoner_valid_for_ignindex
-    if (@ignindex.user_id == current_user.id) && @ignindex.summoner_validated == true
-      @uu_summoner_validated = true
-    else 
-      @uu_summoner_validated = false
-    end
-  end
-
-  def find_unauth_ignindex(summoner_name_ref_temp)
-    ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
-    if !ignindex.nil?
-      @ignindex = ignindex
-      session[:ignindex_id] = @ignindex.id
-    end     
-  end
-
-  def setup_challenge_list(region_id_temp)
-    region = Region.where("id = ?", session[:region_id_temp]).first
-    @region_postal = region.postal_code
-    @challenges_global = Challenge.where("global = ?", true).map { |x| x }
-    @challenges_local = region.challenges.map { |x| x }
-    @challenges_country = Challenge.where("country = ?", region.country).map { |x| x }
-  end
-
-  def get_setup_session_vars
-    session[:setup_progress] ||= 1
-    session[:region_id_temp] ||= nil
-    session[:ignindex_id] ||= nil
-    session[:summoner_name_ref_temp] ||= nil
-    session[:last_validation] ||= nil    
-  end
 
   def zone #GET as zone
     if !current_user.ignindex_id.nil?
@@ -155,6 +125,7 @@ class IgnindicesController < ApplicationController
           redirect_to setup_path
         end     
       elsif params["commit"] == "Generate Validation Code" #step3b
+        @ignindex = Ignindex.find(params[:id])
         @ignindex.refresh_validation
         session[:last_validation] = @ignindex.validation_timer  
         User.find(current_user.id).update(
@@ -223,38 +194,40 @@ class IgnindicesController < ApplicationController
         session[:summoner_name_ref_temp] = params["ignindex"]["summoner_name"].mb_chars.downcase.gsub(' ', '')          
         
         #Ignindex; get or create
-        ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
-        if ignindex.nil?
-          Rails.logger.info "using a new ignindex"
-          @ignindex = Ignindex.new(
-            :region_id => session[:region_id_temp],
-            :region_id_temp => session[:region_id_temp],          
-            :summoner_name => session[:summoner_name_temp],
-            :summoner_name_ref => session[:summoner_name_ref_temp])
+        # ActiveRecord::Base.transaction do
+          ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
+          if ignindex.nil?
+            Rails.logger.info "using a new ignindex"
 
-          @ignindex.save
-          session[:ignindex_id] = @ignindex.id
-          @achievement = Achievement.new(
-            :challenge_id => session[:challenge_id],
-            :ignindex_id => @ignindex.id)
-          createAch(@ignindex, @achievement)
+            @ignindex = Ignindex.create(
+              :region_id => session[:region_id_temp],
+              :region_id_temp => session[:region_id_temp],          
+              :summoner_name => session[:summoner_name_temp],
+              :summoner_name_ref => session[:summoner_name_ref_temp])
 
-        else #use existing object
-          @ignindex = ignindex
-          session[:ignindex_id] = @ignindex.id
-          Rails.logger.info "using this ignindex.id: #{@ignindex.id}"
-
-          @ignindex.update(
-            :region_id_temp => session[:region_id_temp])
-
-          if @ignindex.active_achievement.nil?
-            Rails.logger.info "achievement_id is nil"
+            session[:ignindex_id] = @ignindex.id
             @achievement = Achievement.new(
               :challenge_id => session[:challenge_id],
               :ignindex_id => @ignindex.id)
             createAch(@ignindex, @achievement)
+
+          else #use existing object
+            @ignindex = ignindex
+            session[:ignindex_id] = @ignindex.id
+            Rails.logger.info "using this ignindex.id: #{@ignindex.id}"
+
+            @ignindex.update(
+              :region_id_temp => session[:region_id_temp])
+
+            if @ignindex.active_achievement.nil?
+              Rails.logger.info "achievement_id is nil"
+              @achievement = Achievement.new(
+                :challenge_id => session[:challenge_id],
+                :ignindex_id => @ignindex.id)
+              createAch(@ignindex, @achievement)
+            end
           end
-        end
+        # end
 
         @ignindex.refresh_validation
         session[:last_validation] = @ignindex.validation_timer
@@ -271,75 +244,106 @@ class IgnindicesController < ApplicationController
     end
   end  
 
-  def createAch(ignindex, achievement)
-    Rails.logger.info "HITS createAch method"
-    challenge = Challenge.where("id = ?", achievement.challenge_id)
-    Rails.logger.info "challenge: #{challenge}"
-    Rails.logger.info "empty?: #{challenge.empty?}"
-    Rails.logger.info "first?: #{challenge.first}"
-    Rails.logger.info "session[:challenge_id]: #{session[:challenge_id]}"
-    if !challenge.empty? 
-      challenge = challenge.first
-      Rails.logger.info "challenge: #{challenge.id}"
-      achievement.update(   #this creates a lot of duplicates in db...
-        :ignindex_id => ignindex.id,
-        :region_id => ignindex.region_id,
-        :challenge_id => challenge.id,
-        :expire => challenge.expiery,
-        :name => challenge.name,
-        :merchant => challenge.merchant,
-        :has_prizing => challenge.local_prizing,
-        :can_spell_name => challenge.can_spell_name,
-        :can_spell_name_open => challenge.can_spell_name,
-        :wins_required => challenge.wins_required,
-        :wins_recorded => 0,
-        :con_wins_recorded => 0)
-
-      Rails.logger.info "@achievement.id: #{@achievement.id}"
-
-      Ignindex.find(ignindex.id).update(
-        :active_achievement => achievement.id)
-      Rails.logger.info "@achievement.id: #{@achievement.id}"
-    end
-  end  
-
-  def update_region_id(ignindex, dirty_postal)
-    @ignindex = ignindex
-    Rails.logger.info "method postal: #{ignindex.postal_code}, dity_postal: #{dirty_postal}"
-    postal_search = dirty_postal.to_s
-
-    #auto-detect where the postal code is from + format it for search
-    Rails.logger.info "us?: #{!/[0-9]/.match(postal_search[0]).nil?}"
-    Rails.logger.info "ca?: #{!/[a-zA-Z]/.match(postal_search[0]).nil?}"
-    if !/[0-9]/.match(postal_search[0]).nil? #this is a zip code
-      if postal_search.length > 5
-        postal_search = postal_search[0..4]
-      end
-      if !Region.where("postal_code = ?", postal_search).first.nil?
-        @ignindex.region_id_temp = Region.where("postal_code = ?", postal_search).first.id
-      end
-      Rails.logger.info "US_postal: #{postal_search}"
-      Rails.logger.info "US_region: #{ignindex.region_id_temp}"
-    elsif !/[a-zA-Z]/.match(postal_search[0]).nil? #this is a postal code
-      if postal_search.length >= 3
-        postal_search = postal_search[0..2].upcase
-      end 
-      if !Region.where("postal_code = ?", postal_search).first.nil?
-        @ignindex.region_id_temp = Region.where("postal_code = ?", postal_search).first.id
-      end
-      Rails.logger.info "CA_postal: #{postal_search}"
-      Rails.logger.info "CA_region: #{ignindex.region_id_temp}"
-    else
-      Rails.logger.info "alkatraz"
-      #error entering postal code!
-    end
-    Rails.logger.info "#postal_search: #{postal_search}"
-  end  
-
   private
 
-    def ignindex_params
-      # this is dangerous! Fix me asap.
+    def find_unauth_ignindex(summoner_name_ref_temp)
+      ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
+      if !ignindex.nil?
+        @ignindex = ignindex
+        session[:ignindex_id] = @ignindex.id
+      end     
+    end
+
+    def setup_challenge_list(region_id_temp)
+      region = Region.where("id = ?", session[:region_id_temp]).first
+      @region_postal = region.postal_code
+      @challenges_global = Challenge.where("global = ?", true).map { |x| x }
+      @challenges_local = region.challenges.map { |x| x }
+      @challenges_country = Challenge.where("country = ?", region.country).map { |x| x }
+    end
+
+    def createAch(ignindex, achievement)
+      Rails.logger.info "HITS createAch method"
+      challenge = Challenge.where("id = ?", achievement.challenge_id)
+      Rails.logger.info "challenge: #{challenge}"
+      Rails.logger.info "empty?: #{challenge.empty?}"
+      Rails.logger.info "first?: #{challenge.first}"
+      Rails.logger.info "session[:challenge_id]: #{session[:challenge_id]}"
+      if !challenge.empty? 
+        challenge = challenge.first
+        Rails.logger.info "challenge: #{challenge.id}"
+        achievement.update(   #this creates a lot of duplicates in db...
+          :ignindex_id => ignindex.id,
+          :region_id => ignindex.region_id,
+          :challenge_id => challenge.id,
+          :expire => challenge.expiery,
+          :name => challenge.name,
+          :merchant => challenge.merchant,
+          :has_prizing => challenge.local_prizing,
+          :can_spell_name => challenge.can_spell_name,
+          :can_spell_name_open => challenge.can_spell_name,
+          :wins_required => challenge.wins_required,
+          :wins_recorded => 0,
+          :con_wins_recorded => 0)
+
+        Rails.logger.info "@achievement.id: #{@achievement.id}"
+
+        Ignindex.find(ignindex.id).update(
+          :active_achievement => achievement.id)
+        Rails.logger.info "@achievement.id: #{@achievement.id}"
+      end
+    end  
+
+    def update_region_id(ignindex, dirty_postal)
+      @ignindex = ignindex
+      Rails.logger.info "method postal: #{ignindex.postal_code}, dity_postal: #{dirty_postal}"
+      postal_search = dirty_postal.to_s
+
+      #auto-detect where the postal code is from + format it for search
+      Rails.logger.info "us?: #{!/[0-9]/.match(postal_search[0]).nil?}"
+      Rails.logger.info "ca?: #{!/[a-zA-Z]/.match(postal_search[0]).nil?}"
+      if !/[0-9]/.match(postal_search[0]).nil? #this is a zip code
+        if postal_search.length > 5
+          postal_search = postal_search[0..4]
+        end
+        if !Region.where("postal_code = ?", postal_search).first.nil?
+          @ignindex.region_id_temp = Region.where("postal_code = ?", postal_search).first.id
+        end
+        Rails.logger.info "US_postal: #{postal_search}"
+        Rails.logger.info "US_region: #{ignindex.region_id_temp}"
+      elsif !/[a-zA-Z]/.match(postal_search[0]).nil? #this is a postal code
+        if postal_search.length >= 3
+          postal_search = postal_search[0..2].upcase
+        end 
+        if !Region.where("postal_code = ?", postal_search).first.nil?
+          @ignindex.region_id_temp = Region.where("postal_code = ?", postal_search).first.id
+        end
+        Rails.logger.info "CA_postal: #{postal_search}"
+        Rails.logger.info "CA_region: #{ignindex.region_id_temp}"
+      else
+        Rails.logger.info "alkatraz"
+        #error entering postal code!
+      end
+      Rails.logger.info "#postal_search: #{postal_search}"
+    end  
+
+    def is_summoner_valid_for_ignindex
+      if (@ignindex.user_id == current_user.id) && @ignindex.summoner_validated == true
+        @uu_summoner_validated = true
+      else 
+        @uu_summoner_validated = false
+      end
+    end
+
+    def get_setup_session_vars
+      session[:setup_progress] ||= 1
+      session[:region_id_temp] ||= nil
+      session[:ignindex_id] ||= nil
+      session[:summoner_name_ref_temp] ||= nil
+      session[:last_validation] ||= nil    
+    end
+
+    def ignindex_params    
       params.require(:ignindex).permit(:user_id, :postal_code, :summoner_name, :summoner_id, :summoner_validated, :validation_string, :validation_timer) if params[:ignindex]
     end
 end

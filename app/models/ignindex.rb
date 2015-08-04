@@ -6,6 +6,7 @@ class Ignindex < ActiveRecord::Base
 	has_many :achievements
 	has_many :prizes
 
+
 	def refresh_summoner
 		# self.update(summoner_validated: false)
 		# self.update(summoner_id: nil)
@@ -66,6 +67,55 @@ class Ignindex < ActiveRecord::Base
 		      :summoner_validated => nil)
 		  end
 		end; nil
+	end
+
+
+	def available_challenges
+		active_achievment_ids = achievements.where("result IS ?", nil).map { |x| x.challenge_id }
+		return {
+			active: self.achievements.where(id: self.active_achievement),
+			saved: self.achievements.where(result: nil).where.not(id: self.active_achievement),
+			local: Challenge.where(global: true).where.not(id: active_achievment_ids).map { |x| x },
+			country: region.challenges.where.not(id: active_achievment_ids).map { |x| x },
+			global: Challenge.where("country = ?", self.region.country).where.not(id: active_achievment_ids).map { |x| x }
+		}
+	end
+
+	def toggle_active_achievement(toggleId)
+		match_toggleId = lambda {|x| if x.id == toggleId then x end }
+		if self.achievements.where("result IS ?", nil).select(&match_toggleId).empty?
+			self.update(
+				:active_achievement => toggleId)
+		end
+	end
+
+	def add_achievement(chalId, achievement)
+		chalId = chalId.to_i
+		active_ones = self.achievements.map { |x| x.challenge_id }
+		challenges_global = Challenge.where("global = ?", true).where.not(id: active_ones)
+		challenges_local = Region.find(self.region).challenges.where.not(id: active_ones)
+		challenges_country = Challenge.where("country = ?", self.region.country).where.not(id: active_ones)
+		all_challenges = challenges_global + challenges_local + challenges_country
+		match_chals = lambda {|x| if x.id == chalId then x end}	#just fancy :p
+		@challenge = all_challenges.select(&match_chals)		
+		if !@challenge.empty? 
+			@challenge = @challenge.first
+			achievement.update( 	#this creates a lot of duplicates in db...
+				:ignindex_id => self.id,
+				:region_id => self.region_id,
+				:challenge_id => @challenge.id,
+				:expire => @challenge.expiery,
+				:name => @challenge.name,
+				:merchant => @challenge.merchant,
+				:has_prizing => @challenge.local_prizing,
+				:can_spell_name => @challenge.can_spell_name,
+				:can_spell_name_open => @challenge.can_spell_name,
+				:wins_required => @challenge.wins_required,
+				:wins_recorded => 0,
+				:con_wins_recorded => 0)
+			self.update(
+				:active_achievement => achievement.id)
+		end
 	end
 
 
