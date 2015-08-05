@@ -5,32 +5,26 @@
 				<div class="col-md-12 col-md-offset-0">
 					<h1>2) Pick a Challenge in your area</h1>
 					<h3 style="margin-top:0px;">
-					Select from the challenges in (<%= @region_postal %>)
+					Select from the challenges in (<%= @ignindex.postal_code %>)
 					</h3>
 				</div>
 			</div>	
 
 			<div class="row">
-				<% if !@challenges_local.nil? %>
-					<% @challenges_local.each do |x| %>
-						<%= render 'challenges_available', :x => x, :active => 1 %>		
-					<% end %>
+				<% @all_challenges[:local].each do |x| %>
+					<%= render 'challenges_available', :x => x, :active => 1 %>		
 				<% end %>
 			</div>
 
 			<div class="row">
-				<% if !@challenges_global.nil? %>
-					<% @challenges_global.each do |x| %>
-						<%= render 'challenges_available', :x => x, :active => 1 %>			
-					<% end %>
+				<% @all_challenges[:country].each do |x| %>
+					<%= render 'challenges_available', :x => x, :active => 1 %>			
 				<% end %>
 			</div>
 			
 			<div class="row">
-				<% if !@challenges_country.nil? %>
-					<% @challenges_country.each do |x| %>
-						<%= render 'challenges_available', :x => x, :active => 1 %>			
-					<% end %>
+				<% @all_challenges[:global].each do |x| %>
+					<%= render 'challenges_available', :x => x, :active => 1 %>			
 				<% end %>
 			</div>					
 		</div>

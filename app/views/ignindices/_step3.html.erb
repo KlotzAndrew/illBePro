@@ -139,13 +139,11 @@
       <div id="how_to_finished" class="col-md-6 lwell col-md-offset-3 text-center start-ghost" style="margin-top: 40px; margin-bottom: 20px;">
       <% end %>
 
-      <%= form_for @ignindex do |t| %>
-          <span id="">
-        <%= t.submit "Continue", class: "btn btn-large btn-lprimary" %>
-          </span>
-      <% end %>
+      <%= link_to "Continue", root_path, :class=>"btn btn-large btn-lprimary", :style=>"color:white;" %>
       </div>
     </div>
+    
+
   </div>
 
 

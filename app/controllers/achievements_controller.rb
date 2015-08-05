@@ -12,13 +12,11 @@ class AchievementsController < ApplicationController
 
 	def create
 		set_user_ignindex
-
 		if params["commit"] == "Select"
 			@ignindex.add_achievement(params["achievement"]["challenge_id"], @achievement)
 		elsif params["commit"] == "Activate"
 			@ignindex.toggle_active_achievement(params["achievement"]["achievement_id"])
 		end
-		
 		redirect_create_action
 	end
 

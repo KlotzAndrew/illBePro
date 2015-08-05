@@ -6,54 +6,28 @@ class IgnindicesController < ApplicationController
   #validatetes: summoner_name :unique
 
   def landing_page #GET as root
-    @ignindex = Ignindex.new
+    @ignindex ||= Ignindex.new
   end
 
   def get_setup #GET as setup
-    get_setup_session_vars
-    @setup_progress = session[:setup_progress]
-
-    @ignindex = Ignindex.where("user_id = ?", current_user.id).first #is this needed?
-    if @ignindex.nil?
-      @ignindex = Ignindex.new
-    end
+    setup_session_variables
+    find_ignindex
 
     if session[:setup_progress] == 1 #postal
     elsif session[:setup_progress] == 2 #challenge
-      if session[:region_id_temp].nil?
-        session[:setup_progress] = 1
-        redirect_to setup_path
-      else
-        setup_challenge_list(session[:region_id_temp])
-      end
+      setup_step_2
     elsif session[:setup_progress] == 3 #validate
-      if session[:region_id_temp].nil? or session[:challenge_id].nil?
-        session[:setup_progress] = 1
-        redirect_to setup_path
-      else
-        find_unauth_ignindex(session[:summoner_name_ref_temp])
-        is_summoner_valid_for_ignindex
-        @league_api_ping = Staticpage.find(1).league_api_ping
-      end
+      setup_step_3
     end
   end  
 
   def zone #GET as zone
-    if !current_user.ignindex_id.nil?
-      @ignindex = current_user.ignindex
-    else
-      redirect_to setup_path
-    end
+    user_ignindex
   end
 
   def index #GET as summoner
-    @setup_progress = 1
-
-    if current_user.ignindex.nil?
-      redirect_to setup_path
-    else
-      @ignindex = current_user.ignindex
-    end
+    user_ignindex
+    is_summoner_valid_for_ignindex
   end
 
   def show #GET for ajax
@@ -68,104 +42,97 @@ class IgnindicesController < ApplicationController
   end
 
   def update #POST
-    if user_signed_in?
-      if params[:commit] == "Change Summoner Name" #step3a, unbind+reset setup OR typo
-        if (params["ignindex"]["summoner_name"].length < 1) #valid entry?
-          redirect_to setup_path, alert: 'Enter your summoner name to continue!'
-        elsif !Ignindex.where("user_id = ?", current_user.id).first.nil? #unbind+reset
-          Ignindex.where("user_id = ?", current_user.id).first.update(
-              :user_id => nil)
-          User.find(current_user.id).update(
-            :ignindex_id => nil)
+    if params[:commit] == "Change Summoner Name" #step3a, unbind+reset setup OR typo
+      if (params["ignindex"]["summoner_name"].length < 1) #valid entry?
+        redirect_to setup_path, alert: 'Enter your summoner name to continue!'
+      elsif !Ignindex.where("user_id = ?", current_user.id).first.nil? #unbind+reset
+        Ignindex.where("user_id = ?", current_user.id).first.update(
+            :user_id => nil)
+        User.find(current_user.id).update(
+          :ignindex_id => nil)
 
-          session[:setup_progress] = 1
-          redirect_to setup_path, notice: 'Successfully unbound that summoner from your account'
-        else #typo treat it as #create
-          session[:summoner_name_temp] = params["ignindex"]["summoner_name"]
-          session[:summoner_name_ref_temp] = params["ignindex"]["summoner_name"].mb_chars.downcase.gsub(' ', '')          
-          
-          #Ignindex; get or create
-          ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
-          if ignindex.nil?
-            Rails.logger.info "using a new ignindex"
-            @ignindex = Ignindex.new(
-              :region_id => session[:region_id_temp],
-              :region_id_temp => session[:region_id_temp],          
-              :summoner_name => session[:summoner_name_temp],
-              :summoner_name_ref => session[:summoner_name_ref_temp])
+        session[:setup_progress] = 1
+        redirect_to setup_path, notice: 'Successfully unbound that summoner from your account'
+      else #typo treat it as #create
+        session[:summoner_name_temp] = params["ignindex"]["summoner_name"]
+        session[:summoner_name_ref_temp] = params["ignindex"]["summoner_name"].mb_chars.downcase.gsub(' ', '')          
+        
+        #Ignindex; get or create
+        ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
+        if ignindex.nil?
+          Rails.logger.info "using a new ignindex"
+          @ignindex = Ignindex.new(
+            :region_id => session[:region_id_temp],
+            :region_id_temp => session[:region_id_temp],          
+            :summoner_name => session[:summoner_name_temp],
+            :summoner_name_ref => session[:summoner_name_ref_temp])
 
-            @ignindex.save
-            session[:ignindex_id] = @ignindex.id
+          @ignindex.save
+          session[:ignindex_id] = @ignindex.id
+          @achievement = Achievement.new(
+            :challenge_id => session[:challenge_id],
+            :ignindex_id => @ignindex.id)
+          createAch(@ignindex, @achievement)
+
+        else #use existing object
+          @ignindex = ignindex
+          session[:ignindex_id] = @ignindex.id
+          Rails.logger.info "using this ignindex.id: #{@ignindex.id}"
+
+          @ignindex.update(
+            :region_id_temp => session[:region_id_temp])
+
+          if @ignindex.active_achievement.nil?
+            Rails.logger.info "achievement_id is nil"
             @achievement = Achievement.new(
               :challenge_id => session[:challenge_id],
               :ignindex_id => @ignindex.id)
             createAch(@ignindex, @achievement)
-
-          else #use existing object
-            @ignindex = ignindex
-            session[:ignindex_id] = @ignindex.id
-            Rails.logger.info "using this ignindex.id: #{@ignindex.id}"
-
-            @ignindex.update(
-              :region_id_temp => session[:region_id_temp])
-
-            if @ignindex.active_achievement.nil?
-              Rails.logger.info "achievement_id is nil"
-              @achievement = Achievement.new(
-                :challenge_id => session[:challenge_id],
-                :ignindex_id => @ignindex.id)
-              createAch(@ignindex, @achievement)
-            end
           end
+        end
 
-          @ignindex.refresh_validation
-          session[:last_validation] = @ignindex.validation_timer
-          User.find(current_user.id).update(
-              :summoner_id => @ignindex.validation_timer)
-          redirect_to setup_path
-        end     
-      elsif params["commit"] == "Generate Validation Code" #step3b
-        @ignindex = Ignindex.find(params[:id])
         @ignindex.refresh_validation
-        session[:last_validation] = @ignindex.validation_timer  
+        session[:last_validation] = @ignindex.validation_timer
         User.find(current_user.id).update(
-          :summoner_id => @ignindex.validation_timer)
-        
-        redirect_to setup_path    
-      elsif params["commit"] == "Continue" #step3c
-        session[:setup_progress] = 3
-        redirect_to new_status_path #validation on status#new controller
-      elsif params["commit"] == "Add Postal/Zip Code" #step1
-        @ignindex = Ignindex.find(params[:id])
-        update_region_id(@ignindex, ignindex_params[:postal_code])
-        @ignindex.update( 
-          :region_id => @ignindex.region_id_temp,
-          :postal_code => Region.find(@ignindex.region_id_temp).postal_code)
-        redirect_to new_status_path, notice: 'Prizing zone changed'
-      elsif params["commit"] == "Accept" || params["commit"] == "Upgrade" #prize accept logic here?
-        if @ignindex.prize_id != nil
-          @ignindex.assign_prize(params[:commit])
-          if params[:commit] == "Accept"
-            respond_to do |format|
-              format.html { redirect_to scores_path, notice: 'Prize accepted' }
-              format.json { head :no_content }
-            end
-          elsif params[:commit] == "Upgrade"
-            respond_to do |format|
-              format.html { redirect_to new_status_path, notice: 'Prize Tier Upgraded!' }
-              format.json { head :no_content }
-            end
-          end
-        else
+            :summoner_id => @ignindex.validation_timer)
+        redirect_to setup_path
+      end     
+    elsif params["commit"] == "Generate Validation Code" #step3b
+      @ignindex = Ignindex.find(params[:id])
+      @ignindex.refresh_validation
+      session[:last_validation] = @ignindex.validation_timer  
+      User.find(current_user.id).update(
+        :summoner_id => @ignindex.validation_timer)
+      
+      redirect_to setup_path    
+    elsif params["commit"] == "Add Postal/Zip Code" #step1
+      @ignindex = Ignindex.find(params[:id])
+      update_region_id(@ignindex, ignindex_params[:postal_code])
+      @ignindex.update( 
+        :region_id => @ignindex.region_id_temp,
+        :postal_code => Region.find(@ignindex.region_id_temp).postal_code)
+      redirect_to root_path, notice: 'Prizing zone changed'
+    elsif params["commit"] == "Accept" || params["commit"] == "Upgrade" #prize accept logic here?
+      if @ignindex.prize_id != nil
+        @ignindex.assign_prize(params[:commit])
+        if params[:commit] == "Accept"
           respond_to do |format|
-            format.html { redirect_to challenges_url, alert: 'There is an issue with your prize :(' }
+            format.html { redirect_to scores_path, notice: 'Prize accepted' }
             format.json { head :no_content }
           end
-        end        
-      end
-    else
-      redirect_to new_user_session_path, flash: {alert: "You need to be logged in!"}
-    end    
+        elsif params[:commit] == "Upgrade"
+          respond_to do |format|
+            format.html { redirect_to new_status_path, notice: 'Prize Tier Upgraded!' }
+            format.json { head :no_content }
+          end
+        end
+      else
+        respond_to do |format|
+          format.html { redirect_to challenges_url, alert: 'There is an issue with your prize :(' }
+          format.json { head :no_content }
+        end
+      end        
+    end
   end
 
   def create #POST
@@ -246,20 +213,64 @@ class IgnindicesController < ApplicationController
 
   private
 
+    def find_ignindex
+      @ignindex = Ignindex.where("user_id = ?", current_user.id).first
+      @ignindex ||= Ignindex.new
+    end
+
+    def user_ignindex
+      if current_user.ignindex.nil?
+        redirect_to setup_path
+      else
+        @ignindex = current_user.ignindex
+      end      
+    end
+
+    def setup_session_variables
+      @setup_progress ||= session[:setup_progress]
+      session[:setup_progress] ||= 1
+      session[:region_id_temp] ||= nil
+      session[:ignindex_id] ||= nil
+      session[:summoner_name_ref_temp] ||= nil
+      session[:last_validation] ||= nil    
+    end
+
+    def setup_step_2
+      if session[:region_id_temp].nil?
+        reset_setup
+      else
+        temp_ignindex
+        @all_challenges = @ignindex.available_challenges
+      end      
+    end 
+
+    def temp_ignindex
+      @ignindex = Ignindex.new(
+        :region_id => session[:region_id_temp],
+        :postal_code => Region.find(session[:region_id_temp]).postal_code)
+    end
+
+    def setup_step_3
+      if session[:region_id_temp].nil? or session[:challenge_id].nil?
+        reset_setup
+      else
+        find_unauth_ignindex(session[:summoner_name_ref_temp])
+        is_summoner_valid_for_ignindex
+        @league_api_ping = Staticpage.find(1).league_api_ping
+      end      
+    end  
+
+    def reset_setup
+      session[:setup_progress] = 1
+      redirect_to setup_path      
+    end
+
     def find_unauth_ignindex(summoner_name_ref_temp)
       ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
       if !ignindex.nil?
         @ignindex = ignindex
         session[:ignindex_id] = @ignindex.id
       end     
-    end
-
-    def setup_challenge_list(region_id_temp)
-      region = Region.where("id = ?", session[:region_id_temp]).first
-      @region_postal = region.postal_code
-      @challenges_global = Challenge.where("global = ?", true).map { |x| x }
-      @challenges_local = region.challenges.map { |x| x }
-      @challenges_country = Challenge.where("country = ?", region.country).map { |x| x }
     end
 
     def createAch(ignindex, achievement)
@@ -296,12 +307,9 @@ class IgnindicesController < ApplicationController
 
     def update_region_id(ignindex, dirty_postal)
       @ignindex = ignindex
-      Rails.logger.info "method postal: #{ignindex.postal_code}, dity_postal: #{dirty_postal}"
       postal_search = dirty_postal.to_s
 
       #auto-detect where the postal code is from + format it for search
-      Rails.logger.info "us?: #{!/[0-9]/.match(postal_search[0]).nil?}"
-      Rails.logger.info "ca?: #{!/[a-zA-Z]/.match(postal_search[0]).nil?}"
       if !/[0-9]/.match(postal_search[0]).nil? #this is a zip code
         if postal_search.length > 5
           postal_search = postal_search[0..4]
@@ -309,8 +317,6 @@ class IgnindicesController < ApplicationController
         if !Region.where("postal_code = ?", postal_search).first.nil?
           @ignindex.region_id_temp = Region.where("postal_code = ?", postal_search).first.id
         end
-        Rails.logger.info "US_postal: #{postal_search}"
-        Rails.logger.info "US_region: #{ignindex.region_id_temp}"
       elsif !/[a-zA-Z]/.match(postal_search[0]).nil? #this is a postal code
         if postal_search.length >= 3
           postal_search = postal_search[0..2].upcase
@@ -318,30 +324,18 @@ class IgnindicesController < ApplicationController
         if !Region.where("postal_code = ?", postal_search).first.nil?
           @ignindex.region_id_temp = Region.where("postal_code = ?", postal_search).first.id
         end
-        Rails.logger.info "CA_postal: #{postal_search}"
-        Rails.logger.info "CA_region: #{ignindex.region_id_temp}"
       else
         Rails.logger.info "alkatraz"
-        #error entering postal code!
       end
-      Rails.logger.info "#postal_search: #{postal_search}"
     end  
 
     def is_summoner_valid_for_ignindex
       if (@ignindex.user_id == current_user.id) && @ignindex.summoner_validated == true
         @uu_summoner_validated = true
-      else 
-        @uu_summoner_validated = false
-      end
+      end 
+      @uu_summoner_validated ||= false
     end
 
-    def get_setup_session_vars
-      session[:setup_progress] ||= 1
-      session[:region_id_temp] ||= nil
-      session[:ignindex_id] ||= nil
-      session[:summoner_name_ref_temp] ||= nil
-      session[:last_validation] ||= nil    
-    end
 
     def ignindex_params    
       params.require(:ignindex).permit(:user_id, :postal_code, :summoner_name, :summoner_id, :summoner_validated, :validation_string, :validation_timer) if params[:ignindex]
