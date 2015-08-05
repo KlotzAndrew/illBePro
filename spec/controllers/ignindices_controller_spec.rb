@@ -27,16 +27,7 @@ RSpec.describe IgnindicesController, :type => :controller do
 				get :get_setup
 				
 				expect(assigns(:ignindex)).to be_a_new(Ignindex) 
-			end
-
-			it "get existing ignindex if !nil" do
-				user = subject.current_user
-				ignindex = FactoryGirl.create(:ignindex, :user_id => user.id)
-				user.update(ignindex_id: ignindex.id)
-				get :get_setup
-				
-				expect(assigns(:ignindex)).to eq(user.ignindex) 
-			end		
+			end	
 
 			it "step2 redirect if region nil" do
 				session[:setup_progress] = 2

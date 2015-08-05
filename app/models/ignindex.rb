@@ -4,6 +4,8 @@ class Ignindex < ActiveRecord::Base
 	has_many :achievements
 	has_many :prizes
 
+  # validates :summoner_name, length: { minimum: 2, too_short: "the summoner name you entered is too short" }
+
 
 	def refresh_summoner
 		self.update(validation_string: nil)
@@ -14,6 +16,42 @@ class Ignindex < ActiveRecord::Base
 		self.update(validation_timer: "#{Time.now.to_i}")
 		self.update(validation_string: "#{"pizza" + "-" + ('a'..'z').to_a.shuffle.first(4).join}")
 	end
+
+	def create_or_update_ignindex(region_id, summoner_name, summoner_name_ref, challenge_id)
+	  if self.nil?
+	    @ignindex = Ignindex.create(
+	      :region_id => region_id,
+	      :region_id_temp => region_id,          
+	      :summoner_name => summoner_name,
+	      :summoner_name_ref => summoner_name_ref)
+	  else
+	    @ignindex.update(
+	      :region_id_temp => region_id)
+	  end
+
+	  @ignindex.add_user_achievement(challenge_id)
+	  @ignindex.refresh_validation      
+	end
+
+	def add_user_achievement(challenge_id)
+	  if self.active_achievement.nil?
+	    @achievement = Achievement.create(
+			:ignindex_id => self.id,
+			:region_id => self.region_id,
+			:challenge_id => challenge.id,
+			:expire => challenge.expiery,
+			:name => challenge.name,
+			:merchant => challenge.merchant,
+			:has_prizing => challenge.local_prizing,
+			:can_spell_name => challenge.can_spell_name,
+			:can_spell_name_open => challenge.can_spell_name,
+			:wins_required => challenge.wins_required,
+			:wins_recorded => 0,
+			:con_wins_recorded => 0)
+		self.update(
+			:active_achievement => achievement.id)
+	  end
+	end	
 
   	def assign_prize(choice)
   		prize = Prize.find(self.prize_id)
