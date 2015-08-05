@@ -1,18 +1,13 @@
 class AchievementsController < ApplicationController
 	before_action :authenticate_user!
+	before_action :has_ignindex
+	before_action :set_user_ignindex
 
 	def index
-		if current_user.ignindex.nil?
-			redirect_to setup_path, notice: "You need to validate your Summoner Name!"
-		else
-			set_user_ignindex
-			@all_challenges = @ignindex.available_challenges
-		end
+		@all_challenges = @ignindex.available_challenges
 	end
 
 	def create
-		set_user_ignindex
-
 		if params["commit"] == "Select"
 			@ignindex.add_achievement(params["achievement"]["challenge_id"], @achievement)
 		elsif params["commit"] == "Activate"
@@ -23,6 +18,12 @@ class AchievementsController < ApplicationController
 	end
 
 private
+	def has_ignindex
+		if current_user.ignindex.nil?
+			redirect_to setup_path, notice: "You need to validate your Summoner Name!"
+		end
+	end
+
 	def set_user_ignindex
 		@achievement = Achievement.new
 		@ignindex = current_user.ignindex
