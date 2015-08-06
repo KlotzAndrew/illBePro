@@ -7,65 +7,12 @@ class ScoresController < ApplicationController
   end
 
   def index
-
     @prize_description = nil
-    if user_signed_in?
-      test_user = current_user.id
-    else 
-      test_user = Time.now.to_i
-    end
-    Rails.logger.info "TU(#{test_user}: getting started"
     
     if user_signed_in?
-      Rails.logger.info "TU(#{test_user}: signed in"
-      if !Ignindex.find_by_user_id(current_user.id).nil? #filter out nils, this needs fixing
-        Rails.logger.info "TU(#{test_user}: user not nil"
-        ignindex = Ignindex.find_by_user_id(current_user.id)
-        Rails.logger.info "TU(#{test_user}: user #{ignindex.id}"
-        if ignindex.summoner_validated == true
-          @uu_summoner_validated = true
-          Rails.logger.info "TU(#{test_user}: uu #{@uu_summoner_validated}"
-          @history = Prize.all.where("ignindex_id = ?", ignindex.id).where("assignment = ?", 2).order(created_at: :desc)
+      set_ignindex_and_history
+    end 
 
-          if !ignindex.prize_id.nil? #send me to a mehtod
-            @ignindex = ignindex
-            prize = Prize.find(ignindex.prize_id)
-            @prize_description = prize.description
-            @prize_vendor = prize.vendor
-            @prize_code = prize.code
-            @prize_reward_code = prize.reward_code
-          end
-        else
-          @uu_summoner_validated = false
-          Rails.logger.info "TU(#{test_user}: uu #{@uu_summoner_validated}"
-        end   
-      else
-        Rails.logger.info "TU(#{test_user}: user nil"
-      end
-    elsif session[:ignindex_id] != nil
-      Rails.logger.info "TU(#{test_user}: not signed in"
-      ignindex = Ignindex.find(session[:ignindex_id])
-      Rails.logger.info "TU(#{test_user}: user #{ignindex.id}"
-
-      if (ignindex.summoner_validated == true) && (ignindex.last_validation == session[:last_validation])
-        @uu_summoner_validated = true
-        Rails.logger.info "TU(#{test_user}: uu #{@uu_summoner_validated}"
-        @history = Prize.all.where("ignindex_id = ?", ignindex.id).where("assignment = ?", 2).order(created_at: :desc)
-
-        if ignindex.prize_id != nil #send me to a mehtod
-          prize = Prize.find(ignindex.prize_id)
-          @prize_description = prize.description
-          @prize_vendor = prize.vendor
-          @prize_code = prize.code
-          @prize_reward_code = prize.reward_code
-        end
-      else
-        @uu_summoner_validated = false
-        Rails.logger.info "TU(#{test_user}: uu #{@uu_summoner_validated}"
-      end      
-    else
-      #nothing here
-    end #this should really be in prizes... you got your controllers confused.
   end
 
   def update
@@ -91,6 +38,18 @@ class ScoresController < ApplicationController
   end
 
   private
+
+  def set_ignindex_and_history
+    ignindex = current_user.ignindex
+    if !ignindex.nil? && ignindex.summoner_validated == true
+      @ignindex = ignindex
+      @uu_summoner_validated = true
+      @history = Prize.all.where("ignindex_id = ?", ignindex.id).where("assignment = ?", 2).order(created_at: :desc)
+
+      @prize = Prize.show_current_prize(ignindex)
+    end
+  end
+
     def set_score
       @score = Score.find(params[:id])
     end

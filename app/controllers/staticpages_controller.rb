@@ -3,7 +3,7 @@ class StaticpagesController < ApplicationController
 	def homepage
 	end
 
-  def dash #this should be moved to an vendor controller
+  def dash #this should be moved to an vendor dashboard controller
     @display = 0
     if user_signed_in?
       if current_user.email == "andrew.klotz@hotmail.com" or current_user.email == "changtoy@yahoo.ca"
