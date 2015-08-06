@@ -6,7 +6,6 @@ class Ignindex < ActiveRecord::Base
 
   # validates :summoner_name, length: { minimum: 2, too_short: "the summoner name you entered is too short" }
 
-
 	def refresh_summoner
 		self.update(validation_string: nil)
 		self.update(validation_timer: nil)
@@ -18,19 +17,21 @@ class Ignindex < ActiveRecord::Base
 	end
 
 	def create_or_update_ignindex(region_id, summoner_name, summoner_name_ref, challenge_id)
-	  if self.nil?
-	    @ignindex = Ignindex.create(
-	      :region_id => region_id,
-	      :region_id_temp => region_id,          
-	      :summoner_name => summoner_name,
-	      :summoner_name_ref => summoner_name_ref)
-	  else
-	    @ignindex.update(
-	      :region_id_temp => region_id)
-	  end
+		ActiveRecord::Base.transaction do
+			if self.nil?
+				@ignindex = Ignindex.create(
+					:region_id => region_id,
+					:region_id_temp => region_id,          
+					:summoner_name => summoner_name,
+					:summoner_name_ref => summoner_name_ref)
+			else
+				@ignindex.update(
+					:region_id_temp => region_id)
+			end
 
-	  @ignindex.add_user_achievement(challenge_id)
-	  @ignindex.refresh_validation      
+			@ignindex.add_user_achievement(challenge_id)
+			@ignindex.refresh_validation
+		end
 	end
 
 	def add_user_achievement(challenge_id)

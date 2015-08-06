@@ -214,6 +214,6 @@ class IgnindicesController < ApplicationController
   end
 
   def ignindex_params    
-    params.require(:ignindex).permit(:user_id, :postal_code, :summoner_name, :summoner_id, :summoner_validated, :validation_string, :validation_timer) if params[:ignindex]
+    params.require(:ignindex).permit() if params[:ignindex]
   end
 end

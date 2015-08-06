@@ -1,61 +1,9 @@
 class ScoresController < ApplicationController
-  before_action :set_score, only: [:show, :edit, :update, :destroy]
-
+  before_action :set_score, only: [:update]
 
   def leaderboard
-    @achievements = []
-    @ignindexes = []
-
-    # if user_signed_in?
-    #   if current_user.email == "andrew.klotz@hotmail.com" or current_user.email == "aklotz@tangiblegameworks.com"
-        cora_start = 1433781134
-
-        @achievements = []
-        Ignindex.all.includes(:achievements).where("updated_at > ?", Time.at(cora_start)).where.not("summoner_name IS ?", nil).where.not("active_achievement IS ?", nil).each do |x|
-          Rails.logger.info "x.id:::: #{x.id}"
-          an_ach = Achievement.find(x.active_achievement)
-          number_top = 0
-          number_bottom = 0
-          if !an_ach.challenge.wins_required.nil?
-            number_top = number_top + an_ach.wins_recorded
-            number_bottom = number_bottom + an_ach.challenge.wins_required
-          end
-
-          if !an_ach.challenge.can_spell_name.nil?
-            number_top = number_top + (an_ach.can_spell_name.length - an_ach.can_spell_name_open.length)
-            number_bottom = number_bottom + an_ach.can_spell_name.length
-          end
-
-          if !an_ach.challenge.con_wins_required.nil?
-            number_top = number_top + an_ach.con_wins_recorded
-            number_bottom = number_bottom + an_ach.challenge.con_wins_required
-          end          
-
-          if number_bottom == 0
-            number_bottom = 1
-          end
-          
-          number = number_top/number_bottom.round(2)
-          progress = (number.round(2)*100).round(0)
-
-          block = []
-          block << x.ign_challenge_points
-          block << x.summoner_name
-          block << an_ach
-          block << progress
-          @achievements << block
-        end
-        @achievements = @achievements.sort_by{|a,b,c,d| [a,d]}.reverse
-
-      @currently_playing = []
-      Status.all.where("updated_at > ?", 2.hours.ago).each do |x|
-        if !@currently_playing.include?(x.summoner_name)
-          @currently_playing << x.summoner_name
-        end
-      end; nil
-    
-    #   end
-    # end
+    cora_start = 1433781134
+    @achievements = Score.open_achievments_since(cora_start)
   end
 
   def index
@@ -117,7 +65,7 @@ class ScoresController < ApplicationController
       end      
     else
       #nothing here
-    end#this should really be in prizes... you got your controllers confused.
+    end #this should really be in prizes... you got your controllers confused.
   end
 
   def update
@@ -139,10 +87,7 @@ class ScoresController < ApplicationController
         format.html { redirect_to scores_url, notice: 'There is an issue with your prize :(' }
         format.json { head :no_content }
       end
-    end#this is prize logic, not score stuff wth bro
-  end
-
-  def show
+    end
   end
 
   private
