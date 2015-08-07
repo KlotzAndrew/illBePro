@@ -3,6 +3,7 @@ class Ignindex < ActiveRecord::Base
 	belongs_to :region
 	has_many :achievements
 	has_many :prizes
+	belongs_to :user
 
   # validates :summoner_name, length: { minimum: 2, too_short: "the summoner name you entered is too short" }
 

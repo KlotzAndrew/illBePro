@@ -1,123 +1,28 @@
  class StatusesController < ApplicationController
-  before_action :set_status, only: [:show, :edit, :update, :destroy]
-  #set status is raising errors, why is this here?
-
-  # before_filter :authenticate_user!
+  before_action :set_status, only: [:show]
+  before_filter :authenticate_user!
 
   respond_to :html, :xml, :json
 
-  # GET /statuses
-  # GET /statuses.json
   def index
-     respond_to do |format|
+      respond_to do |format|
         format.html { redirect_to root_path}
         format.json { render json: current_user.ignindex.statuses.where("win_value IS ?", nil).last }
       end     
   end
 
-
   def show
-    if user_signed_in?
-      respond_to do |format|
-        format.html { render nothing: true}
-        format.json { render json: Status.find(params[:id]) }
-      end    
-    else
-     respond_to do |format|
-        format.html { render nothing: true}
-        format.json { render json: Status.where("ignindex_id = ?", session[:ignindex_id]).last }
-      end 
-    end
+    respond_to do |format|
+      format.html { render nothing: true}
+      format.json { render json: @status }
+    end    
   end
 
-  def new
-    if !user_signed_in?
-      redirect_to new_user_session_path, flash: {alert: "You need to be logged in!"}      
-    else #user signed-in; this can be refractored
-    
-    @status = Status.new(
-      :value => 0,
-      :created_at => Time.now)
-    @ignindex = Ignindex.where("user_id = ?", current_user.id).first
-      if @ignindex.nil? #redirect
-
-        faker_values
-        session[:setup_progress] = 1
-      elsif @ignindex.region_id.nil? #redirect
-        faker_values
-        # redirect_to zone_url, alert: 'You need a valid Postal Code!'
-      else
-
-        if !@ignindex.statuses.last.nil? && @ignindex.statuses.last.win_value.nil?
-          @status = @ignindex.statuses.last
-          @gamerunning = true
-          # if @status.trigger_timer > (Time.now.to_i - 300)
-          #  @checkdata = true
-          # end
-        end
-
-        @achievement = Achievement.where("id = ?", @ignindex.active_achievement).first
-        if @achievement.nil?
-          @achievement = Achievement.new
-        end
-
-        @last_game  = @achievement.statuses.order(created_at: :desc).select { |x| if !x.game_1.empty? then x end }.first
-        # @last_game  = Status.order(created_at: :desc).select { |x| if !x.game_1.empty? then x end }.first
-        # @game_history = @achievement.statuses.order(created_at: :desc)
-
-      end
- 
-    end
-  end
-
-  def faker_values
-    @ignindex = Ignindex.new
-    @achievement = Achievement.new
-    @ignindex.summoner_name = "No Summoner Name"
-  end
-
-  def get_current_achievement(session_ignindex_id) #input also takes current_user.ignindex_id
-    Rails.logger.info "session_ignindex_id: #{session_ignindex_id}"
-    gca_ign = Ignindex.where("id = ?", session_ignindex_id).first
-    Rails.logger.info "gca_ign.id: #{gca_ign.id}"
-    if gca_ign.active_achievement.nil?
-
-      if Region.find(gca_ign.region_id).prize_id_tier1.nil? #fixes sloppy db default vars
-        Region.find(gca_ign.region_id).update(
-          :prize_id_tier1 => "[]")
-      end
-
-      if JSON.parse(Region.find(gca_ign.region_id).prize_id_tier1)[0] == 1
-        prizing_here = 1
-      else
-        prizing_here = 0
-      end
-      gca_ach_search = Achievement.where("ignindex_id = ?", gca_ign.id).where("result IS ?", nil).where("kind = ?", prizing_here).first
-
-      if gca_ach_search.nil?
-        new_ach = Achievement.create(
-          :ignindex_id => session_ignindex_id,
-          :experience_req => 10,
-          :can_spell_name => "CORA",
-          :can_spell_name_open => "CORA",
-          :description => "Earn 10 experience points to get an end of the week reward. Each win recoded is 1exp, winning game with a champion whose name starts with one of the letters CORA is 2exp.",
-          :kind => prizing_here,
-          :expire => 4.weeks.from_now.to_i )
-        Ignindex.where("id = ?", session_ignindex_id).first.update(
-          :active_achievement => new_ach.id)
-      else        
-        new_ach = gca_ach_search
-        Ignindex.where("id = ?", session_ignindex_id).first.update(
-          :active_achievement => new_ach.id)        
-      end
-
-      @achievement = new_ach
-      number = @achievement.experience_earned/@achievement.experience_req
-      @achievement_progress = number.round(2)
-      
-    else
-      @achievement = Achievement.find(Ignindex.where("id = ?", session_ignindex_id).first.active_achievement)
-    end
+  def new  
+    set_profile_ignindex
+    set_profile_status
+    set_profile_achievement
+    @last_game  = @achievement.statuses.order(created_at: :desc).select { |x| if !x.game_1.empty? then x end }.first
   end
 
   def create # does not take any params
@@ -210,17 +115,37 @@
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+
+
+    def set_profile_ignindex
+      @ignindex = current_user.ignindex
+      @ignindex ||= Ignindex.new  
+    end
+
+    def set_profile_status
+      @status = @ignindex.statuses.last
+      @status ||= Status.new(
+        :value => 0,
+        :created_at => Time.now)
+      game_running
+    end
+
+    def set_profile_achievement
+      @achievement = Achievement.where("id = ?", @ignindex.active_achievement).first
+      @achievement ||= Achievement.new
+    end
+
+    def game_running
+      if !@status.id.nil? && @status.win_value.nil?
+        @gamerunning = true
+      end   
+    end
+
     def set_status
       @status = Status.find(params[:id])
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
     def status_params
       params.require(:status).permit(:kind)
     end
-
 end
-
-#user name input, from _form.html.erb
-#<%= f.input :user_id, collection: User.all, label_method: :full_name %>
