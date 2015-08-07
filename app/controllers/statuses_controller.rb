@@ -2,6 +2,7 @@
   before_action :set_status, only: [:show]
   before_filter :authenticate_user!
 
+
   respond_to :html, :xml, :json
 
   def index
@@ -25,33 +26,26 @@
     @last_game  = @achievement.statuses.order(created_at: :desc).select { |x| if !x.game_1.empty? then x end }.first
   end
 
-  def create # does not take any params
-
-    @ignindex = Ignindex.where("user_id = ?", current_user.id).first
-    @status = Status.new(
-      :achievement_id => @ignindex.active_achievement,
-      :summoner_id => @ignindex.summoner_id,
-      :summoner_name => @ignindex.summoner_name,
-      :ignindex_id => @ignindex.id,
+  def create 
+    set_profile_ignindex
+    @status = Status.create(
+      :achievement_id => ignindex.active_achievement,
+      :summoner_id => ignindex.summoner_id,
+      :summoner_name => ignindex.summoner_name,
+      :ignindex_id => ignindex.id,
       :value => 5400,
       :points => 0,
       :kind => 5,
       :pause_timer => 0,
       :trigger_timer => 0,
       :pause_timer => 0,
-      :trigger_timer => 0)
-
-    @status.save
+      :trigger_timer => 0) #all these can be db defaults
     
     respond_to do |format|
       if @status.save
         format.html { redirect_to root_path }
-        format.json { head :no_content }
-        format.js { redirect_to root_path}
       else
         format.html { redirect_to root_path, alert: 'illBePro engine is temporarily offline!' }
-        format.json { render json: @status.errors, status: :unprocessable_entity }
-        format.js { redirect_to root_path, alert: 'illBePro engine is temporarily offline!' }
       end
     end
   end

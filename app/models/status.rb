@@ -1,5 +1,5 @@
 class Status < ActiveRecord::Base
-
+  validates :ignindex_id, presence: true
   validate :dr_who, :on => :create
   validate :one_fox_one_gun, :on => :create
 
