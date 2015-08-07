@@ -1,16 +1,9 @@
  class StatusesController < ApplicationController
+  before_filter :authenticate_user!
   before_action :set_status, only: [:show, :update, :destroy]
   before_action :set_profile_ignindex, only: [:new, :create]
-  before_filter :authenticate_user!
 
   respond_to :html, :xml, :json
-
-  def index #as summoner
-    respond_to do |format|
-      format.html { redirect_to root_path}
-      format.json { render json: current_user.ignindex.statuses.where("win_value IS ?", nil).last }
-    end     
-  end
 
   def show
     respond_to do |format|
@@ -27,10 +20,10 @@
 
   def create 
     @status = Status.create(
-      :achievement_id => ignindex.active_achievement,
-      :summoner_id => ignindex.summoner_id,
-      :summoner_name => ignindex.summoner_name,
-      :ignindex_id => ignindex.id,
+      :achievement_id => @ignindex.active_achievement,
+      :summoner_id => @ignindex.summoner_id,
+      :summoner_name => @ignindex.summoner_name,
+      :ignindex_id => @ignindex.id,
       :value => 5400,
       :points => 0,
       :kind => 5,

@@ -8,6 +8,9 @@ class Score < ActiveRecord::Base
 	      points_total = 0
 
 	      if !achievement.challenge.wins_required.nil?
+	      	Rails.logger.info "achievement: #{achievement}"
+	      	Rails.logger.info "points: #{points}"
+	      	Rails.logger.info "achievement.wins_recorded: #{achievement.wins_recorded}"
 	        points += achievement.wins_recorded
 	        points_total += achievement.challenge.wins_required
 	      end
@@ -57,5 +60,7 @@ class Score < ActiveRecord::Base
 
       end
 	end
+
+	
 
 end
