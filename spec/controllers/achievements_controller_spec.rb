@@ -86,9 +86,7 @@ RSpec.describe AchievementsController, :type => :controller do
 
 				post :create, {
 					:commit => "Activate",
-					:achievement => {
-						:achievement_id => achievement.id
-						}}
+					:achievement => { :achievement_id => achievement.id}}
 				expect(ignindex.reload.active_achievement).to eq(achievement.id)
 				expect(response).to redirect_to(root_path) 
 			end
@@ -102,9 +100,7 @@ RSpec.describe AchievementsController, :type => :controller do
 
 				post :create, {
 					:commit => "Select",
-					:achievement => {
-						:challenge_id => challenge.id
-						}}
+					:achievement => {:challenge_id => challenge.id }}
 				expect(ignindex.reload.active_achievement).to eq(1)
 				expect(Achievement.all.count).to eq(1)
 				expect(response).to redirect_to(root_path) 
@@ -119,9 +115,7 @@ RSpec.describe AchievementsController, :type => :controller do
 
 				post :create, {
 					:commit => "Select",
-					:achievement => {
-						:challenge_id => 999
-						}}
+					:achievement => {:challenge_id => 999}}
 				expect(ignindex.reload.active_achievement).to eq(nil)
 				expect(Achievement.all.count).to eq(0)
 			end			

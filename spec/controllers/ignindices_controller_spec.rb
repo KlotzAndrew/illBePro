@@ -192,4 +192,128 @@ RSpec.describe IgnindicesController, :type => :controller do
 			expect(body["valid"]).to eq(true)
 		end	
 	end	
+
+	describe 'POST #create' do
+		describe 'user not logged in' do
+			it "redirects when user not signed-in" do
+				post :create
+				expect(response).to redirect_to(new_user_session_path)
+			end
+		end
+		describe 'user logged in' do
+			login_user
+			describe 'handles adding postal code' do
+				it 'adds in correct session variable' do
+					user = subject.current_user
+					region = FactoryGirl.create(:region)
+					ignindex = FactoryGirl.create(:ignindex, :user_id => user.id)
+				
+					post :create, {
+						:commit => "Add Postal/Zip Code",
+						:postal_code => "m6g" }
+					expect(session[:region_id_temp]).to eq(region.id)
+					expect(session[:setup_progress]).to eq(2)
+					expect(response).to redirect_to(setup_path)
+				end
+
+				it 'does nothing for invalid region' do
+					user = subject.current_user
+					region = FactoryGirl.create(:region)
+					ignindex = FactoryGirl.create(:ignindex, :user_id => user.id)
+				
+					post :create, {
+						:commit => "Add Postal/Zip Code",
+						:postal_code => "z1z" }
+					expect(session[:region_id_temp]).to eq(nil)
+					expect(session[:setup_progress]).to eq(1)
+					expect(response).to redirect_to(setup_path)
+				end				
+			end
+
+			describe 'handles selecting challange' do
+				it 'adds challenge id to session variables' do
+					post :create, {
+							:commit => "Select",
+							:ignindex => {:challenge_id => 1}}
+					expect(session[:challenge_id]).to eq(1)
+					expect(session[:setup_progress]).to eq(3)
+					expect(response).to redirect_to(setup_path)
+				end
+			end
+
+			describe 'handles adding summoner name' do
+				it 'creates a new ignindex for summoner' do
+					user = subject.current_user
+					session[:challenge_id] = 1
+					session[:region_id_temp] = 1
+
+					post :create, {
+						:commit => "Add Summoner Name",
+						:ignindex => {:summoner_name => "TheOddOne"}}
+					expect(Ignindex.all.count).to eq(1)
+					expect(user.reload.summoner_id).to eq(Ignindex.last.validation_timer)
+					expect(session[:ignindex_id]).to eq(Ignindex.last.id)
+				end
+
+				it 'created achievement for new ignindex' do
+					user = subject.current_user
+					challenge = FactoryGirl.create(:challenge)
+					session[:challenge_id] = challenge.id
+					session[:region_id_temp] = 1
+
+					post :create, {
+						:commit => "Add Summoner Name",
+						:ignindex => {:summoner_name => "TheOddOne"}}
+					expect(Achievement.all.count).to eq(1)
+					expect(Ignindex.last.active_achievement).to eq(Achievement.last.id)
+				end
+
+				it 'updates validation trigger if already ignindex' do
+					user = subject.current_user
+					ignindex = FactoryGirl.create(:ignindex, :validated)
+					session[:challenge_id] = 1
+					session[:region_id_temp] = 1
+
+					post :create, {
+						:commit => "Add Summoner Name",
+						:ignindex => {:summoner_name => "TheOddOne"}}
+					expect(user.reload.summoner_id).to eq(Ignindex.last.validation_timer)
+					expect(session[:ignindex_id]).to eq(Ignindex.last.id)
+				end				
+			end
+		end
+	end
+
+	describe 'POST #update' do
+		describe 'user not logged in' do
+			it "redirects when user not signed-in" do
+				ignindex = FactoryGirl.create(:ignindex, :user_id => 1)
+
+
+				post :update, id: ignindex.id
+				expect(response).to redirect_to(new_user_session_path)
+			end
+		end
+		describe 'user logged in' do
+			login_user
+			describe 'handles changing postal code' do
+			end
+
+			describe 'handles generating validation code' do
+			end
+
+			describe 'handles adding postal code' do
+			end	
+
+			describe 'accepting/upgrading prize' do
+			end			
+			# it "redirects when user not signed-in" do
+			# 	user = subject.current_user
+			# 	ignindex = FactoryGirl.create(:ignindex, :user_id => user.id)
+				
+			# 	post :update, id: ignindex.id
+			# 	expect(response).to redirect_to(new_user_session_path)
+			# end
+		end		
+	end
 end

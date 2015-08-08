@@ -19,7 +19,7 @@ class Ignindex < ActiveRecord::Base
 
 	def create_or_update_ignindex(region_id, summoner_name, summoner_name_ref, challenge_id)
 		ActiveRecord::Base.transaction do
-			if self.nil?
+			if self.id.nil?
 				@ignindex = Ignindex.create(
 					:region_id => region_id,
 					:region_id_temp => region_id,          
@@ -32,26 +32,32 @@ class Ignindex < ActiveRecord::Base
 
 			@ignindex.add_user_achievement(challenge_id)
 			@ignindex.refresh_validation
+			return @ignindex
 		end
 	end
 
 	def add_user_achievement(challenge_id)
 	  if self.active_achievement.nil?
-	    @achievement = Achievement.create(
-			:ignindex_id => self.id,
-			:region_id => self.region_id,
-			:challenge_id => challenge.id,
-			:expire => challenge.expiery,
-			:name => challenge.name,
-			:merchant => challenge.merchant,
-			:has_prizing => challenge.local_prizing,
-			:can_spell_name => challenge.can_spell_name,
-			:can_spell_name_open => challenge.can_spell_name,
-			:wins_required => challenge.wins_required,
-			:wins_recorded => 0,
-			:con_wins_recorded => 0)
-		self.update(
-			:active_achievement => achievement.id)
+	  	ActiveRecord::Base.transaction do
+	  		challenge = Challenge.where(id: challenge_id).first
+	  		if !challenge.nil?
+			    @achievement = Achievement.create(
+					:ignindex_id => self.id,
+					:region_id => self.region_id,
+					:challenge_id => challenge.id,
+					:expire => challenge.expiery,
+					:name => challenge.name,
+					:merchant => challenge.merchant,
+					:has_prizing => challenge.local_prizing,
+					:can_spell_name => challenge.can_spell_name,
+					:can_spell_name_open => challenge.can_spell_name,
+					:wins_required => challenge.wins_required,
+					:wins_recorded => 0,
+					:con_wins_recorded => 0)
+				self.update(
+					:active_achievement => @achievement.id)
+			end
+		end
 	  end
 	end	
 

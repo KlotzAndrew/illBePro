@@ -42,25 +42,26 @@ class IgnindicesController < ApplicationController
   def update
     if params[:commit] == "Change Summoner Name" #step3a, unbind+reset setup OR typo
       change_summoner_name  
-    elsif params["commit"] == "Generate Validation Code" #step3b
+    elsif params[:commit] == "Generate Validation Code" #step3b
       generate_validation_code
-    elsif params["commit"] == "Add Postal/Zip Code" #step1
+    elsif params[:commit] == "Add Postal/Zip Code" #step1
       update_postal_code
-    elsif params["commit"] == "Accept" || params["commit"] == "Upgrade" #prize accept
+    elsif params[:commit] == "Accept" || params[:commit] == "Upgrade" #prize accept
       prize_accept_upgrade     
     end
   end
 
   def create
-    if params["commit"] == "Add Postal/Zip Code" #step1
+    if params[:commit] == "Add Postal/Zip Code" #step1
       add_postal_code
-    elsif params["commit"] == "Select" #step2
+    elsif params[:commit] == "Select" #step2
       select_challenge
-    elsif params["commit"] == "Add Summoner Name" #step3a
-      add_summoner_name
+      redirect_to setup_path
+    elsif params[:commit] == "Add Summoner Name" #step3a
+      change_summoner_name
+      redirect_to setup_path
     end
 
-    redirect_to setup_path
   end  
 
   private
@@ -108,32 +109,34 @@ class IgnindicesController < ApplicationController
   end
 
   def add_postal_code
-    region = Region.postal_to_region(ignindex_params[:postal_code])
+    region = Region.postal_to_region(params[:postal_code])
 
-    session[:region_id_temp] = region.id
-    session[:postal_code_temp] = region.postal_code
     
     if region.nil?
+      session[:setup_progress] = 1
       redirect_to setup_path, alert: 'Sorry! That zip/postal code does not match anything on our map'
     else
+      session[:region_id_temp] = region.id
+      session[:postal_code_temp] = region.postal_code
       session[:setup_progress] = 2
+      redirect_to setup_path
     end
   end
 
   def select_challenge
-    session[:challenge_id] = params["ignindex"]["challenge_id"].to_i
+    session[:challenge_id] = params[:ignindex][:challenge_id].to_i
     session[:setup_progress] = 3
   end  
 
   def add_summoner_name
-    session[:summoner_name_temp] = params["ignindex"]["summoner_name"]
-    session[:summoner_name_ref_temp] = params["ignindex"]["summoner_name"].mb_chars.downcase.gsub(' ', '')    
+    session[:summoner_name_temp] = params[:ignindex][:summoner_name]
+    session[:summoner_name_ref_temp] = params[:ignindex][:summoner_name].mb_chars.downcase.gsub(' ', '')    
 
     @ignindex = Ignindex.where("summoner_name_ref = ?", session[:summoner_name_ref_temp]).first
+    @ignindex ||= Ignindex.new
 
     ActiveRecord::Base.transaction do
-      @ignindex.create_or_update_ignindex(session[:region_id_temp], session[:summoner_name_temp], session[:summoner_name_ref_temp], session[:challenge_id])
-
+      @ignindex = @ignindex.create_or_update_ignindex(session[:region_id_temp], session[:summoner_name_temp], session[:summoner_name_ref_temp], session[:challenge_id])
       current_user.update(
         :summoner_id => @ignindex.validation_timer)
       session[:last_validation] = @ignindex.validation_timer
