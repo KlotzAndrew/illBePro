@@ -79,13 +79,13 @@ class Ignindex < ActiveRecord::Base
   	end
 
 	def available_challenges
-		active_achievment_ids = achievements.where("result IS ?", nil).map { |x| x.challenge_id }
+		active_achievment_ids = self.achievements.where("result IS ?", nil).map { |x| x.challenge_id }
 		return {
 			active: self.achievements.where(id: self.active_achievement),
 			saved: self.achievements.where(result: nil).where.not(id: self.active_achievement),
-			local: Challenge.where(global: true).where.not(id: active_achievment_ids).map { |x| x },
-			country: region.challenges.where.not(id: active_achievment_ids).map { |x| x },
-			global: Challenge.where("country = ?", self.region.country).where.not(id: active_achievment_ids).map { |x| x }
+			local: self.region.challenges.where.not(id: active_achievment_ids).map { |x| x },
+			country: Challenge.where("country = ?", self.region.country).where.not(id: active_achievment_ids).map { |x| x },
+			global: Challenge.where(global: true).where.not(id: active_achievment_ids).map { |x| x }
 		}
 	end
 

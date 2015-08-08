@@ -191,6 +191,5 @@ RSpec.describe IgnindicesController, :type => :controller do
 			
 			expect(body["valid"]).to eq(true)
 		end	
-
 	end	
 end

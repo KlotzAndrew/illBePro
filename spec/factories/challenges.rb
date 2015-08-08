@@ -26,6 +26,19 @@ FactoryGirl.define do
 		can_spell_name "CORA"
 		wins_required 10
   	end
+
+  	trait :global do
+  		global true
+  	end
+
+  	trait :country do
+  		global false
+  		country "CA"
+  	end
+
+  	trait :local do
+  		global false
+  	end
   end
 
 end

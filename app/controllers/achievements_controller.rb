@@ -8,10 +8,10 @@ class AchievementsController < ApplicationController
 	end
 
 	def create
-		if params["commit"] == "Select"
-			@ignindex.add_achievement(params["achievement"]["challenge_id"], @achievement)
-		elsif params["commit"] == "Activate"
-			@ignindex.toggle_active_achievement(params["achievement"]["achievement_id"])
+		if params[:commit] == "Select"
+			@ignindex.add_achievement(params[:achievement][:challenge_id], @achievement)
+		elsif params[:commit] == "Activate"
+			@ignindex.toggle_active_achievement(params[:achievement][:achievement_id])
 		end
 		
 		redirect_create_action
