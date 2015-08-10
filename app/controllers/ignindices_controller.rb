@@ -96,7 +96,7 @@ class IgnindicesController < ApplicationController
   end
 
   def update_postal_code
-    region = Region.postal_to_region(params[:postal_code])
+    region = Region.postal_to_region(params[:ignindex][:postal_code])
     if region.nil?
       redirect_to zone_path, alert: 'Sorry! That zip/postal code does not match anything on our map'
     else
@@ -108,8 +108,7 @@ class IgnindicesController < ApplicationController
   end
 
   def add_postal_code
-    region = Region.postal_to_region(params[:postal_code])
-
+    region = Region.postal_to_region(params[:ignindex][:postal_code])
     
     if region.nil?
       session[:setup_progress] = 1

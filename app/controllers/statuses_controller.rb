@@ -12,6 +12,13 @@
     end    
   end
 
+  def index
+    respond_to do |format|
+      format.html { render nothing: true}
+      format.json { render json: current_user.ignindex.statuses.last }
+    end    
+  end  
+
   def new #as profile
     set_profile_status
     set_profile_achievement
@@ -19,6 +26,7 @@
   end
 
   def create 
+    Rails.logger.info "@ignindex for create: #{@ignindex}"
     @status = Status.create(
       :achievement_id => @ignindex.active_achievement,
       :summoner_id => @ignindex.summoner_id,
@@ -31,6 +39,7 @@
       :trigger_timer => 0,
       :pause_timer => 0,
       :trigger_timer => 0) #all these can be db defaults
+    Rails.logger.info "@status for create: #{@status}"
     
     respond_to do |format|
       if @status.save
@@ -63,7 +72,9 @@
     end
 
     def set_profile_status
-      @status = @ignindex.statuses.last
+      if !@ignindex.statuses.last.nil? && @ignindex.statuses.last.win_value.nil?
+        @status = @ignindex.statuses.last
+      end
       @status ||= Status.new(
         :value => 0,
         :created_at => Time.now)

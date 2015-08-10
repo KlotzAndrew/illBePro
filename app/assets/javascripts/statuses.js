@@ -26,7 +26,6 @@ button_cancel_needs_status_id = function(){
             $('#button_get_results').attr('action', '/statuses/' + data.id)
         }
     })
-
 }
 
 var js_game_starting = function(){
@@ -95,7 +94,7 @@ var check_game = function(){
         dataType: "json",
         success: function(data) {
             console.log(data)
-            if ((data !== null) && (data.win_value !== null)) {
+            if ((data !== null) && (data.win_value !== null) && (data.win_value !== 3)) {
                 // document.location.reload(true);
                 if (data.prize_id !== null) {
                     // document.location.reload(true);
@@ -129,13 +128,13 @@ var check_game = function(){
 var challenge_timer = function(){
     console.log("timers updated")
     current_time = (new Date).getTime()
-    grab = $('#challenge_timer').data("chal_time_value") // validation timout counter
-    adj_grab = +grab + +pause_guess
-    now1 = parseInt((adj_grab - (current_time/1000))/60) + "m " + parseInt((adj_grab - (current_time/1000))%60) + "s"
+    expires_at = $('#challenge_timer').data("chal_time_value") // validation timout counter
+    expires_at_adj = +expires_at + +pause_guess
+    time_remaining = parseInt((expires_at_adj - (current_time/1000))/60) + "m " + parseInt((expires_at_adj - (current_time/1000))%60) + "s"
   
     current_created_at = $('#current_created_at').data("current_created") // pause button to finish button, not actual time left
     
-    final_two = +adj_grab - +current_time/1000
+    final_two = +expires_at_adj - +current_time/1000
     if ( final_two < 120 ) {
         if ( $('#cg-refresher').hasClass("cg-update-true") ) {
         } else  {
@@ -146,9 +145,8 @@ var challenge_timer = function(){
         }
     }
 
-
   if ( !$('#hit-pause').hasClass("start-ghost") ) {
-      $('#challenge_timer').html(now1) // update total time left
+      $('#challenge_timer').html(time_remaining) // update total time left
   } else {
     pause_guess += 1
   }

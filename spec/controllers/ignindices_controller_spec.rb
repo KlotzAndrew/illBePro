@@ -210,7 +210,8 @@ RSpec.describe IgnindicesController, :type => :controller do
 				
 					post :create, {
 						:commit => "Add Postal/Zip Code",
-						:postal_code => "m6g" }
+						:ignindex => {
+							:postal_code => "m6g" }}
 					expect(session[:region_id_temp]).to eq(region.id)
 					expect(session[:setup_progress]).to eq(2)
 					expect(response).to redirect_to(setup_path)
@@ -223,7 +224,8 @@ RSpec.describe IgnindicesController, :type => :controller do
 				
 					post :create, {
 						:commit => "Add Postal/Zip Code",
-						:postal_code => "z1z" }
+						:ignindex => {
+							:postal_code => "z1z" }}
 					expect(session[:region_id_temp]).to eq(nil)
 					expect(session[:setup_progress]).to eq(1)
 					expect(response).to redirect_to(setup_path)
@@ -304,7 +306,8 @@ RSpec.describe IgnindicesController, :type => :controller do
 
 					post :update, id: ignindex.id, 
 							:commit => "Add Postal/Zip Code",
-							:postal_code => region.postal_code
+							:ignindex => {
+								:postal_code => region.postal_code}
 					expect(ignindex.reload.region_id).to eq(region.id)
 				end
 
@@ -316,7 +319,8 @@ RSpec.describe IgnindicesController, :type => :controller do
 
 					post :update, id: ignindex.id, 
 							:commit => "Add Postal/Zip Code",
-							:postal_code => "z1z"
+							:ignindex => {
+								:postal_code => "z1z"}
 					expect(ignindex.reload.region_id).to eq(1)
 				end
 			end
