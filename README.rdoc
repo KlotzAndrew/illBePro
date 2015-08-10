@@ -13,10 +13,7 @@ Milestones Reached:
 
 ==To do
 Coming next:
-* 50 => 250+ tests
-* Cleanup floating routes/unused code
-* Refractor
-* Move prizing from command line to scheduled job
+* Add cappybara
 
 Stretch Goals:
 * additional API endpoints for more in-game profile data
@@ -27,12 +24,5 @@ Stretch Goals:
 * badges for completing challenges
 * add 2nd game API
 * add user forum
-
-==illBePro is live
-Currently Using:
-* League of Legends API
-
-Current Rewards
-* Up to a Free Pizza (for users in downtown Toronto, ON)
 
 Missing a critical component for mass-commercial success, message me if you want to know more or chat :)
