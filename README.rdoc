@@ -20,7 +20,4 @@ Stretch Goals:
 * in-app Admin panel
 * more robust challenges (daily, tiers, content-specific)
 * badges for completing challenges
-* add 2nd game API
 * add user forum
-
-Missing a critical component for mass-commercial success, message me if you want to know more or chat :)
