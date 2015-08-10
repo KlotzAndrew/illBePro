@@ -10,10 +10,8 @@ Milestones Reached:
 * 2500+ Users
 * 1 awesome customer
 
-
-==To do
 Coming next:
-* Add cappybara
+* Cappybara testing
 
 Stretch Goals:
 * additional API endpoints for more in-game profile data
