@@ -63,8 +63,6 @@ class Ignindex < ActiveRecord::Base
 
   	def assign_prize(choice)
   		prize = Prize.find(self.prize_id)
-  		Rails.logger.info "self.id: #{self.id}"
-  		Rails.logger.info "prize.ignindex_id: #{prize.ignindex_id}"
   		if self.id == prize.ignindex_id 
 		  	if choice == "Accept"
 		  		Rails.logger.info "accepted"
@@ -79,6 +77,7 @@ class Ignindex < ActiveRecord::Base
 			:assignment => 2,
 			:delivered_at => Time.now.to_i)
 		Rails.logger.info "prize.assignment: #{prize.assignment}"
+		Rails.logger.info "prize.assignment2: #{Prize.find(prize.id).assignment}"
 		self.update(
 			:prize_id => nil,
 			:last_prize_time => Time.now.to_i)

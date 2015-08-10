@@ -289,31 +289,78 @@ RSpec.describe IgnindicesController, :type => :controller do
 			it "redirects when user not signed-in" do
 				ignindex = FactoryGirl.create(:ignindex, :user_id => 1)
 
-
 				post :update, id: ignindex.id
 				expect(response).to redirect_to(new_user_session_path)
 			end
 		end
 		describe 'user logged in' do
 			login_user
-			describe 'handles changing postal code' do
+			describe 'Add Postal/Zip Code' do
+				it 'adds the correct CA postal code' do
+					user = subject.current_user
+					ignindex = FactoryGirl.create(:ignindex, :validated)
+					region = FactoryGirl.create(:region, :id => 2)
+					user.update(ignindex_id: ignindex.id)	
+
+					post :update, id: ignindex.id, 
+							:commit => "Add Postal/Zip Code",
+							:postal_code => region.postal_code
+					expect(ignindex.reload.region_id).to eq(region.id)
+				end
+
+				it 'does nothing for wrong postal code' do
+					user = subject.current_user
+					ignindex = FactoryGirl.create(:ignindex, :validated)
+					region = FactoryGirl.create(:region, :id => 2)
+					user.update(ignindex_id: ignindex.id)	
+
+					post :update, id: ignindex.id, 
+							:commit => "Add Postal/Zip Code",
+							:postal_code => "z1z"
+					expect(ignindex.reload.region_id).to eq(1)
+				end
 			end
 
 			describe 'handles generating validation code' do
+				it 'syncs user validation timer' do
+					user = subject.current_user
+					ignindex = FactoryGirl.create(:ignindex, :validated)
+					user.update(ignindex_id: ignindex.id)
+
+					post :update, id: ignindex.id, 
+						:commit => "Generate Validation Code"
+					expect(user.reload.summoner_id).to eq(ignindex.reload.validation_timer)
+				end
 			end
 
-			describe 'handles adding postal code' do
+			describe 'handles adding summoner name' do
+				it 'unbinds current summoner name' do
+					user = subject.current_user
+					ignindex = FactoryGirl.create(:ignindex, :validated, :user_id => user.id)
+					user.update(ignindex_id: ignindex.id)
+
+					post :update, id: ignindex.id, 
+						:commit => "Change Summoner Name"
+					expect(user.reload.ignindex_id).to eq(nil)
+					expect(ignindex.reload.user_id).to eq(nil)		
+				end
 			end	
 
 			describe 'accepting/upgrading prize' do
+				it 'accepts prize' do
+					user = subject.current_user
+					prize = FactoryGirl.create(:prize, :assignment => 1)
+					ignindex = FactoryGirl.create(:ignindex, :validated, :user_id => user.id, :prize_id => prize.id)
+					user.update(ignindex_id: ignindex.id)
+					prize.update(ignindex_id: ignindex.id)
+					post :update, id: ignindex.id, 
+							:commit => "Accept"
+
+					expect(prize.reload.assignment).to eq(2)
+					expect(prize.reload.delivered_at).to be_within(10).of(Time.now.to_i)
+					expect(ignindex.reload.prize_id).to eq(nil)
+				end
 			end			
-			# it "redirects when user not signed-in" do
-			# 	user = subject.current_user
-			# 	ignindex = FactoryGirl.create(:ignindex, :user_id => user.id)
-				
-			# 	post :update, id: ignindex.id
-			# 	expect(response).to redirect_to(new_user_session_path)
-			# end
 		end		
 	end
 end
