@@ -359,6 +359,17 @@ RSpec.describe IgnindicesController, :type => :controller do
 					expect(user.reload.ignindex_id).to eq(nil)
 					expect(ignindex.reload.user_id).to eq(nil)		
 				end
+
+				it 'blocks another users access' do
+					user = subject.current_user
+					ignindex = FactoryGirl.create(:ignindex, :validated, :user_id => user.id)
+					ignindex2 = FactoryGirl.create(:ignindex, :validated, :user_id => 99)
+					user.update(ignindex_id: ignindex.id)
+
+					post :update, id: ignindex2.id, 
+						:commit => "Change Summoner Name"
+					expect(ignindex2.reload.user_id).not_to eq(nil)			
+				end
 			end	
 
 			describe 'accepting/upgrading prize' do
