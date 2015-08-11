@@ -118,7 +118,19 @@ RSpec.describe AchievementsController, :type => :controller do
 					:achievement => {:challenge_id => 999}}
 				expect(ignindex.reload.active_achievement).to eq(nil)
 				expect(Achievement.all.count).to eq(0)
-			end			
+			end
+
+			it 'blocks another users access' do
+				challenge = FactoryGirl.create(:challenge, :global)
+				ignindex = FactoryGirl.create(:ignindex, :user_id => nil)
+				achievement = FactoryGirl.create(:achievement, :ignindex_id => ignindex.id)
+				
+				post :create, {
+					:commit => "Activate",
+					:achievement => { :achievement_id => achievement.id}}
+				expect(ignindex.reload.active_achievement).to eq(nil)
+				expect(response).to redirect_to(setup_path) 
+			end	
 		end
 	end
 end

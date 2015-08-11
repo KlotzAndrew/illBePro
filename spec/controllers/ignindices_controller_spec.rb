@@ -300,7 +300,7 @@ RSpec.describe IgnindicesController, :type => :controller do
 			describe 'Add Postal/Zip Code' do
 				it 'adds the correct CA postal code' do
 					user = subject.current_user
-					ignindex = FactoryGirl.create(:ignindex, :validated)
+					ignindex = FactoryGirl.create(:ignindex, :validated, :user_id => user.id)
 					region = FactoryGirl.create(:region, :id => 2)
 					user.update(ignindex_id: ignindex.id)	
 
@@ -313,7 +313,7 @@ RSpec.describe IgnindicesController, :type => :controller do
 
 				it 'does nothing for wrong postal code' do
 					user = subject.current_user
-					ignindex = FactoryGirl.create(:ignindex, :validated)
+					ignindex = FactoryGirl.create(:ignindex, :validated, :user_id => user.id)
 					region = FactoryGirl.create(:region, :id => 2)
 					user.update(ignindex_id: ignindex.id)	
 
@@ -321,6 +321,17 @@ RSpec.describe IgnindicesController, :type => :controller do
 							:commit => "Add Postal/Zip Code",
 							:ignindex => {
 								:postal_code => "z1z"}
+					expect(ignindex.reload.region_id).to eq(1)
+				end
+
+				it 'blocks another users access' do
+					ignindex = FactoryGirl.create(:ignindex, :validated)
+					region = FactoryGirl.create(:region, :id => 2)
+
+					post :update, id: ignindex.id, 
+							:commit => "Add Postal/Zip Code",
+							:ignindex => {
+								:postal_code => region.postal_code}
 					expect(ignindex.reload.region_id).to eq(1)
 				end
 			end

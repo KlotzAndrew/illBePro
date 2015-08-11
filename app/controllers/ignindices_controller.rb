@@ -100,10 +100,14 @@ class IgnindicesController < ApplicationController
     if region.nil?
       redirect_to zone_path, alert: 'Sorry! That zip/postal code does not match anything on our map'
     else
-      @ignindex.update( 
-        :region_id => region.id,
-        :postal_code => region.postal_code)
-      redirect_to root_path, notice: 'Prizing zone changed'
+      if @ignindex.user == current_user
+        @ignindex.update( 
+          :region_id => region.id,
+          :postal_code => region.postal_code)
+        redirect_to root_path, notice: 'Prizing zone changed'
+      else
+        redirect_to root_path, alert: 'You are not allowed to do that!'
+      end
     end
   end
 
