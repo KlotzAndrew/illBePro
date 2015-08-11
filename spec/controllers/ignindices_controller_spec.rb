@@ -386,6 +386,20 @@ RSpec.describe IgnindicesController, :type => :controller do
 					expect(prize.reload.delivered_at).to be_within(10).of(Time.now.to_i)
 					expect(ignindex.reload.prize_id).to eq(nil)
 				end
+
+				it 'blocks another users access' do
+					user = subject.current_user
+					prize = FactoryGirl.create(:prize, :assignment => 1)
+					ignindex = FactoryGirl.create(:ignindex, :validated, :user_id => user.id, :prize_id => nil)
+					ignindex2 = FactoryGirl.create(:ignindex, :validated, :user_id => 99, :prize_id => prize.id)
+					user.update(ignindex_id: ignindex.id)
+					prize.update(ignindex_id: ignindex2.id)
+					post :update, id: ignindex2.id, 
+							:commit => "Accept"
+
+					expect(prize.reload.assignment).not_to eq(2)
+					expect(prize.reload.delivered_at).not_to be_within(10).of(Time.now.to_i)	
+				end
 			end			
 		end		
 	end

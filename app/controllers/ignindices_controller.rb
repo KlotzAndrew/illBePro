@@ -76,11 +76,15 @@ class IgnindicesController < ApplicationController
 
   def prize_accept_upgrade
     if @ignindex.prize_id != nil
-      @ignindex.assign_prize(params[:commit])
-      if params[:commit] == "Accept"
-        redirect_to scores_path, notice: 'Prize accepted'
-      else params[:commit] == "Upgrade"
-        redirect_to root_path, notice: 'Prize Tier Upgraded!'
+      if @ignindex.user == current_user
+        @ignindex.assign_prize(params[:commit])
+        if params[:commit] == "Accept"
+          redirect_to scores_path, notice: 'Prize accepted'
+        else params[:commit] == "Upgrade"
+          redirect_to root_path, notice: 'Prize Tier Upgraded!'
+        end
+      else
+        redirect_to root_path, alert: 'You are not allowed to do that!'  
       end
     else
       redirect_to root_path, alert: 'There is an issue with your prize :('
