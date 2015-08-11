@@ -2,6 +2,7 @@
   before_filter :authenticate_user!
   before_action :set_status, only: [:show, :update, :destroy]
   before_action :set_profile_ignindex, only: [:new, :create]
+  before_action :owner, only: [:update, :destroy]
 
   respond_to :html, :xml, :json
 
@@ -98,5 +99,11 @@
 
     def status_params
       params.require(:status).permit(:kind)
+    end
+
+    def owner
+      if @status.ignindex.user != current_user
+        redirect_to root_path, notice: "You are not allowed to do that!"
+      end
     end
 end

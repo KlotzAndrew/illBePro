@@ -90,12 +90,22 @@ RSpec.describe StatusesController, :type => :controller do
 		describe 'when logged-in' do
 			login_user
 			it 'updates status object' do
-				ignindex = FactoryGirl.create(:ignindex, :validated, :user_id => nil)				
+				user = subject.current_user
+				ignindex = FactoryGirl.create(:ignindex, :validated, :user_id => user.id)				
 				status = FactoryGirl.create(:status, :ignindex_id => ignindex.id)
 
 				post :update, id: status.id
 				expect(response).to redirect_to(root_path) 
 				expect(assigns(:status).trigger_timer).to be_within(10).of(Time.now.to_i)
+			end
+
+			it 'blocks another users access' do
+				ignindex = FactoryGirl.create(:ignindex, :validated, :user_id => nil)				
+				status = FactoryGirl.create(:status, :ignindex_id => ignindex.id)
+
+				post :update, id: status.id
+				expect(response).to redirect_to(root_path) 
+				expect(assigns(:status).trigger_timer).to eq(nil)
 			end
 		end	
 	end
@@ -115,13 +125,26 @@ RSpec.describe StatusesController, :type => :controller do
 		describe 'when logged-in' do
 			login_user
 			it 'updates status object' do
-				ignindex = FactoryGirl.create(:ignindex, :validated, :user_id => nil)				
+				user = subject.current_user
+				ignindex = FactoryGirl.create(:ignindex, :validated, :user_id => user.id)				
 				status = FactoryGirl.create(:status, :ignindex_id => ignindex.id)
 
 				delete :destroy, id: status.id
 				expect(response).to redirect_to(root_path) 
-				expect(assigns(:status).value).to eq(0)
-				expect(assigns(:status).win_value).to eq(3)
+				expect(status.reload.value).to eq(0)
+				expect(status.reload.win_value).to eq(3)
+			end
+
+			it 'blocks another users access' do
+				ignindex = FactoryGirl.create(:ignindex, :validated, :user_id => nil)				
+				status = FactoryGirl.create(:status, :ignindex_id => ignindex.id)
+				value = status.value
+				win = status.win_value
+
+				delete :destroy, id: status.id
+				expect(response).to redirect_to(root_path) 
+				expect(status.reload.value).to eq(value)
+				expect(status.reload.win_value).to eq(win)
 			end
 		end		
 	end
