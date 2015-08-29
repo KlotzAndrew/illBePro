@@ -1,0 +1,31 @@
+<nav class="navbar navbar-ltheme navbar-fixed-top no-border" role="navigation">
+	<div class="navbar-inner">
+		<div class="container">
+				
+			<a class="navbar-brand" href="/"><strong>i'llBePro</strong></a>
+			<ul class="nav navbar-nav list-inline col-sm-3 col-sm-4 text-center ">
+				<li><a href="/leaderboard">LeaderBoard</a></li>
+                <li><a href="/scores">Prizes</a></li>
+			</ul>
+			<% if user_signed_in? %>
+				<ul class="nav navbar-nav list-inline col-md-1 navbar-right" >
+
+				<li><%= button_to "Log Out", logout_path, :class => "btn btn-danger navbar-btn col-sm-offset-0", :method => :get  %></li>
+			<% else %>
+			
+				<ul class="nav navbar-nav list-inline col-md-2 navbar-right" >
+
+            	<li><a href="/register">Sign up</a></li>
+				
+				<li>
+			        <form action="/login" class="button_to" method="get">
+			            <div>
+			            	<input class="btn btn-lprimary navbar-btn" type="submit" value="Log in" />
+			            </div>
+			        </form>
+            	</li>	            	
+			<% end %>
+			</ul>
+		</div>
+	</div>
+</nav>
