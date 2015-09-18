@@ -69,8 +69,10 @@
 
 body {
     background-color: #f6f7f8;
+  section {
+    min-height: 100vh;
+  }
 } 
-
 
 .introjs-tooltipbuttons{
 	display:none;
