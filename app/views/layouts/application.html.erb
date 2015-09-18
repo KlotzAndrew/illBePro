@@ -16,6 +16,7 @@
 </head>
 <body>
 	<%= render 'layouts/header' %>
+	<%= render 'layouts/google_analytics' %>
 	<% flash.each do |type, message| %>
 		<div class="alert <%= flash_class type %> alert-dismissible" role="alert">
 			<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>

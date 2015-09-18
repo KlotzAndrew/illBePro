@@ -66,6 +66,13 @@ class IgnindicesController < ApplicationController
 
   private
 
+  def user_ignindex
+    @ignindex ||= current_user.ignindex      
+    if current_user.ignindex.nil?
+      redirect_to setup_path, notice: "let's set up your summoner name"
+    end
+  end
+
   def set_ignindex
     @ignindex = Ignindex.find(params["id"])
   end
@@ -73,6 +80,8 @@ class IgnindicesController < ApplicationController
   def new_ignindex
     @ignindex ||= Ignindex.new
   end
+
+  #these can be moved elsewhere
 
   def prize_accept_upgrade
     if @ignindex.prize_id != nil
@@ -163,13 +172,6 @@ class IgnindicesController < ApplicationController
     else
       add_summoner_name
     end   
-  end
-
-  def user_ignindex
-    @ignindex ||= current_user.ignindex      
-    if current_user.ignindex.nil?
-      redirect_to setup_path, notice: "let's set up your summoner name"
-    end
   end
 
   def setup_session_variables
